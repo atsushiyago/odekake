@@ -105,8 +105,9 @@ function IndoorStationPaper({ stationGuide, graph, connection, departurePlatform
   const displaySummaryParts = [summary.escalatorCount && `エスカレーター${summary.escalatorCount}回`, summary.stairsCount && `階段${summary.stairsCount}回`, summary.elevatorCount && `エレベーター${summary.elevatorCount}回`, formatFareGateSummary(displayFareGateCount)].filter(Boolean).join('・')
   const layeredStation = levelTransitionSummaryStationIds.has(connection?.assignment.stationId ?? '')
   const visiblePostGateSummary = summarizeVisiblePostGateSteps(sections.find(section => section.id === 'gate-to-exit')?.steps.map(({ step }) => step) ?? [])
+  const carPositionLabel = displayElderlyRecommendation && (displayElderlyRecommendation.carPosition.endsWith('付近') ? displayElderlyRecommendation.carPosition : `${displayElderlyRecommendation.carPosition}付近`)
   const homeEquipmentInstruction = layeredOfficial && displayElderlyRecommendation
-    ? `${displayElderlyRecommendation.carPosition}付近の${displayElderlyRecommendation.equipment}で改札階へ上がる`
+    ? `${carPositionLabel}の${displayElderlyRecommendation.equipment}で改札階へ上がる`
     : undefined
   const abstractLevelInstruction = levelTransitionConsensus && (levelTransitionOnlyHome || carPositionOnly || (!layeredOfficial && !displayElderlyRecommendation))
     ? 'ホームから改札階へ上がる'
@@ -114,8 +115,7 @@ function IndoorStationPaper({ stationGuide, graph, connection, departurePlatform
   return (
     <article className="paper arrival-station-paper front-page">
       <header><span>迷わないおでかけ紙　表</span><span>到着駅の案内</span></header>
-      {leg && <section className="arrival-train"><b>電車</b><strong>{leg.from.stationName} {leg.from.departureTime}発</strong>{departurePlatform && <strong className="departure-platform">{formatBoardingHomeAction(departurePlatform.platformCode)}</strong>}<span>{leg.routeName}　{leg.headsign}行</span><strong>{leg.to.stationName} {leg.to.arrivalTime}着</strong></section>}
-      {displayElderlyRecommendation && <p className="elderly-route-note"><b>できれば{displayElderlyRecommendation.carPosition}に乗る</b>{!layeredOfficial && !carPositionOnly && <span>{displayElderlyRecommendation.equipmentRelation === 'official-options' ? `${displayElderlyRecommendation.targetGate}へ（${displayElderlyRecommendation.equipment}）` : `${displayElderlyRecommendation.equipment}で${displayElderlyRecommendation.targetGate}へ`}</span>}</p>}
+      {leg && <section className="arrival-train"><b>電車</b><strong>{leg.from.stationName} {leg.from.departureTime}発</strong>{departurePlatform && <strong className="departure-platform">{formatBoardingHomeAction(departurePlatform.platformCode)}</strong>}{displayElderlyRecommendation && <p className="elderly-route-note departure-car-note"><b>できれば{displayElderlyRecommendation.carPosition}に乗る</b>{!layeredOfficial && !carPositionOnly && <span>{displayElderlyRecommendation.equipmentRelation === 'official-options' ? `${displayElderlyRecommendation.targetGate}へ（${displayElderlyRecommendation.equipment}）` : `${displayElderlyRecommendation.equipment}で${displayElderlyRecommendation.targetGate}へ`}</span>}</p>}<span>{leg.routeName}　{leg.headsign}行</span><strong>{leg.to.stationName} {leg.to.arrivalTime}着</strong></section>}
       {connection && <section className="arrival-platform"><strong>{formatAlightingHomeAction(presentation.arrivalPlatform, corroboratedFloor)}</strong></section>}
       {presentation.exit && <p className="arrival-goal">目指す出口：<b>{formatExitLabel(presentation.exit)}</b></p>}
       {layeredStation ? visiblePostGateSummary && <section className="arrival-summary"><b>改札から出口まで</b><span>{visiblePostGateSummary}</span></section> : <section className="arrival-summary"><b>出口まで</b><span>{displaySummaryParts || '構内の設備情報はありません'}</span></section>}

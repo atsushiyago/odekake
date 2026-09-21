@@ -7,7 +7,7 @@ import { buildDaimonStationMapCompressionContext } from '../data/stationMaps/dai
 import { loadedOedo2026IndoorDatasets } from '../data/catalogs/oedo2026IndoorDatasets'
 
 describe('station guide presentation', () => {
-  it('adds distance and approximate steps only to long walkway wording when enabled', () => {
+  it('adds distance and approximate steps to every measured walkway when enabled', () => {
     const guide = { id: 'distance', station: { id: '421', name: '大門', operator: '東京都交通局', line: '大江戸線' }, arrivalPlatform: '3番ホーム', gate: '', exit: 'B2', steps: [
       { id: 'short', instruction: '通路を進む', evidence: { source: 'gtfs-pathways' as const, sourceUrl: 'https://example.test', distanceMeters: 7.9 } },
       { id: 'long', instruction: '通路を進む', evidence: { source: 'gtfs-pathways' as const, sourceUrl: 'https://example.test', distanceMeters: 14.7 } },
@@ -15,7 +15,7 @@ describe('station guide presentation', () => {
       { id: 'stairs', instruction: '階段を上がる', facility: 'stairs' as const, evidence: { source: 'gtfs-pathways' as const, sourceUrl: 'https://example.test', distanceMeters: 12 } },
     ], officialSourceUrl: 'https://example.test', verifiedAt: '2026-09-21', confidence: 'needs-review' as const, safeAlternative: '案内表示を確認する' }
     expect(withWalkDistanceInstructions(guide, { enabled: false }).steps.map(step => step.instruction)).toEqual(['通路を進む', '通路を進む', '通路を進む', '階段を上がる'])
-    expect(withWalkDistanceInstructions(guide, { enabled: true }).steps.map(step => step.instruction)).toEqual(['通路を進む', '通路を約15m（約30歩）進む', '通路を約70m（約120歩）進む', '階段を上がる'])
+    expect(withWalkDistanceInstructions(guide, { enabled: true }).steps.map(step => step.instruction)).toEqual(['通路を約8m（約15歩）進む', '通路を約15m（約30歩）進む', '通路を約70m（約120歩）進む', '階段を上がる'])
     expect(withWalkDistanceInstructions(guide, { enabled: true }).steps[1].evidence?.distanceMeters).toBe(14.7)
   })
   it('humanizes only the experimental Daimon B2 guide and keeps gate direction evidence', () => {

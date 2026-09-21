@@ -23,8 +23,8 @@ export const elderlyRouteRecommendations: Record<string, ElderlyRouteRecommendat
   '422': { stationId: '422', carPosition: '4号車付近', equipment: 'エレベーター', equipmentRelation: 'official-options', paperDisplay: 'car-position-only', targetGate: '赤羽橋口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/akabanebashi.html' },
   '425': { stationId: '425', carPosition: '3号車・6号車付近', equipment: 'エスカレーター等', equipmentRelation: 'official-options', paperDisplay: 'car-position-only', targetGate: '1出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/aoyama-itchome.html' },
   '428': { stationId: '428', carPosition: '3〜8号車付近', equipment: 'エスカレーター等', equipmentRelation: 'official-options', paperDisplay: 'car-position-only', targetGate: 'A1出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html' },
-  '402': { stationId: '402', carPosition: '2号車・5号車・7号車付近', equipment: 'エスカレーター等', equipmentRelation: 'official-options', paperDisplay: 'car-position-only', targetGate: 'D3出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku-nishiguchi.html' },
-  '410': { stationId: '410', carPosition: '5号車付近', equipment: 'エスカレーター', equipmentRelation: 'official-options', paperDisplay: 'car-position-only', targetGate: 'A7出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/ueno-okachimachi.html' },
+  '402': { stationId: '402', carPosition: '7号車付近', equipment: 'エスカレーター', equipmentRelation: 'official-layered', paperDisplay: 'official-layered-rejoin', targetGate: 'D3出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku-nishiguchi.html' },
+  '410': { stationId: '410', carPosition: '6号車付近', equipment: 'エスカレーター', equipmentRelation: 'official-layered', paperDisplay: 'official-layered-rejoin', targetGate: 'A7出口方面', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/ueno-okachimachi.html' },
   '423': { stationId: '423', carPosition: '4号車付近', equipment: 'エレベーター', equipmentRelation: 'official-layered', paperDisplay: 'official-layered-rejoin', targetGate: '改札', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf' },
   '427': { stationId: '427', carPosition: '5号車付近', equipment: 'エレベーター', equipmentRelation: 'official-layered', paperDisplay: 'official-layered-rejoin', targetGate: '改札', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf' },
   '403': { stationId: '403', carPosition: '5号車付近', equipment: 'エレベーター', equipmentRelation: 'official-layered', paperDisplay: 'official-layered-rejoin', targetGate: '改札', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf' },
@@ -37,4 +37,4 @@ export const elderlyRouteRecommendations: Record<string, ElderlyRouteRecommendat
 }
 
 /** Stations where the generic candidate-level transition may be shown without naming equipment. */
-export const levelTransitionSummaryStationIds = new Set(['421', '423', '427', '403', '402', '429'])
+export const levelTransitionSummaryStationIds = new Set(['421', '423', '427', '403', '402', '410', '429'])

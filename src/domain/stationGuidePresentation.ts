@@ -86,13 +86,16 @@ export function withStationGuidePresentation(guide: StationGuide): StationGuide 
  */
 export function withWalkDistanceInstructions(guide: StationGuide, options: { enabled?: boolean; thresholdMeters?: number; strideMeters?: number } = {}): StationGuide {
   if (!options.enabled) return guide
-  const threshold = options.thresholdMeters ?? WALK_DISTANCE_DISPLAY_THRESHOLD_METERS
   const stride = options.strideMeters ?? WALK_STRIDE_METERS
   const steps = guide.steps.map(step => {
     const distance = step.evidence?.distanceMeters
-    if (step.facility || !distance || distance < threshold || !step.instruction.startsWith('通路を')) return step
-    const meters = Math.round(distance / 5) * 5
-    const walks = Math.max(10, Math.ceil((distance / stride) / 10) * 10)
+    if (step.facility || !distance || distance <= 0 || !step.instruction.startsWith('通路を')) return step
+    const meters = distance < (options.thresholdMeters ?? WALK_DISTANCE_DISPLAY_THRESHOLD_METERS)
+      ? Math.max(1, Math.round(distance))
+      : Math.round(distance / 5) * 5
+    const walks = distance < (options.thresholdMeters ?? WALK_DISTANCE_DISPLAY_THRESHOLD_METERS)
+      ? Math.max(5, Math.ceil((distance / stride) / 5) * 5)
+      : Math.max(10, Math.ceil((distance / stride) / 10) * 10)
     return { ...step, instruction: `通路を約${meters}m（約${walks}歩）進む` }
   })
   return { ...guide, steps }
