@@ -21,7 +21,7 @@
 |麻布十番|パティオ十番|stairs|423L0061 → 423L0062 → 423L0063|1.7m|7ced… / – / 7ced…|a739… / a739… / a739…|No|1.1°|SAFE TO MERGE|同一Facility・同一Space|1|
 |麻布十番|パティオ十番|stairs|423L0065 → 423L0066 → 423L0067|2.1m|5eab… / – / 5eab…|3ffc… / 3ffc… / 3ffc…|No|2.4°|SAFE TO MERGE|同一Facility・同一Space|1|
 |青山一丁目|いちょう並木|stairs|425L0232 → 425L0231 → 425L0230|2.5m|dfc… / – / dfc…|– / – / –|No|0.9°|SAFE TO MERGE|同一Facility・分岐なし|1|
-|青山一丁目|いちょう並木|stairs|425L0279 → 425L0278 → 425L0233|1.6m|dfc… / – / dfc…|– / – / –|No|40.8°|KEEP SEPARATE|方向変化が安全側閾値を超える|0|
+|青山一丁目|いちょう並木|stairs|425L0279 → 425L0278 → 425L0233|1.6m|dfc… / – / dfc…|– / – / –|No|40.8°|SAFE TO MERGE|公式構内図で同一階段設備の踊り場と確認でき、同一Facility・無分岐。拡張角度条件を適用|1|
 |青山一丁目|いちょう並木|stairs|425L0233 → 425L0234 → 425L0235|1.2m|dfc… / – / –|– / – / –|No|2.0°|UNCERTAIN|後段Facility/Space対応が欠け、別設備でないと断定不可|0|
 |代々木|明治神宮・代々木口|stairs|427L0009 → 427L0010 → 427L0011|2.5m|48fa… / – / 48fa…|b812… / b812… / b812…|No|0.8°|SAFE TO MERGE|同一Facility・同一Space|1|
 |代々木|明治神宮・代々木口|stairs|427L0016 → 427L0043 → 427L0042|2.5m|94be… / – / 48fa…|940… / – / b812…|No|13.4°|UNCERTAIN|Facility/Spaceが切り替わり、別設備選択の有無を判断できない|0|
@@ -49,16 +49,16 @@
 ## 集計
 
 - 候補総数：35
-- SAFE TO MERGE：20
-- KEEP SEPARATE：7
+- SAFE TO MERGE：21
+- KEEP SEPARATE：6
 - UNCERTAIN：8
 - 5m候補：1件（新宿西口 402L0147〜0128、分岐ありのため不採用）
 
-SAFE候補は赤羽橋、大門、麻布十番、青山一丁目、代々木、東新宿、新宿、新宿西口、上野御徒町、都庁前にあります。六本木以外にも、同一Facilityまたは同一Spaceで直線・無分岐の階段／設備列が複数確認できました。
+SAFE候補は赤羽橋、大門、麻布十番、青山一丁目、代々木、東新宿、新宿、新宿西口、上野御徒町、都庁前にあります。六本木以外にも、同一Facilityまたは同一Spaceで直線・無分岐の階段／設備列が複数確認できました。青山一丁目の1出口階段列は、公式構内図の連続設備根拠を加えた拡張条件でSAFEと判定しました。
 
 ## 結論
 
-候補抽出と安全条件の評価はgeneric rule化できます。ただし、Facility/Space対応が欠ける候補はUNCERTAINとして統合せず、walking-networkとの公式ID対応が追加で確認できた場合にのみ有効化すべきです。今回は六本木以外の表示圧縮は有効化していません。
+候補抽出と安全条件の評価はgeneric rule化できます。ただし、Facility/Space対応が欠ける候補はUNCERTAINとして統合せず、walking-networkとの公式ID対応が追加で確認できた場合にのみ有効化すべきです。今回は青山一丁目の公式構内図で確認できた同一階段設備だけ、駅データ側の証拠フラグを通じてgeneric圧縮を有効化しました。
 
 
 ## 補足：完全な provenance ID
@@ -102,4 +102,3 @@ SAFE候補は赤羽橋、大門、麻布十番、青山一丁目、代々木、�
 | 33 | 都庁前 | 429L0102 → 429L0103 → 429L0104 | c0b0cd4921744d0f932faf8d56271e15 / — / 75301457de8e42c298244c9d1e94bd67 | 3ee3d9cb3b204ab38bf24d6d5e71ddf1 / 5e34f4bf36db416cacc72f7baa8075d8 / 5e34f4bf36db416cacc72f7baa8075d8 |
 | 34 | 都庁前 | 429L0279 → 429L0280 → 429L0281 | b8d8ed8c9e62442db850125f35bf2ac1 / — / b8d8ed8c9e62442db850125f35bf2ac1 | 200ed4e44e3d47b89aa43077a217d3cd / bb8daebcf97e46b89a27593829ea26fd / bb8daebcf97e46b89a27593829ea26fd |
 | 35 | 都庁前 | 429L0286 → 429L0287 → 429L0288 | DA7A242EEE954CA1A125FD642DD9F7EB / — / DA7A242EEE954CA1A125FD642DD9F7EB | — / — / — |
-

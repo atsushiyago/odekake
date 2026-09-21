@@ -30,12 +30,23 @@ export interface IndoorRouteCompressionContext {
   nonBranchingNodeIds?: ReadonlySet<string>
   /** Trial-only generic rule for same-direction stairs across a short landing. */
   allowDecisionFreeStairBridges?: boolean
+  /** Published map proof may allow a short, non-branching stair landing to turn between flights. */
+  allowDecisionFreeStairTurns?: boolean
+  /** Published-map proof may allow the audited 6 m same-facility landing rule. */
+  allowExtendedSameFacilityStairLandings?: boolean
   /** Opt-in for restoring a vertical action proven identical across all boarding-area candidates. */
   allowSemanticConsensusVerticalRestoration?: boolean
 }
 
 /** A walkway this short is treated as a landing/connector only when topology also proves it has no branch. */
 export const SHORT_CONNECTOR_WALKWAY_MAX_METERS = 3
+/** A published facility overlay may prove a slightly longer flat landing is
+ * still inside one continuous stairwell. Ordinary corridors retain the 3 m
+ * limit above. */
+export const SAME_FACILITY_STAIR_LANDING_MAX_METERS = 6
+/** A stairwell may turn at a landing; turns approaching a U-turn remain a
+ * separate decision unless the published map proves a continuous stairwell. */
+export const SAME_FACILITY_STAIR_LANDING_MAX_ANGLE_DEGREES = 135
 /** A bridge is only humanly continuous when the path direction changes by no more than this. */
 export const DECISION_FREE_BRIDGE_MAX_ANGLE_DEGREES = 18
 
@@ -299,17 +310,34 @@ export function compactIndoorRouteSteps(route: IndoorRoute, context?: IndoorRout
       && bridge.every(step => step.type === 'walk')
     const bridgeSpace = location(bridge[0])?.spaceId
     const sameSpace = Boolean(bridgeSpace && bridge.every(step => location(step)?.spaceId === bridgeSpace) && location(prior)?.spaceId === bridgeSpace && location(current)?.spaceId === bridgeSpace)
+    const nonBranchingNodeIds = context?.nonBranchingNodeIds
+    const bridgeDistance = bridge.reduce((sum, step) => sum + step.distanceMeters, 0)
+    const noMeaningfulBranch = bridge.every(step => nonBranchingNodeIds?.has(step.evidence.fromNodeId) && nonBranchingNodeIds.has(step.evidence.toNodeId))
     // A different facility is acceptable only when the published map proves a
     // single Space, or when an explicit map-context proof (Roppongi's
     // walking-network-backed case) opts into the cross-facility rule.
     const sameSpaceStairBridge = sameSpace && prior.type === 'stairs' && current.type === 'stairs'
     if (!isSameVerifiedFacility(prior, current) && !sameSpaceStairBridge && !decisionFreeStairBridge) return false
     const angle = bridgeAngle(prior, bridge, current)
-    if (angle === undefined || angle > DECISION_FREE_BRIDGE_MAX_ANGLE_DEGREES) return false
-    const nonBranchingNodeIds = context?.nonBranchingNodeIds
-    const shortNoBranch = bridge.reduce((sum, step) => sum + step.distanceMeters, 0) <= SHORT_CONNECTOR_WALKWAY_MAX_METERS
-      && bridge.every(step => nonBranchingNodeIds?.has(step.evidence.fromNodeId) && nonBranchingNodeIds.has(step.evidence.toNodeId))
-    return sameSpace || shortNoBranch
+    if (angle === undefined) return false
+    const decisionFreeStairTurn = context?.allowDecisionFreeStairTurns === true
+      && prior.type === 'stairs'
+      && current.type === 'stairs'
+      && sameSpace
+      && bridgeDistance <= SHORT_CONNECTOR_WALKWAY_MAX_METERS
+      && noMeaningfulBranch
+    const stairLandingAngle = (context?.allowExtendedSameFacilityStairLandings === true && prior.type === 'stairs' && current.type === 'stairs' && isSameVerifiedFacility(prior, current)) || decisionFreeStairTurn
+      ? SAME_FACILITY_STAIR_LANDING_MAX_ANGLE_DEGREES
+      : DECISION_FREE_BRIDGE_MAX_ANGLE_DEGREES
+    if (angle > stairLandingAngle) return false
+    const shortNoBranch = bridgeDistance <= SHORT_CONNECTOR_WALKWAY_MAX_METERS && noMeaningfulBranch
+    const sameFacilityLanding = context?.allowExtendedSameFacilityStairLandings === true
+      && isSameVerifiedFacility(prior, current)
+      && prior.type === 'stairs'
+      && current.type === 'stairs'
+      && bridgeDistance <= SAME_FACILITY_STAIR_LANDING_MAX_METERS
+      && noMeaningfulBranch
+    return sameSpace || shortNoBranch || sameFacilityLanding
   }
   const compacted = toIndoorRouteSteps(route, context).reduce<IndoorRouteStep[]>((steps, step) => {
     const previous = steps.at(-1)
@@ -432,7 +460,7 @@ export function routeTopologyContext(graph: IndoorGraph, route: IndoorRoute, con
   const nonBranchingNodeIds = new Set(route.nodes.filter(node => (graph.adjacency.get(node.id)?.length ?? 0) <= 2).map(node => node.id))
   // A published station-map context opts into the generic audited rule. The
   // rule itself still enforces length, topology, direction, and event guards.
-  return { byPathwayId: context?.byPathwayId ?? {}, nonBranchingNodeIds, allowDecisionFreeStairBridges: context?.allowDecisionFreeStairBridges, allowSemanticConsensusVerticalRestoration: context?.allowSemanticConsensusVerticalRestoration }
+  return { byPathwayId: context?.byPathwayId ?? {}, nonBranchingNodeIds, allowDecisionFreeStairBridges: context?.allowDecisionFreeStairBridges, allowDecisionFreeStairTurns: context?.allowDecisionFreeStairTurns, allowExtendedSameFacilityStairLandings: context?.allowExtendedSameFacilityStairLandings, allowSemanticConsensusVerticalRestoration: context?.allowSemanticConsensusVerticalRestoration }
 }
 
 /**

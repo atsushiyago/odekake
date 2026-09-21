@@ -33,5 +33,10 @@ export function buildAoyamaItchomeStationMapOverlay(graph: IndoorGraph): Station
 }
 
 export function buildAoyamaItchomeStationMapCompressionContext(graph: IndoorGraph): IndoorRouteCompressionContext {
-  return overlayAsCompressionContext(buildAoyamaItchomeStationMapOverlay(graph))
+  // The official Aoyama-itchome station map shows the 1-exit stairwell as a
+  // continuous stair facility with intermediate landings. The generic
+  // compressor may therefore apply its bounded same-facility landing rule;
+  // it still requires non-branching topology, direction safety and complete
+  // provenance, and does not identify any pathway by station-specific ID.
+  return { ...overlayAsCompressionContext(buildAoyamaItchomeStationMapOverlay(graph)), allowExtendedSameFacilityStairLandings: true }
 }

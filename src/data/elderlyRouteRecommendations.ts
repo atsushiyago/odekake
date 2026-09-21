@@ -35,6 +35,3 @@ export const elderlyRouteRecommendations: Record<string, ElderlyRouteRecommendat
   // for a paper that follows the selected route.
   '424': { stationId: '424', carPosition: '8号車付近', equipment: 'エレベーター・エスカレーターの案内', equipmentRelation: 'official-options', targetGate: '東京ミッドタウン方面改札', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf' },
 }
-
-/** Stations where the generic candidate-level transition may be shown without naming equipment. */
-export const levelTransitionSummaryStationIds = new Set(['421', '423', '427', '403', '402', '410', '429'])

@@ -210,6 +210,21 @@ describe('course station guides', () => {
     if (result.ok) expect(result.guide.steps.every(step => step.evidence?.source === 'gtfs-pathways')).toBe(true)
   })
 
+  it('merges Aoyama 1-exit stair landings as one decision-free action', () => {
+    const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '425')!
+    const graph = buildIndoorGraph(dataset.gtfs)
+    const result = buildGtfsStationGuide(graph, dataset.station, { platformId: '425P2', exitNodeId: '425N0123' }, 'shortest', buildAoyamaItchomeStationMapCompressionContext(graph))
+    expect(result).toMatchObject({ ok: true })
+    if (result.ok) {
+      const stairs = result.guide.steps.filter(step => step.facility === 'stairs')
+      expect(stairs).toHaveLength(2)
+      expect(stairs[0]?.evidence?.edgeIds).toEqual(expect.arrayContaining(['425L0232', '425L0279', '425L0233']))
+      expect(stairs[1]?.evidence?.edgeIds).toEqual(['425L0235'])
+      expect(summarizeStationGuide(result.guide).stairsCount).toBe(2)
+      expect(stairs[0]?.evidence?.edgeIds).toHaveLength(8)
+    }
+  })
+
   it('restores Ueno Okachimachi consensus stairs before the common suffix', () => {
     const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '410')!
     const graph = buildIndoorGraph(dataset.gtfs)
@@ -220,6 +235,9 @@ describe('course station guides', () => {
       expect(result.guide.steps[0]?.evidence?.candidateCoverage?.matchingOrigins).toBe(11)
       expect(result.guide.steps[0]?.evidence?.candidateCoverage?.totalOrigins).toBe(11)
       expect(result.guide.steps[0]?.evidence?.edgeIds).toEqual(['410L0048', '410L0049', '410L0050', '410L0043', '410L0045'])
+      const postGateStairs = result.guide.steps.filter(step => step.facility === 'stairs').slice(1)
+      expect(postGateStairs).toHaveLength(2)
+      expect(postGateStairs.at(-1)?.evidence?.edgeIds).toEqual(['410L0164', '410L0165', '410L0166'])
     }
   })
 })

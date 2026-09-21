@@ -26,5 +26,5 @@ export function buildUenoOkachimachiStationMapOverlay(graph: IndoorGraph): Stati
   return buildStationMapCompressionOverlay({ graph, spaces, facilities, floors, sourceUrl: uenoOkachimachiStationMapMetadata.stationMapResourceUrl })
 }
 export function buildUenoOkachimachiStationMapCompressionContext(graph: IndoorGraph): IndoorRouteCompressionContext {
-  return { ...overlayAsCompressionContext(buildUenoOkachimachiStationMapOverlay(graph)), allowSemanticConsensusVerticalRestoration: true }
+  return { ...overlayAsCompressionContext(buildUenoOkachimachiStationMapOverlay(graph)), allowSemanticConsensusVerticalRestoration: true, allowDecisionFreeStairTurns: true }
 }

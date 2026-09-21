@@ -1,24 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { PrintableGuide, StationGuide, WalkingRoute } from '../domain/types'
 import { akabanebashiWalkingNetworkFixture } from '../data/fixtures/akabanebashi-walking-network'
 import { akabanebashiStationMapFixture } from '../data/fixtures/akabanebashi-station-map'
 import { loadedOedo2026IndoorDatasetByKey, loadedOedo2026IndoorDatasets, oedo2026StationAvailability, type IndoorStationDataset } from '../data/catalogs/oedo2026IndoorDatasets'
-import { buildAkabanebashiStationMapCompressionContext } from '../data/stationMaps/akabanebashi'
-import { buildRoppongiStationMapCompressionContext } from '../data/stationMaps/roppongi'
-import { buildKokuritsuKyogijoStationMapCompressionContext } from '../data/stationMaps/kokuritsuKyogijo'
-import { buildDaimonStationMapCompressionContext } from '../data/stationMaps/daimon'
-import { buildAzabuJubanStationMapCompressionContext } from '../data/stationMaps/azabuJuban'
-import { buildYoyogiStationMapCompressionContext } from '../data/stationMaps/yoyogi'
-import { buildHigashiShinjukuStationMapCompressionContext } from '../data/stationMaps/higashiShinjuku'
-import { buildAoyamaItchomeStationMapCompressionContext } from '../data/stationMaps/aoyamaItchome'
-import { buildShinjukuStationMapCompressionContext } from '../data/stationMaps/shinjuku'
-import { buildShinjukuNishiguchiStationMapCompressionContext } from '../data/stationMaps/shinjukuNishiguchi'
-import { buildUenoOkachimachiStationMapCompressionContext } from '../data/stationMaps/uenoOkachimachi'
-import { buildTochomaeStationMapCompressionContext } from '../data/stationMaps/tochomae'
+import { buildRegisteredStationMapCompressionContext } from '../data/stationMaps/registry'
 import { auditIndoorGraph, buildGtfsStationGuide, buildGtfsStationGuideFromRoute, buildIndoorGraph, buildVerifiedStationGuide, commonRouteSuffix, compactIndoorRouteSteps, findIndoorRoute, findPlatformGateLevelConsensus, findRoutesFromPlatform, formatIndoorStep, platformOriginNodes, routePreferenceSupport, type IndoorGraph, type PlatformGateLevelConsensus, type RoutePreference, type VerifiedIndoorRouteAnchor, type VerifiedStationGuideDetails } from '../domain/indoorRouting'
 import { findBestElderlyRoute, formatElderlyRouteScore, type ElderlyRouteScore } from '../domain/elderlyRouteScoring'
-import { elderlyRouteRecommendations, levelTransitionSummaryStationIds } from '../data/elderlyRouteRecommendations'
-import { formatAlightingHomeAction, formatBoardingHomeAction, formatExitAction, formatExitLabel } from '../domain/paperLabels'
+import { elderlyRouteRecommendations } from '../data/elderlyRouteRecommendations'
+import { formatAlightingHomeAction, formatExitAction, formatExitLabel } from '../domain/paperLabels'
 import { normalizeStationMapFacilities } from '../domain/stationMap'
 import { buildWalkingNetworkGraph } from '../domain/walkingNetwork'
 import type { ArrivalPlatformConnection } from '../domain/itineraryConnection'
@@ -27,9 +16,10 @@ import type { RailJourneyQuery } from '../domain/railJourneySearch'
 import { staticGtfsRailJourneyRepository } from '../data/repositories/staticGtfsRailJourneyRepository'
 import { validateIndoorDatasets } from '../domain/indoorDatasetValidation'
 import { fitOutdoorRouteGeometry, outdoorMapZoomForDistance, webMercatorPixel } from '../domain/outdoorMap'
-import { countVisibleFareGateSteps, formatFareGateSummary, summarizeVisiblePostGateSteps, withFareGateExitDirections, withStationGuidePresentation, withWalkDistanceInstructions } from '../domain/stationGuidePresentation'
+import { withFareGateExitDirections, withStationGuidePresentation, withWalkDistanceInstructions } from '../domain/stationGuidePresentation'
 import { outingCoursePresetById, outingCoursePresets, type OutingCoursePreset } from '../data/coursePresets'
 import { akabanebashiToTokyoTowerWalkingRoute } from '../data/fixtures/akabanebashi-to-tokyo-tower'
+import { adjacentCourseIndex, isTextEntryTarget } from '../domain/courseNavigation'
 
 function WalkingMap() {
   return <section className="walking-map" aria-label="徒歩概略地図"><div className="map-note">徒歩概略図（fixture・現地確認が必要）</div><svg viewBox="0 0 620 300" role="img" aria-label="高座渋谷駅西口から大和市渋谷学習センターまでの概略図"><path d="M90 210 C190 210 170 90 315 110 S420 220 535 85" fill="none" stroke="#d9d2c4" strokeWidth="34" /><path d="M90 210 C190 210 170 90 315 110 S420 220 535 85" fill="none" stroke="#226fd1" strokeWidth="9" strokeDasharray="14 9" /><circle cx="90" cy="210" r="22" fill="#135c38"/><circle cx="535" cy="85" r="22" fill="#d4482f"/><text x="48" y="260">高座渋谷駅 西口</text><text x="430" y="43">大和市渋谷学習センター</text><text x="240" y="185" fill="#333">交差点では案内表示を確認</text></svg></section>
@@ -39,6 +29,34 @@ function DataStatusWarning({ guide }: { guide: PrintableGuide }) {
   const reasons = [guide.stationGuide.confidence !== 'verified' && '駅構内', guide.walkingRoute.confidence !== 'verified' && '徒歩経路'].filter(Boolean)
   if (!reasons.length) return null
   return <aside className="paper-status"><b>検証用の案内です</b><span>{reasons.join('・')}が未確認です。持ち歩き用には使わず、公式資料と現地確認を完了してください。</span></aside>
+}
+
+function PaperPreviewFrame({ label, children }: { label: string; children: ReactNode }) {
+  const frameRef = useRef<HTMLDivElement>(null)
+  const [overflow, setOverflow] = useState(false)
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const paper = frameRef.current?.querySelector<HTMLElement>('.paper')
+      setOverflow(Boolean(paper && paper.scrollHeight > paper.clientHeight + 1))
+    }
+    checkOverflow()
+    const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(checkOverflow)
+    const mutations = typeof MutationObserver === 'undefined' ? undefined : new MutationObserver(checkOverflow)
+    const paper = frameRef.current?.querySelector<HTMLElement>('.paper')
+    if (paper && observer) observer.observe(paper)
+    if (frameRef.current && mutations) mutations.observe(frameRef.current, { childList: true, subtree: true, characterData: true })
+    window.addEventListener('resize', checkOverflow)
+    const frame = window.requestAnimationFrame(checkOverflow)
+    return () => {
+      observer?.disconnect()
+      mutations?.disconnect()
+      window.removeEventListener('resize', checkOverflow)
+      window.cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  return <div ref={frameRef} className="preview-paper-frame">{children}{overflow && <p className="paper-overflow-warning no-print" role="alert">{label}から内容がはみ出しています</p>}</div>
 }
 
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -92,7 +110,6 @@ function IndoorStationPaper({ stationGuide, graph, connection, departurePlatform
     && [...graph.nodes.values()].some(node => node.parentPlatformId === connection.platformId && node.levelIndex === arrivalPlatformFloor.levelIndex)
     ? arrivalPlatformFloor.label
     : undefined
-  const summary = presentation.summary!
   const levelTransitionOnlyHome = elderlyRecommendation?.paperDisplay === 'level-transition-only' && Boolean(levelTransitionConsensus)
   const officialLayeredRejoin = elderlyRecommendation?.paperDisplay === 'official-layered-rejoin' && Boolean(levelTransitionConsensus)
   const carPositionOnly = elderlyRecommendation?.paperDisplay === 'car-position-only'
@@ -100,25 +117,23 @@ function IndoorStationPaper({ stationGuide, graph, connection, departurePlatform
   const layeredOfficial = elderlyRecommendation?.equipmentRelation === 'official-layered' && Boolean(levelTransitionConsensus) && !levelTransitionOnlyHome && !carPositionOnly
   const displayElderlyRecommendation = elderlyRecommendation && !levelTransitionOnlyHome && (carPositionOnly || elderlyRecommendation.equipmentRelation !== 'official-layered' || layeredOfficial) ? elderlyRecommendation : undefined
   const sections = paperSections(presentation, hideHomeDetails)
-  const visibleFareGateCount = countVisibleFareGateSteps(sections.flatMap(section => section.steps.map(({ step }) => step)))
-  const displayFareGateCount = visibleFareGateCount > 0 ? visibleFareGateCount : summary.fareGateCount
-  const displaySummaryParts = [summary.escalatorCount && `エスカレーター${summary.escalatorCount}回`, summary.stairsCount && `階段${summary.stairsCount}回`, summary.elevatorCount && `エレベーター${summary.elevatorCount}回`, formatFareGateSummary(displayFareGateCount)].filter(Boolean).join('・')
-  const layeredStation = levelTransitionSummaryStationIds.has(connection?.assignment.stationId ?? '')
-  const visiblePostGateSummary = summarizeVisiblePostGateSteps(sections.find(section => section.id === 'gate-to-exit')?.steps.map(({ step }) => step) ?? [])
   const carPositionLabel = displayElderlyRecommendation && (displayElderlyRecommendation.carPosition.endsWith('付近') ? displayElderlyRecommendation.carPosition : `${displayElderlyRecommendation.carPosition}付近`)
+  const boardingInstruction = departurePlatform || displayElderlyRecommendation
+    ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${displayElderlyRecommendation ? `${departurePlatform ? '、' : ''}できれば${carPositionLabel}に乗る` : '乗る'}`
+    : undefined
   const homeEquipmentInstruction = layeredOfficial && displayElderlyRecommendation
     ? `${carPositionLabel}の${displayElderlyRecommendation.equipment}で改札階へ上がる`
     : undefined
-  const abstractLevelInstruction = levelTransitionConsensus && (levelTransitionOnlyHome || carPositionOnly || (!layeredOfficial && !displayElderlyRecommendation))
+  const homeSectionHasVerticalAction = sections.find(section => section.id === 'platform-to-gate')?.steps.some(({ step }) => step.facility === 'stairs' || step.facility === 'escalator' || step.facility === 'elevator') ?? false
+  const abstractLevelInstruction = levelTransitionConsensus && !homeSectionHasVerticalAction && (levelTransitionOnlyHome || carPositionOnly || (!layeredOfficial && !displayElderlyRecommendation))
     ? 'ホームから改札階へ上がる'
     : undefined
   return (
     <article className="paper arrival-station-paper front-page">
       <header><span>迷わないおでかけ紙　表</span><span>到着駅の案内</span></header>
-      {leg && <section className="arrival-train"><b>電車</b><strong>{leg.from.stationName} {leg.from.departureTime}発</strong>{departurePlatform && <strong className="departure-platform">{formatBoardingHomeAction(departurePlatform.platformCode)}</strong>}{displayElderlyRecommendation && <p className="elderly-route-note departure-car-note"><b>できれば{displayElderlyRecommendation.carPosition}に乗る</b>{!layeredOfficial && !carPositionOnly && <span>{displayElderlyRecommendation.equipmentRelation === 'official-options' ? `${displayElderlyRecommendation.targetGate}へ（${displayElderlyRecommendation.equipment}）` : `${displayElderlyRecommendation.equipment}で${displayElderlyRecommendation.targetGate}へ`}</span>}</p>}<span>{leg.routeName}　{leg.headsign}行</span><strong>{leg.to.stationName} {leg.to.arrivalTime}着</strong></section>}
+      {leg && <section className="arrival-train"><b>電車</b><strong className="train-departure-line">{leg.from.stationName} {leg.from.departureTime}発</strong>{boardingInstruction && <strong className="train-boarding-line">{boardingInstruction}</strong>}<span className="train-route-line">{leg.routeName}　{leg.headsign}行</span><strong className="train-arrival-line">{leg.to.stationName} {leg.to.arrivalTime}着</strong></section>}
       {connection && <section className="arrival-platform"><strong>{formatAlightingHomeAction(presentation.arrivalPlatform, corroboratedFloor)}</strong></section>}
       {presentation.exit && <p className="arrival-goal">目指す出口：<b>{formatExitLabel(presentation.exit)}</b></p>}
-      {layeredStation ? visiblePostGateSummary && <section className="arrival-summary"><b>改札から出口まで</b><span>{visiblePostGateSummary}</span></section> : <section className="arrival-summary"><b>出口まで</b><span>{displaySummaryParts || '構内の設備情報はありません'}</span></section>}
       <div className="arrival-sections">{sections.map(section => <section className="arrival-section" key={section.id}><h2>{section.title}</h2>{section.id === 'platform-to-gate' && (homeEquipmentInstruction || abstractLevelInstruction) && <p className="home-equipment-note"><b>{homeEquipmentInstruction ?? abstractLevelInstruction}</b></p>}{section.id === 'gate-to-exit' && elderlyRecommendation?.timeLimit && <p className="home-equipment-note"><b>※{elderlyRecommendation.timeLimit}</b></p>}{section.steps.map(({ step, number }) => <p key={step.id}><span>{number}</span>{step.facility === 'exit' ? formatExitAction(presentation.exit) : step.instruction}</p>)}</section>)}</div>
     </article>
   )
@@ -234,39 +249,12 @@ export default function App() {
     if (!arrival.ok || !course.preferredExitId) return { ok: false as const, reason: '公式の到着ホームまたは出口が未登録です。推測して案内を生成しません。' }
     const departure = resolveDeparturePlatform(searchResult.leg, searchResult.leg.from.stationId, course.departurePlatformAssignments)
     const graph = buildIndoorGraph(dataset.gtfs)
-    const compressionContext = dataset.key === 'akabanebashi'
-      ? buildAkabanebashiStationMapCompressionContext(graph)
-      : dataset.station.id === '424'
-        ? buildRoppongiStationMapCompressionContext(graph)
-        : dataset.station.id === '426'
-          ? buildKokuritsuKyogijoStationMapCompressionContext(graph)
-          : dataset.station.id === '421'
-            ? buildDaimonStationMapCompressionContext(graph)
-            : dataset.station.id === '423'
-              ? buildAzabuJubanStationMapCompressionContext(graph)
-              : dataset.station.id === '427'
-                ? buildYoyogiStationMapCompressionContext(graph)
-              : dataset.station.id === '403'
-                  ? buildHigashiShinjukuStationMapCompressionContext(graph)
-              : dataset.station.id === '425'
-                    ? buildAoyamaItchomeStationMapCompressionContext(graph)
-                    : dataset.station.id === '428'
-                      ? buildShinjukuStationMapCompressionContext(graph)
-                        : dataset.station.id === '402'
-                        ? buildShinjukuNishiguchiStationMapCompressionContext(graph)
-                        : dataset.station.id === '410'
-                          ? buildUenoOkachimachiStationMapCompressionContext(graph)
-                          : dataset.station.id === '429'
-                            ? buildTochomaeStationMapCompressionContext(graph)
-                        : undefined
-    const elderlyEnabled = ['421', '423', '424', '426', '427', '429', '403'].includes(dataset.station.id)
-    const elderlyScore = elderlyEnabled ? findBestElderlyRoute(graph, arrival.connection.platformId, Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId], compressionContext) : null
+    const compressionContext = buildRegisteredStationMapCompressionContext(dataset.station.id, graph)
+    const elderlyScore = compressionContext ? findBestElderlyRoute(graph, arrival.connection.platformId, Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId], compressionContext) : null
     const stationGuide = elderlyScore
       ? buildGtfsStationGuideFromRoute(graph, dataset.station, { platformId: arrival.connection.platformId, exitNodeId: elderlyScore.exitId }, elderlyScore.route, compressionContext)
       : buildGtfsStationGuide(graph, dataset.station, { platformId: arrival.connection.platformId, exitNodeId: course.preferredExitId }, 'shortest', compressionContext)
-    const levelTransitionConsensus = levelTransitionSummaryStationIds.has(dataset.station.id)
-      ? findPlatformGateLevelConsensus(graph, arrival.connection.platformId, Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId])
-      : null
+    const levelTransitionConsensus = findPlatformGateLevelConsensus(graph, arrival.connection.platformId, Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId])
     return stationGuide.ok ? { ok: true as const, guide: stationGuide.guide, graph, connection: arrival.connection, departurePlatform: departure.ok ? departure.assignment : undefined, walkingRoute: course.walkingRoute, elderlyScore: elderlyScore ?? undefined, elderlyRecommendation: elderlyRouteRecommendations[dataset.station.id], levelTransitionConsensus } : { ok: false as const, reason: '公式GTFS-Pathwaysからホーム共通区間を解決できませんでした。' }
   }, [course, defaultCourse.id, query, searchResult])
   const selectCourse = (courseId: string) => {
@@ -279,8 +267,19 @@ export default function App() {
   }
   const selectAdjacentCourse = (direction: -1 | 1) => {
     const currentIndex = outingCoursePresets.findIndex(item => item.id === course.id)
-    const nextIndex = (currentIndex + direction + outingCoursePresets.length) % outingCoursePresets.length
+    const nextIndex = adjacentCourseIndex(currentIndex, direction, outingCoursePresets.length)
+    if (nextIndex < 0) return
     selectCourse(outingCoursePresets[nextIndex].id)
   }
-  return <main><IndoorPoc /><section className="editor no-print course-picker"><div><p className="eyebrow">おでかけ先を選ぶ</p><div className="course-selector"><span>コース一覧</span><div className="course-picker-row"><button type="button" className="course-scroll-button" aria-label="前のコースを選択" onClick={() => selectAdjacentCourse(-1)}>‹</button><div className="course-options" ref={courseScrollerRef} role="group" aria-label="おでかけコース">{outingCoursePresets.map(item => <button key={item.id} data-course-id={item.id} type="button" className={item.id === course.id ? 'course-option is-selected' : 'course-option'} aria-pressed={item.id === course.id} onClick={() => selectCourse(item.id)}><span className="course-option-destination">{item.label}</span><small className="course-option-station">（{item.arrivalStationName}駅）</small></button>)}</div><button type="button" className="course-scroll-button" aria-label="次のコースを選択" onClick={() => selectAdjacentCourse(1)}>›</button></div></div><h1>{itineraryGuide.ok ? `${course.label}への往路を接続中` : `${course.label}コース`}</h1><p>{itineraryGuide.ok ? `列車 ${itineraryGuide.connection.leg.tripId}から${course.arrivalStationName}駅の構内案内へ接続しています。` : itineraryGuide.reason}</p>{itineraryGuide.ok && itineraryGuide.elderlyScore && <p className="network-note"><b>高齢者向け route scoring:</b> {formatElderlyRouteScore(itineraryGuide.elderlyScore)}</p>}</div></section><section className="print-area"><div className="preview-pages">{itineraryGuide.ok && itineraryGuide.walkingRoute ? <><IndoorStationPaper stationGuide={itineraryGuide.guide} graph={itineraryGuide.graph} connection={itineraryGuide.connection} departurePlatform={itineraryGuide.departurePlatform} arrivalPlatformFloor={course.arrivalPlatformFloor} elderlyRecommendation={itineraryGuide.elderlyRecommendation} levelTransitionConsensus={itineraryGuide.levelTransitionConsensus} humanizeWalkDistance humanizeGateDirection /><OutdoorWalkingPaper route={itineraryGuide.walkingRoute} /></> : <><UnavailableCoursePaper course={course} reason={itineraryGuide.reason ?? '必要な情報が未登録です。'} /><UnavailableCoursePaper course={course} reason={itineraryGuide.reason ?? '必要な情報が未登録です。'} back /></>}</div></section></main>
+  useEffect(() => {
+    const handleCourseKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat || isTextEntryTarget(event.target)) return
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      event.preventDefault()
+      selectAdjacentCourse(event.key === 'ArrowLeft' ? -1 : 1)
+    }
+    window.addEventListener('keydown', handleCourseKeyDown)
+    return () => window.removeEventListener('keydown', handleCourseKeyDown)
+  }, [course.id])
+  return <main><IndoorPoc /><section className="editor no-print course-picker"><div><p className="eyebrow">おでかけ先を選ぶ</p><div className="course-selector"><span>コース一覧</span><div className="course-picker-row"><button type="button" className="course-scroll-button" aria-label="前のコースを選択" onClick={() => selectAdjacentCourse(-1)}>‹</button><div className="course-options" ref={courseScrollerRef} role="group" aria-label="おでかけコース">{outingCoursePresets.map(item => <button key={item.id} data-course-id={item.id} type="button" className={item.id === course.id ? 'course-option is-selected' : 'course-option'} aria-pressed={item.id === course.id} onClick={() => selectCourse(item.id)}><span className="course-option-destination">{item.label}</span><small className="course-option-station">（{item.arrivalStationName}駅）</small></button>)}</div><button type="button" className="course-scroll-button" aria-label="次のコースを選択" onClick={() => selectAdjacentCourse(1)}>›</button></div></div><h1>{itineraryGuide.ok ? `${course.label}への往路を接続中` : `${course.label}コース`}</h1><p>{itineraryGuide.ok ? `列車 ${itineraryGuide.connection.leg.tripId}から${course.arrivalStationName}駅の構内案内へ接続しています。` : itineraryGuide.reason}</p>{itineraryGuide.ok && itineraryGuide.elderlyScore && <p className="network-note"><b>高齢者向け route scoring:</b> {formatElderlyRouteScore(itineraryGuide.elderlyScore)}</p>}</div></section><section className="print-area"><div className="preview-pages">{itineraryGuide.ok && itineraryGuide.walkingRoute ? <><PaperPreviewFrame label="A4表面"> <IndoorStationPaper stationGuide={itineraryGuide.guide} graph={itineraryGuide.graph} connection={itineraryGuide.connection} departurePlatform={itineraryGuide.departurePlatform} arrivalPlatformFloor={course.arrivalPlatformFloor} elderlyRecommendation={itineraryGuide.elderlyRecommendation} levelTransitionConsensus={itineraryGuide.levelTransitionConsensus} humanizeWalkDistance humanizeGateDirection /></PaperPreviewFrame><PaperPreviewFrame label="A4裏面"><OutdoorWalkingPaper route={itineraryGuide.walkingRoute} /></PaperPreviewFrame></> : <><PaperPreviewFrame label="A4表面"><UnavailableCoursePaper course={course} reason={itineraryGuide.reason ?? '必要な情報が未登録です。'} /></PaperPreviewFrame><PaperPreviewFrame label="A4裏面"><UnavailableCoursePaper course={course} reason={itineraryGuide.reason ?? '必要な情報が未登録です。'} back /></PaperPreviewFrame></>}</div></section></main>
 }
