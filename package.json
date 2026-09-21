@@ -1,0 +1,37 @@
+{
+  "name": "odekake-paper",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "audit:fare-gates": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/auditFareGateTopology.ts",
+    "audit:station-guides": "vitest run scripts/auditStationGuideRouteIntegrity.test.ts",
+    "audit:vertical-consensus": "vitest run scripts/auditVerticalMovementConsensus.test.ts",
+    "audit:kokuritsu-canonical": "vitest run scripts/auditKokuritsuCanonicalRoute.test.ts",
+    "audit:kokuritsu-elderly": "vitest run scripts/auditKokuritsuElderlyRoute.test.ts",
+    "audit:kokuritsu-boarding-best": "vitest run scripts/auditKokuritsuBoardingBestRoutes.test.ts",
+    "audit:elderly-car-positions": "vitest run scripts/auditElderlyCarPosition.test.ts",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "eslint-plugin-react-refresh": "latest",
+    "typescript-eslint": "latest",
+    "vitest": "^5.0.1"
+  }
+}
