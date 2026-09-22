@@ -1573,6 +1573,7 @@ function UnavailableCoursePaper({
 
 export default function App() {
   const defaultCourse = outingCoursePresets[0];
+  const debugEnabled = new URLSearchParams(window.location.search).get('debug') === '1';
   const [selectedCourseId, setSelectedCourseId] = useState(defaultCourse.id);
   const course = outingCoursePresetById.get(selectedCourseId) ?? defaultCourse;
   const [query, setQuery] = useState<RailJourneyQuery>({
@@ -1737,7 +1738,7 @@ export default function App() {
     : undefined;
   return (
     <main>
-      <IndoorPoc />
+      {debugEnabled && <IndoorPoc />}
       <section className="editor no-print course-picker">
         <div>
           <p className="eyebrow">おでかけ先を選ぶ</p>
@@ -1790,21 +1791,25 @@ export default function App() {
               </button>
             </div>
           </div>
-          <h1>
-            {itineraryGuide.ok
-              ? `${course.label}への往路を接続中`
-              : `${course.label}コース`}
-          </h1>
-          <p>
-            {itineraryGuide.ok
-              ? `列車 ${itineraryGuide.connection.leg.tripId}から${course.arrivalStationName}駅の構内案内へ接続しています。`
-              : itineraryGuide.reason}
-          </p>
-          {itineraryGuide.ok && itineraryGuide.elderlyScore && (
-            <p className="network-note">
-              <b>高齢者向け route scoring:</b>{' '}
-              {formatElderlyRouteScore(itineraryGuide.elderlyScore)}
-            </p>
+          {debugEnabled && (
+            <>
+              <h1>
+                {itineraryGuide.ok
+                  ? `${course.label}への往路を接続中`
+                  : `${course.label}コース`}
+              </h1>
+              <p>
+                {itineraryGuide.ok
+                  ? `列車 ${itineraryGuide.connection.leg.tripId}から${course.arrivalStationName}駅の構内案内へ接続しています。`
+                  : itineraryGuide.reason}
+              </p>
+              {itineraryGuide.ok && itineraryGuide.elderlyScore && (
+                <p className="network-note">
+                  <b>高齢者向け route scoring:</b>{' '}
+                  {formatElderlyRouteScore(itineraryGuide.elderlyScore)}
+                </p>
+              )}
+            </>
           )}
         </div>
       </section>

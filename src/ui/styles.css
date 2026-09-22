@@ -47,3 +47,30 @@
   .outdoor-map-label rect{display:none}
   .outdoor-map-label text{fill:#111!important;stroke:#fff!important;stroke-width:7px!important;paint-order:stroke fill}
 }
+/* Public course picker: keep every preset visible without a horizontal overflow strip. */
+.course-picker-row{align-items:flex-start}
+.course-picker .course-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;flex:1;min-width:0;padding:4px 3px;gap:10px}
+.course-picker .course-option{flex:initial;min-width:0;width:auto;height:100%;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:1100px){.course-picker .course-options{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:850px){.course-picker .course-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}}
+@media(max-width:600px){.course-picker .course-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.course-picker .course-options{grid-template-columns:1fr}}
+
+/* Screen-only A4 preview layout.  The paper keeps its intrinsic 210mm by
+   297mm box (and therefore the existing overflow measurement); zoom is used
+   only to fit two sheets on a normal wide desktop.  Print rules below remain
+   authoritative for physical output. */
+@media screen and (min-width:1450px){
+  main{max-width:none}
+  .preview-pages{display:flex;align-items:flex-start;justify-content:center;gap:10px;zoom:.86}
+  .preview-pages>.preview-paper-frame{flex:0 0 auto}
+}
+@media screen and (min-width:1800px){
+  .preview-pages{gap:18px;zoom:.9}
+}
+@media screen and (max-width:1449px){
+  .preview-pages{display:block;zoom:1}
+}
+@media print{
+  .preview-pages{display:block;zoom:1}
+}
