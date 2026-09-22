@@ -1,6 +1,6 @@
 # 5駅 公式号車・設備候補とGTFS route selection audit
 
-調査日: 2026-09-21
+調査日: 2026-09-22
 
 公式PDFの号車・設備候補を制約として読み、GTFS-Pathwaysの全候補をsemantic usage（階段/ES/EV、設備変更、分岐、距離）で比較した。号車番号はGTFS-Pathwaysにないため、座標が近いだけではboarding areaへ割り当てず、5駅とも `UNRESOLVED MAPPING` とした。
 

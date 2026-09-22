@@ -21,6 +21,8 @@ export interface GuideStep {
     mapLocations?: Array<{ pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string }>
     /** Source levels retained when multiple facility edges are shown as one action. */
     fromLevelIndex?: number; toLevelIndex?: number
+    /** Official station-map floor resolved at the semantic layer (never inferred from a raw GTFS level). */
+    officialFloor?: { label: string; levelIndex: number; sourceUrl: string }
     /** Safe, geometry-derived turn evidence. A missing value means no direction was printed. */
     direction?: {
       previousNodeId: string; currentNodeId: string; nextNodeId: string

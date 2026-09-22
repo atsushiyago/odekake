@@ -1,6 +1,6 @@
 # 国立競技場 2番ホーム→A2 canonical route audit
 
-生成日: 2026-09-21T11:49:03.927Z
+生成日: 2026-09-22T03:20:04.141Z
 
 今回は本番StationGuideを変更せず、全boarding areaの候補経路から、ホーム側の垂直設備を共通のcanonical anchorとして選べるかを調査した。
 

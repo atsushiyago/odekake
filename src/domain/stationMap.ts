@@ -19,6 +19,7 @@ export interface StationMapFacility extends RawStationMapFacility { floorName: s
 export interface StationMapCompressionOverlay {
   sourceUrl: string
   byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string }>
+  officialFloorsByLevelIndex?: Record<number, { label: string; sourceUrl: string }>
 }
 
 export interface StationMapGeoJsonFeature {
@@ -55,10 +56,13 @@ export function buildStationMapCompressionOverlay(input: {
   sourceUrl: string; facilityMatchRadiusMeters?: number
 }): StationMapCompressionOverlay {
   const floorOrdinalById = new Map<string, number>()
+  const officialFloorsByLevelIndex: Record<number, { label: string; sourceUrl: string }> = {}
   for (const collection of input.floors ?? []) for (const feature of collection.features) {
     const id = String(feature.properties?.id ?? '')
     const ordinal = Number(feature.properties?.ordinal)
     if (id && Number.isFinite(ordinal)) floorOrdinalById.set(id, ordinal)
+    const name = String(feature.properties?.name ?? '').trim()
+    if (Number.isFinite(ordinal) && name) officialFloorsByLevelIndex[ordinal] ??= { label: name, sourceUrl: input.sourceUrl }
   }
   const spaceFeatures = input.spaces.flatMap(collection => collection.features).filter(feature => feature.geometry.type !== 'Point')
   const facilityFeatures = input.facilities.flatMap(collection => collection.features).map(feature => ({ feature, point: asPoint(feature.geometry.coordinates), category: String(feature.properties?.category ?? '') })).filter(item => item.point && categoryForMovement)
@@ -98,10 +102,10 @@ export function buildStationMapCompressionOverlay(input: {
     }
     if (chosenSpace || chosenFacility) byPathwayId[edge.id] = { spaceId: chosenSpace ? String(chosenSpace.properties?.id ?? '') || undefined : undefined, facilityId: chosenFacility ? String(chosenFacility.feature.properties?.id ?? '') || undefined : undefined, facilityGroupId: chosenFacility ? groupFor(chosenFacility) : undefined }
   }
-  return { sourceUrl: input.sourceUrl, byPathwayId }
+  return { sourceUrl: input.sourceUrl, byPathwayId, officialFloorsByLevelIndex }
 }
 
-export const overlayAsCompressionContext = (overlay: StationMapCompressionOverlay): IndoorRouteCompressionContext => ({ byPathwayId: overlay.byPathwayId })
+export const overlayAsCompressionContext = (overlay: StationMapCompressionOverlay): IndoorRouteCompressionContext => ({ byPathwayId: overlay.byPathwayId, officialFloorsByLevelIndex: overlay.officialFloorsByLevelIndex })
 
 // This mapping is valid only for the pinned 2019-03 GSI specification referenced by the dataset.
 const facilityMovementTypes: Record<IndoorMapFacilityCategory, StationMapFacility['movementType']> = { F011: 'stairs', F012: 'elevator', F013: 'escalator' }

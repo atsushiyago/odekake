@@ -108,7 +108,8 @@ export function withFareGateExitDirections(guide: StationGuide, graph: IndoorGra
     if (step.facility !== 'gate' || !step.evidence) return step
     const decision = deriveFareGateExitDirection(graph, all[index - 1], step, all[index + 1])
     if (!decision || !decision.result) return step
-    return { ...step, instruction: `改札を通ったら${decision.result === 'left' ? '左' : '右'}へ進む`, evidence: { ...step.evidence, direction: { previousNodeId: decision.previousNodeId, currentNodeId: decision.currentNodeId, nextNodeId: decision.nextNodeId, angleDegrees: decision.angleDegrees, result: decision.result, reason: decision.reason } } }
+    const gatePrefix = step.evidence?.officialFloor ? `${step.evidence.officialFloor.label}の改札を通ったら` : '改札を通ったら'
+    return { ...step, instruction: `${gatePrefix}${decision.result === 'left' ? '左' : '右'}へ進む`, evidence: { ...step.evidence, direction: { previousNodeId: decision.previousNodeId, currentNodeId: decision.currentNodeId, nextNodeId: decision.nextNodeId, angleDegrees: decision.angleDegrees, result: decision.result, reason: decision.reason } } }
   })
   return { ...guide, steps }
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadedOedo2026IndoorDatasets } from '../data/catalogs/oedo2026IndoorDatasets'
-import { buildGtfsStationGuide, buildIndoorGraph, findPlatformGateLevelConsensus } from './indoorRouting'
+import { buildGtfsStationGuide, buildGtfsStationGuideFromRoute, buildIndoorGraph, findPlatformGateLevelConsensus } from './indoorRouting'
 import { buildRoppongiStationMapCompressionContext, buildRoppongiStationMapOverlay } from '../data/stationMaps/roppongi'
 import { buildKokuritsuKyogijoStationMapCompressionContext, buildKokuritsuKyogijoStationMapOverlay } from '../data/stationMaps/kokuritsuKyogijo'
 import { buildDaimonStationMapCompressionContext, buildDaimonStationMapOverlay } from '../data/stationMaps/daimon'
@@ -12,6 +12,7 @@ import { buildShinjukuStationMapCompressionContext, buildShinjukuStationMapOverl
 import { buildShinjukuNishiguchiStationMapCompressionContext, buildShinjukuNishiguchiStationMapOverlay } from '../data/stationMaps/shinjukuNishiguchi'
 import { buildUenoOkachimachiStationMapCompressionContext, buildUenoOkachimachiStationMapOverlay } from '../data/stationMaps/uenoOkachimachi'
 import { buildTochomaeStationMapCompressionContext, buildTochomaeStationMapOverlay } from '../data/stationMaps/tochomae'
+import { buildAkabanebashiStationMapCompressionContext } from '../data/stationMaps/akabanebashi'
 import { summarizeStationGuide } from './stationGuidePresentation'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
 
@@ -238,6 +239,59 @@ describe('course station guides', () => {
       const postGateStairs = result.guide.steps.filter(step => step.facility === 'stairs').slice(1)
       expect(postGateStairs).toHaveLength(2)
       expect(postGateStairs.at(-1)?.evidence?.edgeIds).toEqual(['410L0164', '410L0165', '410L0166'])
+    }
+  })
+
+  it.each([
+    ['424', '424P2', '424N0053', buildRoppongiStationMapCompressionContext, '地下1階'],
+    ['426', '426P2', '426N0139', buildKokuritsuKyogijoStationMapCompressionContext, '地下1階'],
+    ['421', '421P3', '421N0015', buildDaimonStationMapCompressionContext, '地下3階'],
+    ['423', '423P2', '423N0063', buildAzabuJubanStationMapCompressionContext, '地下4階'],
+    ['425', '425P2', '425N0123', buildAoyamaItchomeStationMapCompressionContext, '地下1階'],
+    ['427', '427P2', '427N0084', buildYoyogiStationMapCompressionContext, '地下1階'],
+    ['403', '403P2', '403N0019', buildHigashiShinjukuStationMapCompressionContext, '地下2階'],
+    ['428', '428P7', '428N0193', buildShinjukuStationMapCompressionContext, '地下3階'],
+    ['402', '402P1', '402N0002', buildShinjukuNishiguchiStationMapCompressionContext, '地下3階'],
+    ['410', '410P1', '410N0016', buildUenoOkachimachiStationMapCompressionContext, '地下1階'],
+    ['429', '429P4', '429N0093', buildTochomaeStationMapCompressionContext, '地下2階'],
+  ] as const)('resolves the visible fare-gate floor generically for station %s', (stationId, platformId, exitNodeId, buildContext, expectedFloor) => {
+    const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === stationId)!
+    const graph = buildIndoorGraph(dataset.gtfs)
+    const result = buildGtfsStationGuide(graph, dataset.station, { platformId, exitNodeId }, 'shortest', buildContext(graph))
+    expect(result).toMatchObject({ ok: true })
+    if (result.ok) {
+      const gate = result.guide.steps.find(step => step.facility === 'gate')
+      expect(gate?.instruction).toBe(`${expectedFloor}の改札を通る`)
+      expect(gate?.evidence?.officialFloor?.label).toBe(expectedFloor)
+    }
+  })
+
+  it('keeps Akabanebashi fare-gate wording generic when candidate topology is not unanimous', () => {
+    const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '422')!
+    const graph = buildIndoorGraph(dataset.gtfs)
+    const result = buildGtfsStationGuide(graph, dataset.station, { platformId: '422P2', exitNodeId: '422N0012' }, 'shortest', buildAkabanebashiStationMapCompressionContext(graph))
+    expect(result).toMatchObject({ ok: true })
+    if (result.ok) {
+      const gate = result.guide.steps.find(step => step.facility === 'gate')
+      expect(gate?.instruction).toBe('改札を通る')
+      expect(gate?.evidence?.officialFloor).toBeUndefined()
+    }
+  })
+
+  it.each([
+    ['424', '424P2', '424N0053', buildRoppongiStationMapCompressionContext, '地下1階'],
+    ['426', '426P2', '426N0139', buildKokuritsuKyogijoStationMapCompressionContext, '地下1階'],
+  ])('keeps official fare-gate floor on scored paper routes for station %s', (stationId, platformId, exitNodeId, buildContext, expectedFloor) => {
+    const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === stationId)!
+    const graph = buildIndoorGraph(dataset.gtfs)
+    const score = findBestElderlyRoute(graph, platformId, [exitNodeId], buildContext(graph))
+    expect(score).toBeTruthy()
+    const result = score && buildGtfsStationGuideFromRoute(graph, dataset.station, { platformId, exitNodeId }, score.route, buildContext(graph))
+    expect(result).toMatchObject({ ok: true })
+    if (result?.ok) {
+      const gate = result.guide.steps.find(step => step.facility === 'gate')
+      expect(gate?.instruction).toBe(`${expectedFloor}の改札を通る`)
+      expect(gate?.evidence?.officialFloor?.label).toBe(expectedFloor)
     }
   })
 })

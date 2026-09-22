@@ -26,6 +26,8 @@ export interface IndoorRouteStep { type: IndoorMovementType; distanceMeters: num
 /** Optional, published-map-derived evidence used only to make step compression safer. */
 export interface IndoorRouteCompressionContext {
   byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string }>
+  /** Official Floor metadata keyed by the GTFS level it explicitly corroborates. */
+  officialFloorsByLevelIndex?: Record<number, { label: string; sourceUrl: string }>
   /** Nodes proven not to offer an outgoing branch in the source graph. */
   nonBranchingNodeIds?: ReadonlySet<string>
   /** Trial-only generic rule for same-direction stairs across a short landing. */
@@ -36,6 +38,16 @@ export interface IndoorRouteCompressionContext {
   allowExtendedSameFacilityStairLandings?: boolean
   /** Opt-in for restoring a vertical action proven identical across all boarding-area candidates. */
   allowSemanticConsensusVerticalRestoration?: boolean
+}
+
+function officialFloorForLevel(context: IndoorRouteCompressionContext | undefined, levelIndex: number | undefined) {
+  return levelIndex === undefined ? undefined : context?.officialFloorsByLevelIndex?.[levelIndex]
+}
+
+function officialGateFloor(graph: IndoorGraph, edge: IndoorEdge | undefined, context: IndoorRouteCompressionContext | undefined) {
+  const node = edge ? graph.nodes.get(edge.fromNodeId) : undefined
+  const floor = officialFloorForLevel(context, node?.levelIndex)
+  return floor && node?.levelIndex !== undefined ? { ...floor, levelIndex: node.levelIndex } : undefined
 }
 
 /** A walkway this short is treated as a landing/connector only when topology also proves it has no branch. */
@@ -460,7 +472,7 @@ export function routeTopologyContext(graph: IndoorGraph, route: IndoorRoute, con
   const nonBranchingNodeIds = new Set(route.nodes.filter(node => (graph.adjacency.get(node.id)?.length ?? 0) <= 2).map(node => node.id))
   // A published station-map context opts into the generic audited rule. The
   // rule itself still enforces length, topology, direction, and event guards.
-  return { byPathwayId: context?.byPathwayId ?? {}, nonBranchingNodeIds, allowDecisionFreeStairBridges: context?.allowDecisionFreeStairBridges, allowDecisionFreeStairTurns: context?.allowDecisionFreeStairTurns, allowExtendedSameFacilityStairLandings: context?.allowExtendedSameFacilityStairLandings, allowSemanticConsensusVerticalRestoration: context?.allowSemanticConsensusVerticalRestoration }
+  return { byPathwayId: context?.byPathwayId ?? {}, officialFloorsByLevelIndex: context?.officialFloorsByLevelIndex, nonBranchingNodeIds, allowDecisionFreeStairBridges: context?.allowDecisionFreeStairBridges, allowDecisionFreeStairTurns: context?.allowDecisionFreeStairTurns, allowExtendedSameFacilityStairLandings: context?.allowExtendedSameFacilityStairLandings, allowSemanticConsensusVerticalRestoration: context?.allowSemanticConsensusVerticalRestoration }
 }
 
 /**
@@ -588,12 +600,43 @@ export function buildGtfsStationGuide(graph: IndoorGraph, station: StationRef, t
   })
   const semanticPrefix: GuideStep[] = [...fareEvents.entries()]
     .sort(([leftOrdinal, left], [rightOrdinal, right]) => leftOrdinal - rightOrdinal || left.firstPosition - right.firstPosition)
-    .map(([_, event], index) => ({
-      id: `gtfs-event-gate-${index + 1}`,
-      instruction: '改札を通る', facility: 'gate' as const,
-      evidence: { source: 'gtfs-pathways' as const, sourceUrl: graph.source.url, edgeIds: [...new Set(event.edges.map(edge => edge.id))], fromNodeId: event.edges[0]?.fromNodeId, toNodeId: event.edges[0]?.toNodeId, candidateCoverage: { matchingOrigins: event.matchingOrigins, totalOrigins: candidates.length, allRoutesHaveEvent: allRoutesHaveFareGate, aggregateCount: aggregateFareGateCount } }
-    }))
-  const tailSteps: GuideStep[] = compactIndoorRouteSteps(route, routeTopologyContext(graph, route, compressionContext)).map((step, index) => ({ id: `gtfs-common-${index + 1}`, instruction: formatIndoorStep(step), facility: facilityForStep(step.type), evidence: { source: 'gtfs-pathways' as const, sourceUrl: graph.source.url, edgeIds: step.evidence.edgeIds, fromNodeId: step.evidence.fromNodeId, toNodeId: step.evidence.toNodeId, fromLevelIndex: step.evidence.fromLevelIndex, toLevelIndex: step.evidence.toLevelIndex, distanceMeters: step.distanceMeters, candidateCoverage: { matchingOrigins: candidates.length, totalOrigins: candidates.length }, mapLocations: step.evidence.mapLocations } }))
+    .map(([_, event], index) => {
+      const eventFloors = event.edges
+        .map(edge => officialGateFloor(graph, edge, compressionContext))
+        .filter((floor): floor is NonNullable<ReturnType<typeof officialGateFloor>> => Boolean(floor))
+      const officialFloor = event.matchingOrigins === candidates.length && eventFloors.length === event.edges.length && new Set(eventFloors.map(floor => `${floor.levelIndex}:${floor.label}`)).size === 1
+        ? eventFloors[0]
+        : undefined
+      return {
+        id: `gtfs-event-gate-${index + 1}`,
+        instruction: officialFloor ? `${officialFloor.label}の改札を通る` : '改札を通る', facility: 'gate' as const,
+        evidence: { source: 'gtfs-pathways' as const, sourceUrl: graph.source.url, edgeIds: [...new Set(event.edges.map(edge => edge.id))], fromNodeId: event.edges[0]?.fromNodeId, toNodeId: event.edges[0]?.toNodeId, candidateCoverage: { matchingOrigins: event.matchingOrigins, totalOrigins: candidates.length, allRoutesHaveEvent: allRoutesHaveFareGate, aggregateCount: aggregateFareGateCount }, officialFloor }
+      }
+    })
+  const tailSteps: GuideStep[] = compactIndoorRouteSteps(route, routeTopologyContext(graph, route, compressionContext)).map((step, index) => {
+    const facility = facilityForStep(step.type)
+    const officialFloor = facility === 'gate'
+      ? officialGateFloor(graph, step.evidence.edgeIds.map(edgeId => route.edges.find(edge => edge.id === edgeId)).find(Boolean), compressionContext)
+      : undefined
+    return {
+      id: `gtfs-common-${index + 1}`,
+      instruction: officialFloor ? `${officialFloor.label}の改札を通る` : formatIndoorStep(step),
+      facility,
+      evidence: {
+        source: 'gtfs-pathways' as const,
+        sourceUrl: graph.source.url,
+        edgeIds: step.evidence.edgeIds,
+        fromNodeId: step.evidence.fromNodeId,
+        toNodeId: step.evidence.toNodeId,
+        fromLevelIndex: step.evidence.fromLevelIndex,
+        toLevelIndex: step.evidence.toLevelIndex,
+        distanceMeters: step.distanceMeters,
+        candidateCoverage: { matchingOrigins: candidates.length, totalOrigins: candidates.length },
+        mapLocations: step.evidence.mapLocations,
+        officialFloor,
+      },
+    }
+  })
   const consensusVerticalSteps = semanticConsensusVerticalPrefix(graph, candidates, commonEdges.length, compressionContext)
   const directions = deriveIndoorDirections(graph, route, compressionContext)
   tailSteps.forEach(step => {
@@ -621,7 +664,8 @@ export function buildGtfsStationGuideFromRoute(graph: IndoorGraph, station: Stat
   const steps: GuideStep[] = routeSteps.map((step, index) => {
     const facility = facilityForStep(step.type)
     const fareCount = step.type === 'fare-gate' || step.type === 'exit-gate' ? fareEvents.length : undefined
-    return { id: `gtfs-scored-${index + 1}`, instruction: formatIndoorStep(step), facility, evidence: { source: 'gtfs-pathways', sourceUrl: graph.source.url, edgeIds: step.evidence.edgeIds, fromNodeId: step.evidence.fromNodeId, toNodeId: step.evidence.toNodeId, fromLevelIndex: step.evidence.fromLevelIndex, toLevelIndex: step.evidence.toLevelIndex, distanceMeters: step.distanceMeters, candidateCoverage: fareCount === undefined ? { matchingOrigins: 1, totalOrigins: 1 } : { matchingOrigins: 1, totalOrigins: 1, allRoutesHaveEvent: true, aggregateCount: fareCount }, mapLocations: step.evidence.mapLocations } }
+    const officialFloor = facility === 'gate' ? officialGateFloor(graph, step.evidence.edgeIds.map(edgeId => route.edges.find(edge => edge.id === edgeId)).find(Boolean), compressionContext) : undefined
+    return { id: `gtfs-scored-${index + 1}`, instruction: officialFloor ? `${officialFloor.label}の改札を通る` : formatIndoorStep(step), facility, evidence: { source: 'gtfs-pathways', sourceUrl: graph.source.url, edgeIds: step.evidence.edgeIds, fromNodeId: step.evidence.fromNodeId, toNodeId: step.evidence.toNodeId, fromLevelIndex: step.evidence.fromLevelIndex, toLevelIndex: step.evidence.toLevelIndex, distanceMeters: step.distanceMeters, candidateCoverage: fareCount === undefined ? { matchingOrigins: 1, totalOrigins: 1 } : { matchingOrigins: 1, totalOrigins: 1, allRoutesHaveEvent: true, aggregateCount: fareCount }, mapLocations: step.evidence.mapLocations, officialFloor } }
   })
   const exitLabel = exit.name ?? ''
   if (exitLabel) steps.push({ id: 'gtfs-scored-exit', instruction: `${exitLabel}へ出る`, facility: 'exit', evidence: { source: 'gtfs-pathways', sourceUrl: graph.source.url, edgeIds: route.edges.at(-1) ? [route.edges.at(-1)!.id] : [], fromNodeId: route.edges.at(-1)?.fromNodeId, toNodeId: target.exitNodeId, candidateCoverage: { matchingOrigins: 1, totalOrigins: 1 } } })

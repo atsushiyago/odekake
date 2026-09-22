@@ -28,7 +28,7 @@ describe('station guide presentation', () => {
     const directed = withStationGuidePresentation(presented)
     expect(directed.steps.some(step => step.instruction === '通路を約70m（約120歩）進む')).toBe(true)
     const gate = directed.steps.find(step => step.facility === 'gate')
-    expect(gate?.instruction).toBe('改札を通ったら左へ進む')
+    expect(gate?.instruction).toBe('地下3階の改札を通ったら左へ進む')
     const withoutExperiment = withWalkDistanceInstructions(result.guide, { enabled: false })
     expect(withoutExperiment.steps.some(step => step.instruction.includes('約68m'))).toBe(false)
   })

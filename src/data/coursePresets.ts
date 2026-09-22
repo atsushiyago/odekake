@@ -12,6 +12,8 @@ export interface OutingCoursePreset {
   destination: { name: string; latitude?: number; longitude?: number; sourceUrl?: string }
   /** Optional official floor corroboration for the arrival platform. */
   arrivalPlatformFloor?: { label: string; levelIndex: number; sourceUrl: string }
+  /** Optional official floor corroboration for the fare-gate level. Exact-match only. */
+  gateFloor?: { label: string; levelIndex: number; sourceUrl: string }
   preferredExitId?: string | string[]
   departurePlatformAssignments: OfficialDeparturePlatformAssignment[]
   arrivalPlatformAssignments: OfficialPlatformAssignment[]
@@ -38,7 +40,7 @@ export const outingCoursePresets: OutingCoursePreset[] = [
   },
   {
     id: 'akabanebashi-daimon-kyu-shiba-rikyu', label: '旧芝離宮恩賜庭園', originStationId: '422', originStationName: '赤羽橋', arrivalStationId: '421', arrivalStationName: '大門',
-    destination: { name: '旧芝離宮恩賜庭園', latitude: 35.65545, longitude: 139.756697, sourceUrl: 'https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/' }, preferredExitId: '421N0015', arrivalPlatformFloor: { label: '地下5階', levelIndex: -5, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/daimon.html' },
+    destination: { name: '旧芝離宮恩賜庭園', latitude: 35.65545, longitude: 139.756697, sourceUrl: 'https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/' }, preferredExitId: '421N0015', arrivalPlatformFloor: { label: '地下5階', levelIndex: -5, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/daimon.html' }, gateFloor: { label: '地下3階', levelIndex: -3, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/daimon.html' },
     departurePlatformAssignments: akabanebashiOfficialDeparturePlatformAssignments, arrivalPlatformAssignments: daimonOfficialPlatformAssignments, walkingRoute: daimonB2ToKyuShibaRikyuWalkingRoute,
   },
   {
@@ -63,7 +65,7 @@ export const outingCoursePresets: OutingCoursePreset[] = [
   },
   {
     id: 'yoyogi-shinjuku-southern-tower', label: 'サザンタワー', originStationId: '427', originStationName: '代々木', arrivalStationId: '428', arrivalStationName: '新宿',
-    destination: { name: '小田急ホテルセンチュリーサザンタワー', latitude: 35.686442, longitude: 139.700367, sourceUrl: 'https://www.southerntower.co.jp/access/' }, preferredExitId: '428N0193', arrivalPlatformFloor: { label: '地下6階', levelIndex: -6, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html' },
+    destination: { name: '小田急ホテルセンチュリーサザンタワー', latitude: 35.686442, longitude: 139.700367, sourceUrl: 'https://www.southerntower.co.jp/access/' }, preferredExitId: '428N0193', arrivalPlatformFloor: { label: '地下7階', levelIndex: -6, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html' }, gateFloor: { label: '地下3階', levelIndex: -2, sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/kanren/inspection/pdf/inspection202509_04.pdf' },
     departurePlatformAssignments: yoyogiToShinjukuOfficialDeparturePlatformAssignments, arrivalPlatformAssignments: shinjukuOfficialPlatformAssignments, walkingRoute: shinjukuA1ToSouthernTowerWalkingRoute,
   },
   {

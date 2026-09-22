@@ -28,4 +28,9 @@ describe('outing course presets', () => {
     expect(outingCoursePresets[10]).toMatchObject({ preferredExitId: '410N0016', walkingRoute: { stationExitConnection: { exitNodeId: '410N0016' } } })
     expect(outingCoursePresets[11]).toMatchObject({ preferredExitId: '429N0093', walkingRoute: { stationExitConnection: { exitNodeId: '429N0093' } } })
   })
+
+  it('keeps user-facing floors as explicit official metadata', () => {
+    expect(outingCoursePresets[8].arrivalPlatformFloor).toMatchObject({ label: '地下7階', levelIndex: -6 })
+    expect(outingCoursePresets[8].gateFloor).toMatchObject({ label: '地下3階', levelIndex: -2 })
+  })
 })

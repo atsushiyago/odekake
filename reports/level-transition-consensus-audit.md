@@ -1,6 +1,6 @@
 # 6駅 ホーム→改札階 level transition consensus audit
 
-調査日: 2026-09-21
+調査日: 2026-09-22
 
 設備種類は比較せず、各boarding-area候補の最初のfare gateまでに成立するlevel transitionだけを比較した。公式号車位置やFacilityへのmappingは行わない。
 
