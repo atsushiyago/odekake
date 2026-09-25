@@ -46,7 +46,9 @@ import {
   formatElderlyRouteScore,
   type ElderlyRouteScore,
 } from '../domain/elderlyRouteScoring';
-import { elderlyRouteRecommendations } from '../data/elderlyRouteRecommendations';
+import { stationOfficialGuidanceByStationId } from '../data/stationOfficialGuidance';
+import type { StationOfficialGuidance } from '../data/stationOfficialGuidance';
+import { presentOfficialHomeGuidance } from '../domain/officialGuidancePresentation';
 import {
   formatAlightingHomeAction,
   formatExitAction,
@@ -592,7 +594,7 @@ function IndoorStationPaper({
   connection,
   departurePlatform,
   arrivalPlatformFloor,
-  elderlyRecommendation,
+  stationGuideMetadata,
   levelTransitionConsensus,
   backRoute,
   humanizeWalkDistance = false,
@@ -603,7 +605,7 @@ function IndoorStationPaper({
   connection?: ArrivalPlatformConnection;
   departurePlatform?: OfficialDeparturePlatformAssignment;
   arrivalPlatformFloor?: OutingCoursePreset['arrivalPlatformFloor'];
-  elderlyRecommendation?: (typeof elderlyRouteRecommendations)[string];
+  stationGuideMetadata?: StationOfficialGuidance;
   levelTransitionConsensus?: PlatformGateLevelConsensus | null;
   backRoute?: WalkingRoute;
   humanizeWalkDistance?: boolean;
@@ -632,46 +634,23 @@ function IndoorStationPaper({
     )
       ? arrivalPlatformFloor.label
       : undefined;
-  const levelTransitionOnlyHome =
-    elderlyRecommendation?.paperDisplay === 'level-transition-only' &&
-    Boolean(levelTransitionConsensus);
-  const officialLayeredRejoin =
-    elderlyRecommendation?.paperDisplay === 'official-layered-rejoin' &&
-    Boolean(levelTransitionConsensus);
-  const carPositionOnly =
-    elderlyRecommendation?.paperDisplay === 'car-position-only';
+  const preGatePresentation = stationGuideMetadata?.preGatePresentation;
+  const hasLevelConsensus = Boolean(levelTransitionConsensus);
   const hideHomeDetails =
-    (levelTransitionOnlyHome || officialLayeredRejoin || carPositionOnly) &&
-    Boolean(levelTransitionConsensus);
-  const layeredOfficial =
-    elderlyRecommendation?.equipmentRelation === 'official-layered' &&
-    Boolean(levelTransitionConsensus) &&
-    !levelTransitionOnlyHome &&
-    !carPositionOnly;
-  const displayElderlyRecommendation =
-    elderlyRecommendation &&
-    !levelTransitionOnlyHome &&
-    (carPositionOnly ||
-      elderlyRecommendation.equipmentRelation !== 'official-layered' ||
-      layeredOfficial)
-      ? elderlyRecommendation
-      : undefined;
+    preGatePresentation === 'safe-rejoin' && hasLevelConsensus;
+  const displayOfficialGuidance =
+    stationGuideMetadata &&
+    (!stationGuideMetadata.requiresLevelConsensus || hasLevelConsensus);
+  const officialHomePresentation = presentOfficialHomeGuidance(
+    displayOfficialGuidance ? stationGuideMetadata.officialGuidance : [],
+    levelTransitionConsensus?.direction,
+  );
   const baseSections = paperSections(presentation, hideHomeDetails);
-  const carPositionLabel =
-    displayElderlyRecommendation &&
-    (displayElderlyRecommendation.carPosition.endsWith('付近')
-      ? displayElderlyRecommendation.carPosition
-      : `${displayElderlyRecommendation.carPosition}付近`);
   const boardingInstruction =
-    departurePlatform || displayElderlyRecommendation
-      ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${displayElderlyRecommendation ? `${departurePlatform ? '、' : ''}できれば${carPositionLabel}に乗る` : '乗る'}`
+    departurePlatform || officialHomePresentation.carPositionHint
+      ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${officialHomePresentation.carPositionHint ? `${departurePlatform ? '、' : ''}${officialHomePresentation.carPositionHint}` : '乗る'}`
       : undefined;
-  const verticalVerb =
-    levelTransitionConsensus?.direction === 'down' ? '下りる' : '上がる';
-  const homeEquipmentInstruction =
-    displayElderlyRecommendation?.homeEquipment && levelTransitionConsensus
-      ? `${displayElderlyRecommendation.homeEquipment}で改札階へ${verticalVerb}`
-      : undefined;
+  const homeEquipmentInstruction = officialHomePresentation.homeInstruction;
   const homeSectionHasVerticalAction =
     baseSections
       .find((section) => section.id === 'platform-to-gate')
@@ -684,10 +663,9 @@ function IndoorStationPaper({
   const abstractLevelInstruction =
     levelTransitionConsensus &&
     !homeSectionHasVerticalAction &&
-    (levelTransitionOnlyHome ||
-      carPositionOnly ||
-      (!layeredOfficial && !displayElderlyRecommendation))
-      ? `ホームから改札階へ${verticalVerb}`
+    (preGatePresentation === 'safe-rejoin' ||
+      !displayOfficialGuidance)
+      ? `ホームから改札階へ${levelTransitionConsensus?.direction === 'down' ? '下りる' : '上がる'}`
       : undefined;
   const homePlatformInstruction =
     (homeEquipmentInstruction ?? abstractLevelInstruction)
@@ -695,10 +673,10 @@ function IndoorStationPaper({
           id: 'paper-home-vertical',
           instruction: homeEquipmentInstruction ?? abstractLevelInstruction!,
           evidence:
-            homeEquipmentInstruction && displayElderlyRecommendation
+            homeEquipmentInstruction && officialHomePresentation.sourceUrl
               ? {
                   source: 'manual-review' as const,
-                  sourceUrl: displayElderlyRecommendation.sourceUrl,
+                  sourceUrl: officialHomePresentation.sourceUrl,
                 }
               : undefined,
         }
@@ -765,13 +743,6 @@ function IndoorStationPaper({
         node: (
           <section className="arrival-section">
             {index === 0 && <h2>{section.title}</h2>}
-            {section.id === 'gate-to-exit' &&
-              index === 0 &&
-              elderlyRecommendation?.timeLimit && (
-                <p className="home-equipment-note">
-                  <b>※{elderlyRecommendation.timeLimit}</b>
-                </p>
-              )}
             <p>
               <span>{number}</span>
               {step.facility === 'exit'
@@ -1684,8 +1655,8 @@ export default function App() {
           departurePlatform: departure.ok ? departure.assignment : undefined,
           walkingRoute: course.walkingRoute,
           elderlyScore: elderlyScore ?? undefined,
-          elderlyRecommendation:
-            elderlyRouteRecommendations[dataset.station.id],
+          stationGuideMetadata:
+            stationOfficialGuidanceByStationId[dataset.station.id],
           levelTransitionConsensus,
         }
       : {
@@ -1825,7 +1796,7 @@ export default function App() {
                   connection={itineraryGuide.connection}
                   departurePlatform={itineraryGuide.departurePlatform}
                   arrivalPlatformFloor={course.arrivalPlatformFloor}
-                  elderlyRecommendation={itineraryGuide.elderlyRecommendation}
+                  stationGuideMetadata={itineraryGuide.stationGuideMetadata}
                   levelTransitionConsensus={
                     itineraryGuide.levelTransitionConsensus
                   }

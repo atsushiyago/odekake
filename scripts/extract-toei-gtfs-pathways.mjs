@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
-import { createHash } from 'node:crypto'
 
 function usage() {
-  console.error('Usage: node scripts/extract-toei-gtfs-pathways.mjs ZIP STATION_ID STATION_NAME SOURCE_URL LICENSE FEED_VERSION OUTPUT_JSON')
+  console.error('Usage: node scripts/extract-toei-gtfs-pathways.mjs ZIP STATION_ID STATION_NAME SOURCE_URL LICENSE FEED_VERSION OUTPUT_JSON [OFFICIAL_ZIP_SHA256]')
   process.exit(1)
 }
 
-const [, , zipPath, stationId, stationName, sourceUrl, license, feedVersion, outputPath] = process.argv
+const [, , zipPath, stationId, stationName, sourceUrl, license, feedVersion, outputPath, officialZipSha256] = process.argv
 if (![zipPath, stationId, stationName, sourceUrl, license, feedVersion, outputPath].every(Boolean)) usage()
+if (officialZipSha256 && !/^[a-f\d]{64}$/i.test(officialZipSha256)) throw new Error('OFFICIAL_ZIP_SHA256 must be a 64-character hexadecimal hash')
 
 function parseCsv(text) {
   const rows = []; let row = []; let cell = ''; let quoted = false
@@ -54,7 +54,9 @@ while (changed) {
 
 const output = {
   source: { name: '東京都交通局 鉄道関連情報（GTFS-Pathways）', url: sourceUrl, license, feedVersion, retrievedAt: new Date().toISOString().slice(0, 10) },
-  artifact: { sha256: createHash('sha256').update(readFileSync(zipPath)).digest('hex') },
+  // The extracted files do not prove the checksum of the publisher's ZIP.
+  // Record a package hash only when that official checksum is supplied explicitly.
+  artifact: { sha256: officialZipSha256 ?? null },
   station: { id: stationId, name: stationName },
   levels,
   stops: stops.filter(stop => included.has(stop.stopId)),

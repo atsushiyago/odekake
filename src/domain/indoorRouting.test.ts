@@ -100,7 +100,7 @@ describe('indoor routing safety gates', () => {
     }
   })
 
-  it('retains GTFS fare gates as semantic events even when an exceptional boarding area bypasses them', () => {
+  it('retains GTFS fare gates as semantic events with full current candidate coverage', () => {
     const graph = buildIndoorGraph(akabanebashiGtfsPathways)
     const result = buildGtfsStationGuide(graph, { id: '422', name: '赤羽橋', operator: '東京都交通局', line: '大江戸線' }, { platformId: '422P2', exitNodeId: '422N0012' })
     expect(result.ok).toBe(true)
@@ -110,11 +110,11 @@ describe('indoor routing safety gates', () => {
     expect(result.guide.gate).toBe('')
     expect(result.guide.arrivalPlatform).toBe('2番ホーム')
     expect(result.guide.exit).toBe('赤羽橋口')
-    expect(result.guide.dataSource).toMatchObject({ type: 'gtfs-pathways', humanReviewed: false, scope: 'semantic-event-backbone', feedVersion: '20260917' })
+    expect(result.guide.dataSource).toMatchObject({ type: 'gtfs-pathways', humanReviewed: false, scope: 'semantic-event-backbone', feedVersion: '20260924' })
     expect(result.guide.steps.every(step => step.evidence?.source === 'gtfs-pathways')).toBe(true)
     const gate = result.guide.steps.find(step => step.evidence?.edgeIds?.includes('422L0070'))
     expect(gate).toMatchObject({ instruction: '改札を通る', facility: 'gate' })
-    expect(gate?.evidence?.candidateCoverage).toEqual({ matchingOrigins: 11, totalOrigins: 12, allRoutesHaveEvent: false })
+    expect(gate?.evidence?.candidateCoverage).toMatchObject({ matchingOrigins: 11, totalOrigins: 11 })
     expect(result.guide.steps.flatMap(step => step.evidence?.edgeIds ?? [])).toContain('422L0070')
     expect(result.guide.steps.at(-1)).toMatchObject({ instruction: '赤羽橋口へ出る', facility: 'exit' })
   })
@@ -156,7 +156,7 @@ describe('indoor routing safety gates', () => {
     expect(compact).toHaveLength(3)
   })
 
-  it('compresses contiguous elevator edges in one verified facility into one upward action', () => {
+  it('resolves a verified same-Facility elevator run with entry and exit connectors', () => {
     const route = {
       nodes: [
         { id: 'a', latitude: 0, longitude: 0, levelIndex: -5, locationType: 3, kind: 'internal' },
@@ -170,11 +170,14 @@ describe('indoor routing safety gates', () => {
         { id: 'elevator-exit', fromNodeId: 'c', toNodeId: 'd', lengthMeters: 1.3, movementType: 'elevator', sourceType: 'gtfs-pathways' },
       ], distanceMeters: 2.8,
     } as never
-    const compact = compactIndoorRouteSteps(route, { byPathwayId: {
-      'elevator-board': { facilityId: 'F012-test', spaceId: 'space-elevator' },
-      'elevator-rise': { facilityId: 'F012-test', spaceId: 'space-elevator' },
-      'elevator-exit': { facilityId: 'F012-test', spaceId: 'space-elevator' },
-    } })
+    const compact = compactIndoorRouteSteps(route, {
+      byPathwayId: {
+        'elevator-board': { facilityId: 'F012-test', spaceId: 'space-elevator' },
+        'elevator-rise': { facilityId: 'F012-test', spaceId: 'space-elevator' },
+        'elevator-exit': { facilityId: 'F012-test', spaceId: 'space-elevator' },
+      },
+      nonBranchingNodeIds: new Set(['a', 'b', 'c', 'd']),
+    })
     expect(compact).toHaveLength(1)
     expect(compact[0].verticalDirection).toBe('up')
     expect(formatIndoorStep(compact[0])).toBe('エレベーターで上がる')
@@ -183,7 +186,7 @@ describe('indoor routing safety gates', () => {
     expect(compact[0].evidence.toLevelIndex).toBe(-1)
   })
 
-  it('absorbs a short non-branching same-level elevator connector without merging facilities', () => {
+  it('uses an entry connector as neutral but takes direction only from the adjacent vertical edge', () => {
     const route = {
       nodes: [
         { id: 'a', latitude: 0, longitude: 0, levelIndex: -1, locationType: 3, kind: 'internal' },
@@ -198,14 +201,14 @@ describe('indoor routing safety gates', () => {
     const compact = compactIndoorRouteSteps(route, {
       byPathwayId: {
         connector: { facilityId: 'facility-a', spaceId: 'space-a' },
-        vertical: { facilityId: 'facility-b', spaceId: 'space-b' },
+        vertical: { facilityId: 'facility-a', spaceId: 'space-a' },
       },
-      nonBranchingNodeIds: new Set(['b']),
+      nonBranchingNodeIds: new Set(['a', 'b']),
     })
     expect(compact).toHaveLength(1)
     expect(formatIndoorStep(compact[0])).toBe('エレベーターで上がる')
     expect(compact[0].evidence.edgeIds).toEqual(['connector', 'vertical'])
-    expect(compact[0].evidence.mapLocations?.map(location => location.facilityId)).toEqual(['facility-a', 'facility-b'])
+    expect(compact[0].evidence.mapLocations?.map(location => location.facilityId)).toEqual(['facility-a', 'facility-a'])
     expect(compact[0].evidence.fromLevelIndex).toBe(-1)
     expect(compact[0].evidence.toLevelIndex).toBe(0)
   })
@@ -353,14 +356,11 @@ describe('indoor routing safety gates', () => {
     expect(result.guide.steps.flatMap(step => step.evidence?.edgeIds ?? [])).toContain('422L0070')
   })
 
-  it('records the one real boarding-area exception instead of treating fare gate coverage as 12/12', () => {
+  it('records the current 11 boarding-area routes with fare-gate coverage', () => {
     const graph = buildIndoorGraph(akabanebashiGtfsPathways)
     const candidates = findRoutesFromPlatform(graph, '422P2', '422N0012')
-    expect(candidates).toHaveLength(12)
-    const exception = candidates.find(candidate => candidate.origin.id === '422N0080')
-    expect(exception).toBeDefined()
-    expect(exception?.route.edges.some(edge => edge.id === '422L0070')).toBe(false)
-    expect(exception?.route.edges.map(edge => edge.id)).toEqual(['422L0046', '422L0055', '422L0052', '422L0053', '422L0044', '422L0115', '422L0116', '422L0107', '422L0108', '422L0109', '422L0110', '422L0111', '422L0112', '422L0130', '422L0136'])
+    expect(candidates).toHaveLength(11)
+    expect(candidates.some(candidate => candidate.origin.id === '422N0080')).toBe(false)
     expect(candidates.filter(candidate => candidate.route.edges.some(edge => edge.id === '422L0070'))).toHaveLength(11)
   })
 })

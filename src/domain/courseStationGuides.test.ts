@@ -87,7 +87,7 @@ describe('course station guides', () => {
     if (result.ok) {
       const elevators = result.guide.steps.filter(step => step.facility === 'elevator')
       expect(elevators).toHaveLength(1)
-      expect(elevators[0].instruction).toBe('エレベーターで上がる')
+      expect(elevators[0].instruction).toBe('エレベーターで移動する')
       expect(elevators[0].evidence?.edgeIds).toEqual(['426L0165', '426L0220', '426L0290'])
       expect(elevators[0].evidence?.mapLocations?.map(location => location.facilityId)).toEqual([
         overlay.byPathwayId['426L0165']?.facilityId,
@@ -182,11 +182,12 @@ describe('course station guides', () => {
       expect(result.guide.steps.every(step => step.evidence?.source === 'gtfs-pathways')).toBe(true)
       expect(result.guide.steps).toHaveLength(12)
       expect(summarizeStationGuide(result.guide)).toMatchObject({ stairsCount: 3, escalatorCount: 1, elevatorCount: 0, fareGateCount: 1 })
-      const fallbackStairs = result.guide.steps.find(step => step.instruction === '階段を使う')
-      expect(fallbackStairs?.evidence?.edgeIds).toEqual(['423L0061', '423L0062', '423L0063'])
-      expect(fallbackStairs?.evidence?.fromLevelIndex).toBe(-0.5)
-      expect(fallbackStairs?.evidence?.toLevelIndex).toBe(-0.5)
-      expect(fallbackStairs?.evidence?.mapLocations?.map(location => location.facilityId)).toEqual([overlay.byPathwayId['423L0061']?.facilityId, undefined, overlay.byPathwayId['423L0063']?.facilityId])
+      const sameLevelStairs = result.guide.steps.find(step => step.evidence?.edgeIds?.includes('423L0061'))
+      expect(sameLevelStairs?.instruction).toBe('階段を使う')
+      expect(sameLevelStairs?.evidence?.edgeIds).toEqual(['423L0061', '423L0062', '423L0063'])
+      expect(sameLevelStairs?.evidence?.fromLevelIndex).toBe(-0.5)
+      expect(sameLevelStairs?.evidence?.toLevelIndex).toBe(-0.5)
+      expect(sameLevelStairs?.evidence?.mapLocations?.map(location => location.facilityId)).toEqual([overlay.byPathwayId['423L0061']?.facilityId, undefined, overlay.byPathwayId['423L0063']?.facilityId])
       expect(overlay.byPathwayId['423L0061']?.facilityId).toBe(overlay.byPathwayId['423L0063']?.facilityId)
       expect(overlay.byPathwayId['423L0061']?.facilityId).not.toBe(overlay.byPathwayId['423L0050']?.facilityId)
       expect(overlay.byPathwayId['423L0061']?.facilityId).not.toBe(overlay.byPathwayId['423L0065']?.facilityId)
@@ -266,15 +267,15 @@ describe('course station guides', () => {
     }
   })
 
-  it('keeps Akabanebashi fare-gate wording generic when candidate topology is not unanimous', () => {
+  it('uses the resolved fare-gate floor after the current candidate topology is unanimous', () => {
     const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '422')!
     const graph = buildIndoorGraph(dataset.gtfs)
     const result = buildGtfsStationGuide(graph, dataset.station, { platformId: '422P2', exitNodeId: '422N0012' }, 'shortest', buildAkabanebashiStationMapCompressionContext(graph))
     expect(result).toMatchObject({ ok: true })
     if (result.ok) {
       const gate = result.guide.steps.find(step => step.facility === 'gate')
-      expect(gate?.instruction).toBe('改札を通る')
-      expect(gate?.evidence?.officialFloor).toBeUndefined()
+      expect(gate?.instruction).toBe('地下1階の改札を通る')
+      expect(gate?.evidence?.officialFloor?.label).toBe('地下1階')
     }
   })
 

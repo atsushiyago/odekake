@@ -1,23 +1,44 @@
 # 12コース Facility grouping 回帰監査
 
-生成日: 2026-09-22T08:21:39.367Z
+生成日: 2026-09-25T05:19:58.835Z
 
 | コース | 到着駅 | semantic steps before→after | EV before→after |
 |---|---|---:|---:|
-| 東京タワー | 赤羽橋 | 9→9 | 0→0 |
+| 東京タワー | 赤羽橋 | 10→10 | 0→0 |
 | 国立新美術館 | 六本木 | 8→8 | 1→1 |
-| 国立競技場 | 国立競技場 | 6→6 | 1→1 |
+| 国立競技場 | 国立競技場 | 7→6 | 2→1 |
 | 旧芝離宮恩賜庭園 | 大門 | 11→11 | 0→0 |
 | パティオ十番 | 麻布十番 | 12→12 | 0→0 |
 | 明治神宮外苑いちょう並木 | 青山一丁目 | 17→16 | 2→1 |
 | 明治神宮・代々木口 | 代々木 | 11→11 | 0→0 |
 | 新宿文化センター | 東新宿 | 6→6 | 1→1 |
-| サザンタワー | 新宿 | 15→13 | 1→1 |
+| サザンタワー | 新宿 | 16→13 | 2→1 |
 | 思い出横丁 | 新宿西口 | 8→8 | 0→0 |
 | アメ横 | 上野御徒町 | 10→10 | 0→0 |
 | 東京都庁展望室 | 都庁前 | 10→10 | 0→0 |
 
-変化したコース: **2**
+変化したコース: **3**
+
+## 国立競技場 / 国立競技場
+
+steps: 7→6
+EV: 2→1
+
+| pathway | facility | facilityGroup | space |
+|---|---|---|---|
+| 426L0165 | 3eb71905b7a64f10ad07c8ad74c57ded | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | 11366dbfbb5d46f2b7a3813894b4b44c |
+| 426L0220 | aae9b7e6f4784e72b1459abebf4b1095 | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | 72778cffc92a487f983b45441db39dd4 |
+| 426L0290 | aae9b7e6f4784e72b1459abebf4b1095 | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | — |
+| 426L0165 | 3eb71905b7a64f10ad07c8ad74c57ded | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | 11366dbfbb5d46f2b7a3813894b4b44c |
+| 426L0220 | aae9b7e6f4784e72b1459abebf4b1095 | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | 72778cffc92a487f983b45441db39dd4 |
+| 426L0290 | aae9b7e6f4784e72b1459abebf4b1095 | facility-group:F012:3eb71905b7a64f10ad07c8ad74c57ded | — |
+
+### 統合グループのGeoJSON根拠
+
+| facilityGroup | facility ID | category | coordinate (lon, lat) | floor | floor ordinal |
+|---|---|---|---|---|---:|
+
+判定: 同一カテゴリで座標距離3m以内の施設を同一facilityGroupとして扱うgenericルールによる変化。近接する別設備かどうかは、上表の施設ID・座標・階・Space遷移を確認して評価する。
 
 ## 青山一丁目 / 明治神宮外苑いちょう並木
 
@@ -56,8 +77,8 @@ EV: 2→1
 
 ## 新宿 / サザンタワー
 
-steps: 15→13
-EV: 1→1
+steps: 16→13
+EV: 2→1
 
 | pathway | facility | facilityGroup | space |
 |---|---|---|---|

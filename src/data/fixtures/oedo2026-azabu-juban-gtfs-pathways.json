@@ -3,11 +3,11 @@
     "name": "東京都交通局 鉄道関連情報（GTFS-Pathways）",
     "url": "https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip",
     "license": "CC BY 4.0",
-    "feedVersion": "20260917",
-    "retrievedAt": "2026-09-20"
+    "feedVersion": "20260924",
+    "retrievedAt": "2026-09-25"
   },
   "artifact": {
-    "sha256": "8003800473770f40eb0a2eabeef1e309c052100aab85c5376b831eec089d95f4"
+    "sha256": null
   },
   "station": {
     "id": "423",

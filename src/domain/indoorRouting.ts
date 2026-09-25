@@ -3,6 +3,8 @@ import type { GuideStep, StationGuide, StationRef } from './types.ts'
 export type PathwayMode = 1 | 2 | 3 | 4 | 5 | 6 | 7
 export type RoutePreference = 'shortest' | 'avoid-stairs' | 'elevator-priority' | 'escalator-priority' | 'wheelchair-accessible'
 export type IndoorMovementType = 'walk' | 'stairs' | 'moving-walkway' | 'escalator' | 'elevator' | 'fare-gate' | 'exit-gate' | 'slope' | 'rail-crossing' | 'unknown'
+export type VerticalDirection = 'up' | 'down' | 'unknown'
+type VerticalDirectionEvidence = 'complete' | 'incomplete' | 'neutral-connector'
 
 export interface IndoorSource { name: string; url: string; license: string; feedVersion: string; retrievedAt: string }
 export interface RawGtfsStop {
@@ -22,7 +24,21 @@ export interface IndoorEdge {
 }
 export interface IndoorGraph { source: IndoorSource; stationId: string; stationName: string; nodes: Map<string, IndoorNode>; edges: IndoorEdge[]; adjacency: Map<string, IndoorEdge[]> }
 export interface IndoorRoute { nodes: IndoorNode[]; edges: IndoorEdge[]; distanceMeters: number }
-export interface IndoorRouteStep { type: IndoorMovementType; distanceMeters: number; verticalDirection?: 'up' | 'down'; evidence: { edgeIds: string[]; fromNodeId: string; toNodeId: string; fromLevelIndex?: number; toLevelIndex?: number; mapLocations?: Array<{ pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string }> } }
+export interface IndoorRouteStep { type: IndoorMovementType; distanceMeters: number; verticalDirection?: 'up' | 'down'; /** Complete only when all vertical edges agree; verified nonvertical connectors are neutral, never directional evidence. */ verticalDirectionEvidence?: VerticalDirectionEvidence; evidence: { edgeIds: string[]; fromNodeId: string; toNodeId: string; fromLevelIndex?: number; toLevelIndex?: number; mapLocations?: Array<{ pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string }> } }
+
+const verticalMovementTypes = new Set<IndoorMovementType>(['stairs', 'escalator', 'elevator'])
+
+/** Resolves relative traversal direction only; it never formats a level as a floor name. */
+export function resolveVerticalDirection(startLevel: number | undefined, endLevel: number | undefined): VerticalDirection {
+  if (startLevel === undefined || endLevel === undefined || !Number.isFinite(startLevel) || !Number.isFinite(endLevel) || startLevel === endLevel) return 'unknown'
+  return endLevel > startLevel ? 'up' : 'down'
+}
+
+/** Candidate consensus is valid only when every candidate resolves and agrees. */
+export function resolveVerticalDirectionConsensus(directions: VerticalDirection[]): VerticalDirection {
+  if (!directions.length || directions.some(direction => direction === 'unknown')) return 'unknown'
+  return directions.every(direction => direction === directions[0]) ? directions[0] : 'unknown'
+}
 /** Optional, published-map-derived evidence used only to make step compression safer. */
 export interface IndoorRouteCompressionContext {
   byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string }>
@@ -61,10 +77,6 @@ export const SAME_FACILITY_STAIR_LANDING_MAX_METERS = 6
 export const SAME_FACILITY_STAIR_LANDING_MAX_ANGLE_DEGREES = 135
 /** A bridge is only humanly continuous when the path direction changes by no more than this. */
 export const DECISION_FREE_BRIDGE_MAX_ANGLE_DEGREES = 18
-
-/** A same-floor elevator link this short is treated as the boarding/landing connector
- * of an adjacent vertical elevator action, never as a separate user action. */
-export const SAME_LEVEL_ELEVATOR_CONNECTOR_MAX_METERS = 2
 
 /** Conservative thresholds for human-facing direction labels. */
 export const INDOOR_DIRECTION_THRESHOLDS = {
@@ -233,12 +245,13 @@ export function findPlatformGateLevelConsensus(graph: IndoorGraph, platformId: s
     if (gateIndex < 0) return []
     const platformLevel = candidate.route.nodes[0]?.levelIndex
     const gateLevel = candidate.route.nodes[gateIndex]?.levelIndex
-    if (platformLevel === undefined || gateLevel === undefined || platformLevel === gateLevel) return []
-    return [{ platformLevel, gateLevel, direction: gateLevel > platformLevel ? 'up' as const : 'down' as const }]
+    const direction = resolveVerticalDirection(platformLevel, gateLevel)
+    if (direction === 'unknown') return []
+    return [{ platformLevel: platformLevel!, gateLevel: gateLevel!, direction }]
   })
   if (!candidates.length || transitions.length !== candidates.length) return null
   const first = transitions[0]
-  if (!transitions.every(transition => transition.platformLevel === first.platformLevel && transition.gateLevel === first.gateLevel && transition.direction === first.direction)) return null
+  if (resolveVerticalDirectionConsensus(transitions.map(transition => transition.direction)) === 'unknown' || !transitions.every(transition => transition.platformLevel === first.platformLevel && transition.gateLevel === first.gateLevel)) return null
   return { ...first, candidateCount: candidates.length }
 }
 
@@ -270,9 +283,10 @@ export function commonRouteSuffix(routes: IndoorRoute[]) {
 export function toIndoorRouteSteps(route: IndoorRoute, context?: IndoorRouteCompressionContext): IndoorRouteStep[] {
   return route.edges.map(edge => {
     const from = route.nodes.find(node => node.id === edge.fromNodeId), to = route.nodes.find(node => node.id === edge.toNodeId)
-    const verticalDirection = from?.levelIndex !== undefined && to?.levelIndex !== undefined && from.levelIndex !== to.levelIndex ? (to.levelIndex > from.levelIndex ? 'up' : 'down') : undefined
+    const direction = verticalMovementTypes.has(edge.movementType) ? resolveVerticalDirection(from?.levelIndex, to?.levelIndex) : 'unknown'
+    const verticalDirection = direction === 'unknown' ? undefined : direction
     const location = context?.byPathwayId[edge.id]
-    return { type: edge.movementType, distanceMeters: edge.lengthMeters, verticalDirection, evidence: { edgeIds: [edge.id], fromNodeId: edge.fromNodeId, toNodeId: edge.toNodeId, fromLevelIndex: from?.levelIndex, toLevelIndex: to?.levelIndex, mapLocations: location ? [{ pathwayId: edge.id, ...location }] : undefined } }
+    return { type: edge.movementType, distanceMeters: edge.lengthMeters, verticalDirection, verticalDirectionEvidence: verticalMovementTypes.has(edge.movementType) ? direction === 'unknown' ? 'incomplete' : 'complete' : undefined, evidence: { edgeIds: [edge.id], fromNodeId: edge.fromNodeId, toNodeId: edge.toNodeId, fromLevelIndex: from?.levelIndex, toLevelIndex: to?.levelIndex, mapLocations: location ? [{ pathwayId: edge.id, ...location }] : undefined } }
   })
 }
 
@@ -281,10 +295,72 @@ export function toIndoorRouteSteps(route: IndoorRoute, context?: IndoorRouteComp
  * A map overlay may additionally prove that short walkway links are inside one facility.
  */
 export function compactIndoorRouteSteps(route: IndoorRoute, context?: IndoorRouteCompressionContext): IndoorRouteStep[] {
+  const rawSteps = toIndoorRouteSteps(route, context)
+  const hasSameMappedElevatorGroup = (left: IndoorRouteStep, right: IndoorRouteStep) => {
+    const leftLocation = context?.byPathwayId[left.evidence.edgeIds[0]]
+    const rightLocation = context?.byPathwayId[right.evidence.edgeIds[0]]
+    return Boolean(
+      (leftLocation?.facilityGroupId && leftLocation.facilityGroupId === rightLocation?.facilityGroupId)
+      || (leftLocation?.facilityId && leftLocation.facilityId === rightLocation?.facilityId),
+    )
+  }
+  const isNeutralEquipmentConnector = (connector: IndoorRouteStep, previous: IndoorRouteStep | undefined, next: IndoorRouteStep | undefined) => {
+    if (connector.type !== 'elevator' || connector.verticalDirectionEvidence !== 'incomplete') return false
+    const fromLevel = connector.evidence.fromLevelIndex, toLevel = connector.evidence.toLevelIndex
+    if (fromLevel === undefined || toLevel === undefined || fromLevel !== toLevel) return false
+    if (!connector.evidence.mapLocations?.length) return false
+
+    // A boundary connector needs one directly adjacent, direction-known EV
+    // flight in the same explicitly mapped Facility. A connector between two
+    // flights must be proven against both; proximity-derived Facility groups
+    // alone do not establish that separate lifts are one device.
+    const adjacent = [
+      previous && { step: previous, connects: previous.evidence.toNodeId === connector.evidence.fromNodeId },
+      next && { step: next, connects: connector.evidence.toNodeId === next.evidence.fromNodeId },
+    ].filter((entry): entry is { step: IndoorRouteStep; connects: boolean } => Boolean(entry))
+    if (adjacent.some(({ step, connects }) => verticalMovementTypes.has(step.type) && (step.type !== 'elevator' || !connects))) return false
+    const elevatorNeighbors = adjacent.filter(({ step }) => step.type === 'elevator')
+    if (!elevatorNeighbors.length || elevatorNeighbors.some(({ connects }) => !connects)) return false
+    // A neighboring EV edge with known equal endpoint levels is another
+    // connector, not the vertical flight that gives this boundary its scope.
+    // Missing levels may still describe a vertical edge, but never contribute
+    // direction evidence; the group merge below will therefore remain unknown.
+    const possibleVerticalNeighbors = elevatorNeighbors.filter(({ step }) =>
+      step.evidence.fromLevelIndex === undefined
+      || step.evidence.toLevelIndex === undefined
+      || step.evidence.fromLevelIndex !== step.evidence.toLevelIndex,
+    )
+    if (!possibleVerticalNeighbors.length) return false
+
+    const connectorFacilityId = context?.byPathwayId[connector.evidence.edgeIds[0]]?.facilityId
+    if (!connectorFacilityId) return false
+    for (const { step } of elevatorNeighbors) {
+      const movementLocation = context?.byPathwayId[step.evidence.edgeIds[0]]
+      if (!step.evidence.mapLocations?.length || movementLocation?.facilityId !== connectorFacilityId) return false
+    }
+    const nonBranching = context?.nonBranchingNodeIds
+    return Boolean(nonBranching?.has(connector.evidence.fromNodeId) && nonBranching.has(connector.evidence.toNodeId))
+  }
+  const routeSteps = rawSteps.map((step, index) => {
+    const verifiedSameLevelElevatorConnector = isNeutralEquipmentConnector(step, rawSteps[index - 1], rawSteps[index + 1])
+    return verifiedSameLevelElevatorConnector ? { ...step, verticalDirectionEvidence: 'neutral-connector' as const } : step
+  })
   const merge = (target: IndoorRouteStep, source: IndoorRouteStep) => {
     target.distanceMeters += source.distanceMeters
-    const directions = [target.verticalDirection, source.verticalDirection].filter((direction): direction is 'up' | 'down' => Boolean(direction))
-    target.verticalDirection = directions.length && new Set(directions).size === 1 ? directions[0] : undefined
+    // Verified neutral connectors do not establish direction. Every actual
+    // vertical edge must have complete evidence and agree with the whole group.
+    if (verticalMovementTypes.has(source.type)) {
+      const targetNeutral = target.verticalDirectionEvidence === 'neutral-connector'
+      const sourceNeutral = source.verticalDirectionEvidence === 'neutral-connector'
+      const complete = (targetNeutral || target.verticalDirectionEvidence === 'complete')
+        && (sourceNeutral || source.verticalDirectionEvidence === 'complete')
+        && (targetNeutral || sourceNeutral || target.verticalDirection === source.verticalDirection)
+      const direction = targetNeutral ? source.verticalDirection : target.verticalDirection
+      target.verticalDirectionEvidence = complete
+        ? targetNeutral && sourceNeutral ? 'neutral-connector' : 'complete'
+        : 'incomplete'
+      target.verticalDirection = complete && !targetNeutral ? target.verticalDirection : complete ? direction : undefined
+    }
     target.evidence = { edgeIds: [...target.evidence.edgeIds, ...source.evidence.edgeIds], fromNodeId: target.evidence.fromNodeId, toNodeId: source.evidence.toNodeId, fromLevelIndex: target.evidence.fromLevelIndex, toLevelIndex: source.evidence.toLevelIndex, mapLocations: [...(target.evidence.mapLocations ?? []), ...(source.evidence.mapLocations ?? [])] }
   }
   const location = (step: IndoorRouteStep) => context?.byPathwayId[step.evidence.edgeIds[0]] ?? step.evidence.mapLocations?.find(location => location.pathwayId === step.evidence.edgeIds[0])
@@ -351,7 +427,7 @@ export function compactIndoorRouteSteps(route: IndoorRoute, context?: IndoorRout
       && noMeaningfulBranch
     return sameSpace || shortNoBranch || sameFacilityLanding
   }
-  const compacted = toIndoorRouteSteps(route, context).reduce<IndoorRouteStep[]>((steps, step) => {
+  const compacted = routeSteps.reduce<IndoorRouteStep[]>((steps, step) => {
     const previous = steps.at(-1)
     const isContinuousWalk = previous?.type === 'walk' && step.type === 'walk' && previous.evidence.toNodeId === step.evidence.fromNodeId
     const isContinuousVerifiedFacility = previous && previous.type === step.type && previous.type !== 'fare-gate' && previous.type !== 'exit-gate' && previous.evidence.toNodeId === step.evidence.fromNodeId && isSameVerifiedFacility(previous, step)
@@ -369,9 +445,8 @@ export function compactIndoorRouteSteps(route: IndoorRoute, context?: IndoorRout
     return steps
   }, [])
 
-  // A same-level elevator edge can be a short connector into the next elevator
-  // movement.  This is presentation-only: facilities remain distinct in the
-  // retained mapLocations/provenance, and no edge is removed from the evidence.
+  // A same-level elevator connector is absorbed only inside a mapped continuous
+  // equipment group. Distance alone never establishes equipment identity.
   const absorbSameLevelElevatorConnector = (steps: IndoorRouteStep[]) => {
     const result: IndoorRouteStep[] = []
     const appendEvidence = (target: IndoorRouteStep, source: IndoorRouteStep, fromTarget: boolean) => {
@@ -387,12 +462,14 @@ export function compactIndoorRouteSteps(route: IndoorRoute, context?: IndoorRout
     }
     const isSafeConnector = (connector: IndoorRouteStep, movement: IndoorRouteStep) => {
       if (connector.type !== 'elevator' || movement.type !== 'elevator') return false
+      if (connector.verticalDirectionEvidence !== 'neutral-connector') return false
       if (connector.verticalDirection !== undefined || movement.verticalDirection === undefined) return false
-      if (connector.distanceMeters > SAME_LEVEL_ELEVATOR_CONNECTOR_MAX_METERS) return false
+      if (connector.evidence.fromLevelIndex === undefined || connector.evidence.fromLevelIndex !== connector.evidence.toLevelIndex) return false
       if (connector.evidence.toNodeId !== movement.evidence.fromNodeId) return false
       if (!context?.nonBranchingNodeIds?.has(connector.evidence.toNodeId)) return false
-      // Require published map evidence for both links.  This prevents a generic
-      // short-edge heuristic from silently swallowing an unverified facility.
+      if (!hasSameMappedElevatorGroup(connector, movement)) return false
+      // Require published map evidence for both links. This absorbs only a
+      // connector already proven neutral between vertical actions above.
       if (!connector.evidence.mapLocations?.length || !movement.evidence.mapLocations?.length) return false
       return true
     }
@@ -495,6 +572,9 @@ function semanticConsensusVerticalPrefix(graph: IndoorGraph, candidates: Array<{
     return vertical.reduce<IndoorRouteStep[]>((steps, step) => {
       const previous = steps.at(-1)
       if (previous && previous.type === step.type && previous.verticalDirection === step.verticalDirection) {
+        const complete = previous.verticalDirectionEvidence === 'complete' && step.verticalDirectionEvidence === 'complete'
+        previous.verticalDirectionEvidence = complete ? 'complete' : 'incomplete'
+        if (!complete) previous.verticalDirection = undefined
         previous.distanceMeters += step.distanceMeters
         previous.evidence.edgeIds.push(...step.evidence.edgeIds)
         previous.evidence.toNodeId = step.evidence.toNodeId

@@ -1,6 +1,6 @@
 # Vertical movement semantic consensus audit
 
-生成日: 2026-09-22T08:21:38.802Z
+生成日: 2026-09-25T05:19:58.390Z
 
 対象はcommonRouteSuffixの前段で垂直移動がStationGuideから落ちる可能性がある8コースです。candidate routeをedge IDではなく、設備種別・方向・level遷移・意味上の連続利用回数で比較しました。今回は本番生成ロジックを変更していません。
 

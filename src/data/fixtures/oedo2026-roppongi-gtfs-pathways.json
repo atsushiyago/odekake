@@ -3,11 +3,11 @@
     "name": "東京都交通局 鉄道関連情報（GTFS-Pathways）",
     "url": "https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip",
     "license": "CC BY 4.0",
-    "feedVersion": "20260917",
-    "retrievedAt": "2026-09-20"
+    "feedVersion": "20260924",
+    "retrievedAt": "2026-09-25"
   },
   "artifact": {
-    "sha256": "8003800473770f40eb0a2eabeef1e309c052100aab85c5376b831eec089d95f4"
+    "sha256": null
   },
   "station": {
     "id": "424",
@@ -403,14 +403,6 @@
       "levelId": "-2"
     },
     {
-      "stopId": "424N0037",
-      "stopLat": "35.663711",
-      "stopLon": "139.731819",
-      "locationType": "4",
-      "parentStation": "424P2",
-      "levelId": "-5"
-    },
-    {
       "stopId": "424N0038",
       "stopLat": "35.663714",
       "stopLon": "139.731723",
@@ -481,14 +473,6 @@
       "locationType": "3",
       "parentStation": "424",
       "levelId": "-1.5"
-    },
-    {
-      "stopId": "424N0051",
-      "stopLat": "35.663689",
-      "stopLon": "139.731864",
-      "locationType": "4",
-      "parentStation": "424P1",
-      "levelId": "-7"
     },
     {
       "stopId": "424N0052",
@@ -804,14 +788,6 @@
       "levelId": "-1"
     },
     {
-      "stopId": "424N0091",
-      "stopLat": "35.664582",
-      "stopLon": "139.730820",
-      "locationType": "4",
-      "parentStation": "424P1",
-      "levelId": "-7"
-    },
-    {
       "stopId": "424N0092",
       "stopLat": "35.664582",
       "stopLon": "139.731061",
@@ -826,14 +802,6 @@
       "locationType": "3",
       "parentStation": "424",
       "levelId": "-1"
-    },
-    {
-      "stopId": "424N0094",
-      "stopLat": "35.664599",
-      "stopLon": "139.730754",
-      "locationType": "4",
-      "parentStation": "424P2",
-      "levelId": "-5"
     },
     {
       "stopId": "424N0095",
@@ -4024,14 +3992,6 @@
       "length": "2.1"
     },
     {
-      "pathwayId": "424L0248",
-      "fromStopId": "424N0094",
-      "toStopId": "424N0259",
-      "pathwayMode": "1",
-      "isBidirectional": "1",
-      "length": "7.6"
-    },
-    {
       "pathwayId": "424L0249",
       "fromStopId": "424N0041",
       "toStopId": "424N0042",
@@ -4054,14 +4014,6 @@
       "pathwayMode": "1",
       "isBidirectional": "1",
       "length": "10.7"
-    },
-    {
-      "pathwayId": "424L0252",
-      "fromStopId": "424N0037",
-      "toStopId": "424N0041",
-      "pathwayMode": "1",
-      "isBidirectional": "1",
-      "length": "10.1"
     },
     {
       "pathwayId": "424L0253",
@@ -4208,14 +4160,6 @@
       "length": "3.6"
     },
     {
-      "pathwayId": "424L0271",
-      "fromStopId": "424N0051",
-      "toStopId": "424N0175",
-      "pathwayMode": "1",
-      "isBidirectional": "1",
-      "length": "21.6"
-    },
-    {
       "pathwayId": "424L0272",
       "fromStopId": "424N0175",
       "toStopId": "424N0178",
@@ -4270,14 +4214,6 @@
       "pathwayMode": "1",
       "isBidirectional": "1",
       "length": "49.9"
-    },
-    {
-      "pathwayId": "424L0279",
-      "fromStopId": "424N0091",
-      "toStopId": "424N0084",
-      "pathwayMode": "1",
-      "isBidirectional": "1",
-      "length": "11.5"
     },
     {
       "pathwayId": "424L0280",

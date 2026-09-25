@@ -3,11 +3,11 @@
     "name": "東京都交通局 鉄道関連情報（GTFS-Pathways）",
     "url": "https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip",
     "license": "CC BY 4.0",
-    "feedVersion": "20260917",
-    "retrievedAt": "2026-09-20"
+    "feedVersion": "20260924",
+    "retrievedAt": "2026-09-25"
   },
   "artifact": {
-    "sha256": "8003800473770f40eb0a2eabeef1e309c052100aab85c5376b831eec089d95f4"
+    "sha256": null
   },
   "station": {
     "id": "429",
@@ -207,9 +207,9 @@
       "stopId": "429N0009",
       "stopLat": "35.690604",
       "stopLon": "139.692517",
-      "locationType": "4",
-      "parentStation": "429P2",
-      "levelId": "-3"
+      "locationType": "3",
+      "parentStation": "429",
+      "levelId": "-2"
     },
     {
       "stopId": "429N0010",
@@ -671,9 +671,9 @@
       "stopId": "429N0069",
       "stopLat": "35.690565",
       "stopLon": "139.692272",
-      "locationType": "4",
-      "parentStation": "429P2",
-      "levelId": "-3"
+      "locationType": "3",
+      "parentStation": "429",
+      "levelId": "-2"
     },
     {
       "stopId": "429N0070",
@@ -1466,14 +1466,6 @@
     },
     {
       "stopId": "429N0175",
-      "stopLat": "35.690680",
-      "stopLon": "139.693004",
-      "locationType": "4",
-      "parentStation": "429P2",
-      "levelId": "-3"
-    },
-    {
-      "stopId": "429N0176",
       "stopLat": "35.690680",
       "stopLon": "139.693004",
       "locationType": "4",
@@ -3386,14 +3378,6 @@
       "pathwayMode": "1",
       "isBidirectional": "1",
       "length": "7.1"
-    },
-    {
-      "pathwayId": "429L0153",
-      "fromStopId": "429N0173",
-      "toStopId": "429N0176",
-      "pathwayMode": "1",
-      "isBidirectional": "1",
-      "length": "5.2"
     },
     {
       "pathwayId": "429L0160",

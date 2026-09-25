@@ -54,14 +54,14 @@ describe('station guide presentation', () => {
       { id: 'exit', instruction: '出口へ出る', facility: 'exit' as const },
     ])).toBe(1)
   })
-  it('summarizes compressed semantic steps and safely falls back for uncertain gates', () => {
+  it('summarizes compressed semantic steps and current fare-gate topology', () => {
     const graph = buildIndoorGraph(akabanebashiGtfsPathways)
     const result = buildGtfsStationGuide(graph, { id: '422', name: '赤羽橋', operator: '東京都交通局', line: '大江戸線' }, { platformId: '422P2', exitNodeId: '422N0012' }, 'shortest', buildAkabanebashiStationMapCompressionContext(graph))
     expect(result.ok).toBe(true)
     if (!result.ok) return
     const presented = withStationGuidePresentation(result.guide)
-    expect(presented.summary).toMatchObject({ stairsCount: 2, escalatorCount: 1, fareGateCount: 0 })
-    expect(presented.sections?.map(section => section.title)).toEqual(['ホームから出口へ', '地上へ'])
+    expect(presented.summary).toMatchObject({ stairsCount: 2, escalatorCount: 1, fareGateCount: 1 })
+    expect(presented.sections?.map(section => section.title)).toEqual(['ホームから改札へ', '改札から出口へ', '地上へ'])
     expect(presented.sections?.flatMap(section => section.steps)).toHaveLength(result.guide.steps.length)
   })
 

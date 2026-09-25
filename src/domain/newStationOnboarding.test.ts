@@ -2,11 +2,13 @@ import { afterEach, describe, expect, it } from 'vitest'
 import type { RawGtfsPathwaysStationData, IndoorGraph, IndoorRouteCompressionContext } from './indoorRouting'
 import { buildGtfsStationGuide, buildIndoorGraph, findPlatformGateLevelConsensus } from './indoorRouting'
 import { withStationGuidePresentation, withWalkDistanceInstructions } from './stationGuidePresentation'
+import { presentOfficialHomeGuidance } from './officialGuidancePresentation'
+import type { OfficialGuidance } from '../data/stationOfficialGuidance'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
 import { buildRegisteredStationMapCompressionContext, registerStationMap, stationMapRegistry } from '../data/stationMaps/registry'
 import type { StationRef } from './types'
 
-const TEST_STATION_ID = 'test-generic-station'
+const TEST_STATION_ID = 'test-generic-official-guidance'
 
 const station: StationRef = { id: TEST_STATION_ID, name: 'テスト新駅', operator: 'test operator', line: 'test line' }
 
@@ -21,12 +23,12 @@ const gtfsOnlyFixture: RawGtfsPathwaysStationData = {
   stationId: TEST_STATION_ID,
   stationName: station.name,
   source: { name: 'synthetic onboarding fixture', url: 'https://example.test/test-generic-station', license: 'test', feedVersion: 'test-1', retrievedAt: '2026-09-22' },
-  levels: [-2, -1, 0],
+  levels: [-2, -1.75, -1.5, -1, 0],
   stops: [
     { id: 'test-platform', name: '1', latitude: 35, longitude: 139, locationType: 0, levelIndex: -2, platformCode: '1' },
     { id: 'test-boarding', latitude: 35.00001, longitude: 139, locationType: 4, parentPlatformId: 'test-platform', levelIndex: -2 },
     { id: 'test-walk-before', latitude: 35.00011, longitude: 139, locationType: 3, levelIndex: -2 },
-    { id: 'test-stairs-a', latitude: 35.00021, longitude: 139, locationType: 3, levelIndex: -2 },
+    { id: 'test-stairs-a', latitude: 35.00021, longitude: 139, locationType: 3, levelIndex: -1.75 },
     { id: 'test-landing', latitude: 35.00031, longitude: 139, locationType: 3, levelIndex: -1.5 },
     { id: 'test-stairs-b', latitude: 35.00041, longitude: 139, locationType: 3, levelIndex: -1 },
     { id: 'test-gate-approach', latitude: 35.00051, longitude: 139, locationType: 3, levelIndex: -1 },
@@ -93,5 +95,53 @@ describe('new-station onboarding', () => {
     const result = buildGtfsStationGuide(graph, station, { platformId: 'test-platform', exitNodeId: 'test-exit' }, 'shortest', undefined)
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.guide.steps.filter(step => step.facility === 'stairs')).toHaveLength(2)
+  })
+
+  it('generates scoped official home guidance for an unknown station without station-specific runtime logic', () => {
+    const graph = buildIndoorGraph(gtfsOnlyFixture)
+    const consensus = findPlatformGateLevelConsensus(graph, 'test-platform', ['test-exit'])
+    const officialGuidance: OfficialGuidance[] = [
+      {
+        scope: 'platform-to-gate',
+        carPositions: ['5号車付近'],
+        equipment: 'elevator',
+        direction: null,
+        source: { url: 'https://example.test/official-map' },
+      },
+      {
+        scope: 'gate-to-exit',
+        equipment: 'escalator',
+        direction: null,
+        source: { url: 'https://example.test/official-map' },
+      },
+    ]
+
+    const presentation = presentOfficialHomeGuidance(officialGuidance, consensus?.direction)
+    expect(presentation.carPositionHint).toBe('できれば5号車付近に乗る')
+    expect(presentation.homeInstruction).toBe('エレベーターで改札階へ上がる')
+    expect(presentation.homeInstruction).not.toContain('エスカレーター')
+  })
+
+  it('does not invent up/down when neither official direction nor GTFS consensus exists', () => {
+    const guidance: OfficialGuidance[] = [{
+      scope: 'platform-to-gate',
+      carPositions: ['5号車付近'],
+      equipment: 'elevator',
+      direction: null,
+      source: { url: 'https://example.test/official-map' },
+    }]
+    const presentation = presentOfficialHomeGuidance(guidance)
+    expect(presentation.homeInstruction).toBe('エレベーターを使う')
+    expect(presentation.homeInstruction).not.toMatch(/上がる|下りる/)
+  })
+
+  it('uses explicit official direction when present', () => {
+    const guidance: OfficialGuidance[] = [{
+      scope: 'platform-to-gate',
+      equipment: 'escalator',
+      direction: 'down',
+      source: { url: 'https://example.test/official-map' },
+    }]
+    expect(presentOfficialHomeGuidance(guidance).homeInstruction).toBe('エスカレーターで改札階へ下りる')
   })
 })
