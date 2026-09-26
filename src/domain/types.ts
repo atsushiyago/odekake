@@ -10,10 +10,29 @@ export interface Trip {
   id: string; serviceDate: string; leaveHomeAt: string; arriveBy: string
   originLabel: string; destinationLabel: string; legs: TripLeg[]; arrivalStation: StationRef
 }
+/** A semantic action's contiguous interval in one actual, directed traversal. */
+export interface RouteActionSource {
+  originNodeId: string
+  exitNodeId: string
+  firstRouteIndex: number
+  lastRouteIndex: number
+  semanticType: string
+  traversals: Array<{ edgeId: string; fromNodeId: string; toNodeId: string }>
+}
+
 export interface GuideStep {
   id: string; instruction: string; facility?: 'stairs' | 'escalator' | 'elevator' | 'gate' | 'exit'
   evidence?: {
     source: 'gtfs-pathways' | 'manual-review'; sourceUrl: string; edgeIds?: string[]; fromNodeId?: string; toNodeId?: string
+    /** Separate intervals per candidate; never a fabricated cross-candidate traversal. */
+    routeOrder?: RouteActionSource[]
+    /** Independent home instruction plus the proof delimiting GTFS detail. */
+    homeGuidance?: {
+      scope: 'platform-to-gate'
+      sourceUrls: string[]
+      levelConsensus?: { platformLevel: number; gateLevel: number; direction: 'up' | 'down'; candidateCount: number }
+      rejoinSources: RouteActionSource[]
+    }
     /** Number of precise GTFS boarding-area routes that contain this factual event. */
     candidateCoverage?: { matchingOrigins: number; totalOrigins: number; allRoutesHaveEvent?: boolean; aggregateCount?: number }
     /** Sum of the source pathway lengths represented by this semantic step. */

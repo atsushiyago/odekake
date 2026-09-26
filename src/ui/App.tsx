@@ -7,7 +7,6 @@ import {
   type ReactNode,
 } from 'react';
 import type {
-  GuideStep,
   PrintableGuide,
   StationGuide,
   WalkingRoute,
@@ -30,13 +29,11 @@ import {
   commonRouteSuffix,
   compactIndoorRouteSteps,
   findIndoorRoute,
-  findPlatformGateLevelConsensus,
   findRoutesFromPlatform,
   formatIndoorStep,
   platformOriginNodes,
   routePreferenceSupport,
   type IndoorGraph,
-  type PlatformGateLevelConsensus,
   type RoutePreference,
   type VerifiedIndoorRouteAnchor,
   type VerifiedStationGuideDetails,
@@ -47,8 +44,7 @@ import {
   type ElderlyRouteScore,
 } from '../domain/elderlyRouteScoring';
 import { stationOfficialGuidanceByStationId } from '../data/stationOfficialGuidance';
-import type { StationOfficialGuidance } from '../data/stationOfficialGuidance';
-import { presentOfficialHomeGuidance } from '../domain/officialGuidancePresentation';
+import { buildHomeToGateGuideModel, type HomeToGateGuideModel } from '../domain/homeToGateGuide';
 import {
   formatAlightingHomeAction,
   formatExitAction,
@@ -70,11 +66,6 @@ import {
   outdoorMapZoomForDistance,
   webMercatorPixel,
 } from '../domain/outdoorMap';
-import {
-  withFareGateExitDirections,
-  withStationGuidePresentation,
-  withWalkDistanceInstructions,
-} from '../domain/stationGuidePresentation';
 import {
   outingCoursePresetById,
   outingCoursePresets,
@@ -437,63 +428,6 @@ function BackPage({
   );
 }
 
-/** A StationGuide alone must not be mixed with an unrelated train or walking fixture. */
-function paperSections(
-  guide: StationGuide,
-  levelTransitionOnlyHome: boolean,
-  platformInstruction?: GuideStep,
-) {
-  const gateIndex = guide.steps.findIndex((step) => step.facility === 'gate');
-  const hidden = levelTransitionOnlyHome
-    ? new Set(
-        guide.steps
-          .slice(0, gateIndex >= 0 ? gateIndex : guide.steps.length)
-          .map((step) => step.id),
-      )
-    : new Set<string>();
-  let number = 0;
-  const sections = (guide.sections ?? [])
-    .map((section) => ({
-      ...section,
-      steps: section.steps
-        .filter((step) => !hidden.has(step.id))
-        .map((step) => ({ step, number: ++number })),
-    }))
-    .filter((section) => section.steps.length > 0);
-  if (!platformInstruction) return sections;
-  const platformSection = sections.find(
-    (section) => section.id === 'platform-to-gate',
-  );
-  if (platformSection) {
-    const index = sections.indexOf(platformSection);
-    const steps = [
-      { step: platformInstruction, number: 0 },
-      ...platformSection.steps,
-    ];
-    const renumbered = sections.map((section, sectionIndex) =>
-      sectionIndex === index ? { ...section, steps } : section,
-    );
-    let nextNumber = 0;
-    return renumbered.map((section) => ({
-      ...section,
-      steps: section.steps.map((entry) => ({ ...entry, number: ++nextNumber })),
-    }));
-  }
-  const withPlatformSection = [
-    {
-      id: 'platform-to-gate',
-      title: 'ホームから改札へ',
-      steps: [{ step: platformInstruction, number: 0 }],
-    },
-    ...sections,
-  ];
-  let nextNumber = 0;
-  return withPlatformSection.map((section) => ({
-    ...section,
-    steps: section.steps.map((entry) => ({ ...entry, number: ++nextNumber })),
-  }));
-}
-
 interface PaginationBlock {
   id: string;
   node: ReactNode;
@@ -589,104 +523,21 @@ function PaginatedPaper({
 }
 
 function IndoorStationPaper({
-  stationGuide,
-  graph,
+  paperModel,
   connection,
   departurePlatform,
-  arrivalPlatformFloor,
-  stationGuideMetadata,
-  levelTransitionConsensus,
   backRoute,
-  humanizeWalkDistance = false,
-  humanizeGateDirection = false,
 }: {
-  stationGuide: StationGuide;
-  graph?: IndoorGraph;
+  paperModel: HomeToGateGuideModel;
   connection?: ArrivalPlatformConnection;
   departurePlatform?: OfficialDeparturePlatformAssignment;
-  arrivalPlatformFloor?: OutingCoursePreset['arrivalPlatformFloor'];
-  stationGuideMetadata?: StationOfficialGuidance;
-  levelTransitionConsensus?: PlatformGateLevelConsensus | null;
   backRoute?: WalkingRoute;
-  humanizeWalkDistance?: boolean;
-  humanizeGateDirection?: boolean;
 }) {
   const leg = connection?.leg;
-  const directed = graph
-    ? withFareGateExitDirections(stationGuide, graph, {
-        enabled: humanizeGateDirection,
-      })
-    : stationGuide;
-  const presentation = withStationGuidePresentation(
-    withWalkDistanceInstructions(directed, { enabled: humanizeWalkDistance }),
-  );
-  // The first semantic edge may begin after a common-prefix compression. Use
-  // the registered platform's boarding-area nodes for the floor check instead
-  // of assuming that edge evidence starts at the platform itself.
-  const corroboratedFloor =
-    arrivalPlatformFloor &&
-    connection &&
-    graph &&
-    [...graph.nodes.values()].some(
-      (node) =>
-        node.parentPlatformId === connection.platformId &&
-        node.levelIndex === arrivalPlatformFloor.levelIndex,
-    )
-      ? arrivalPlatformFloor.label
-      : undefined;
-  const preGatePresentation = stationGuideMetadata?.preGatePresentation;
-  const hasLevelConsensus = Boolean(levelTransitionConsensus);
-  const hideHomeDetails =
-    preGatePresentation === 'safe-rejoin' && hasLevelConsensus;
-  const displayOfficialGuidance =
-    stationGuideMetadata &&
-    (!stationGuideMetadata.requiresLevelConsensus || hasLevelConsensus);
-  const officialHomePresentation = presentOfficialHomeGuidance(
-    displayOfficialGuidance ? stationGuideMetadata.officialGuidance : [],
-    levelTransitionConsensus?.direction,
-  );
-  const baseSections = paperSections(presentation, hideHomeDetails);
-  const boardingInstruction =
-    departurePlatform || officialHomePresentation.carPositionHint
-      ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${officialHomePresentation.carPositionHint ? `${departurePlatform ? '、' : ''}${officialHomePresentation.carPositionHint}` : '乗る'}`
-      : undefined;
-  const homeEquipmentInstruction = officialHomePresentation.homeInstruction;
-  const homeSectionHasVerticalAction =
-    baseSections
-      .find((section) => section.id === 'platform-to-gate')
-      ?.steps.some(
-        ({ step }) =>
-          step.facility === 'stairs' ||
-          step.facility === 'escalator' ||
-          step.facility === 'elevator',
-      ) ?? false;
-  const abstractLevelInstruction =
-    levelTransitionConsensus &&
-    !homeSectionHasVerticalAction &&
-    (preGatePresentation === 'safe-rejoin' ||
-      !displayOfficialGuidance)
-      ? `ホームから改札階へ${levelTransitionConsensus?.direction === 'down' ? '下りる' : '上がる'}`
-      : undefined;
-  const homePlatformInstruction =
-    (homeEquipmentInstruction ?? abstractLevelInstruction)
-      ? {
-          id: 'paper-home-vertical',
-          instruction: homeEquipmentInstruction ?? abstractLevelInstruction!,
-          evidence:
-            homeEquipmentInstruction && officialHomePresentation.sourceUrl
-              ? {
-                  source: 'manual-review' as const,
-                  sourceUrl: officialHomePresentation.sourceUrl,
-                }
-              : undefined,
-        }
-      : undefined;
-  const gateFloorInstruction = (step: GuideStep) => step.instruction;
-  const sections = paperSections(
-    presentation,
-    hideHomeDetails,
-    homePlatformInstruction,
-  );
+  const { guide: presentation, sections, arrivalFloorLabel: corroboratedFloor, carPositionHint } = paperModel;
+  const boardingInstruction = departurePlatform || carPositionHint
+    ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${carPositionHint ? `${departurePlatform ? '、' : ''}${carPositionHint}` : '乗る'}`
+    : undefined;
   const blocks: PaginationBlock[] = [];
   if (leg)
     blocks.push({
@@ -747,7 +598,7 @@ function IndoorStationPaper({
               <span>{number}</span>
               {step.facility === 'exit'
                 ? formatExitAction(presentation.exit)
-                : gateFloorInstruction(step)}
+                : step.instruction}
             </p>
           </section>
         ),
@@ -1639,13 +1490,17 @@ export default function App() {
           'shortest',
           compressionContext,
         );
-    const levelTransitionConsensus = findPlatformGateLevelConsensus(
-      graph,
-      arrival.connection.platformId,
-      Array.isArray(course.preferredExitId)
-        ? course.preferredExitId
-        : [course.preferredExitId],
-    );
+    const paperModel = stationGuide.ok
+      ? buildHomeToGateGuideModel({
+          guide: stationGuide.guide, graph,
+          platformId: arrival.connection.platformId,
+          exitNodeIds: Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId],
+          selectedRoute: elderlyScore?.route,
+          metadata: stationOfficialGuidanceByStationId[dataset.station.id],
+          arrivalPlatformFloor: course.arrivalPlatformFloor,
+          humanizeWalkDistance: true, humanizeGateDirection: true,
+        })
+      : undefined;
     return stationGuide.ok
       ? {
           ok: true as const,
@@ -1657,7 +1512,7 @@ export default function App() {
           elderlyScore: elderlyScore ?? undefined,
           stationGuideMetadata:
             stationOfficialGuidanceByStationId[dataset.station.id],
-          levelTransitionConsensus,
+          paperModel: paperModel!,
         }
       : {
           ok: false as const,
@@ -1791,17 +1646,9 @@ export default function App() {
               <PaperPreviewFrame label="A4表面">
                 {' '}
                 <IndoorStationPaper
-                  stationGuide={itineraryGuide.guide}
-                  graph={itineraryGuide.graph}
+                  paperModel={itineraryGuide.paperModel}
                   connection={itineraryGuide.connection}
                   departurePlatform={itineraryGuide.departurePlatform}
-                  arrivalPlatformFloor={course.arrivalPlatformFloor}
-                  stationGuideMetadata={itineraryGuide.stationGuideMetadata}
-                  levelTransitionConsensus={
-                    itineraryGuide.levelTransitionConsensus
-                  }
-                  humanizeWalkDistance
-                  humanizeGateDirection
                 />
               </PaperPreviewFrame>
               <PaperPreviewFrame label="A4裏面">

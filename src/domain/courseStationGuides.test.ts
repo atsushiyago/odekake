@@ -15,6 +15,7 @@ import { buildTochomaeStationMapCompressionContext, buildTochomaeStationMapOverl
 import { buildAkabanebashiStationMapCompressionContext } from '../data/stationMaps/akabanebashi'
 import { summarizeStationGuide } from './stationGuidePresentation'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
+import { findSafeGateRejoin } from './safeRejoin'
 
 describe('course station guides', () => {
   it('finds the generic partial-escalator route for Daimon B2', () => {
@@ -149,7 +150,7 @@ describe('course station guides', () => {
     expect(ids).toContain('403L0083')
   })
 
-  it('summarizes Shinjuku-nishiguchi D3 fare gates from aggregate candidate coverage', () => {
+  it('does not merge different Shinjuku-nishiguchi gates merely because each candidate crosses one gate', () => {
     const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '402')!
     const graph = buildIndoorGraph(dataset.gtfs)
     const result = buildGtfsStationGuide(
@@ -162,11 +163,9 @@ describe('course station guides', () => {
     expect(result).toMatchObject({ ok: true })
     if (result.ok) {
       const gates = result.guide.steps.filter(step => step.facility === 'gate')
-      expect(gates).toHaveLength(1)
-      expect(gates.every(step => step.evidence?.candidateCoverage?.allRoutesHaveEvent)).toBe(true)
-      expect(gates.every(step => step.evidence?.candidateCoverage?.aggregateCount === 1)).toBe(true)
-      expect(gates[0]?.evidence?.edgeIds).toEqual(expect.arrayContaining(['402L0190', '402L0194']))
-      expect(summarizeStationGuide(result.guide)).toMatchObject({ stairsCount: 1, fareGateCount: 1 })
+      expect(gates).toHaveLength(0)
+      expect(findSafeGateRejoin(graph, '402P1', ['402N0002'])).toEqual({ ok: false, reason: 'different-gates' })
+      expect(summarizeStationGuide(result.guide)).toMatchObject({ stairsCount: 1, fareGateCount: 0 })
     }
   })
 
@@ -227,17 +226,17 @@ describe('course station guides', () => {
     }
   })
 
-  it('restores Ueno Okachimachi consensus stairs before the common suffix', () => {
+  it('does not infer one Ueno Okachimachi stair action from different candidate stair sequences', () => {
     const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '410')!
     const graph = buildIndoorGraph(dataset.gtfs)
     const result = buildGtfsStationGuide(graph, dataset.station, { platformId: '410P1', exitNodeId: '410N0016' }, 'shortest', buildUenoOkachimachiStationMapCompressionContext(graph))
     expect(result).toMatchObject({ ok: true })
     if (result.ok) {
-      expect(result.guide.steps[0]?.instruction).toBe('階段を上がる')
-      expect(result.guide.steps[0]?.evidence?.candidateCoverage?.matchingOrigins).toBe(11)
-      expect(result.guide.steps[0]?.evidence?.candidateCoverage?.totalOrigins).toBe(11)
-      expect(result.guide.steps[0]?.evidence?.edgeIds).toEqual(['410L0048', '410L0049', '410L0050', '410L0043', '410L0045'])
-      const postGateStairs = result.guide.steps.filter(step => step.facility === 'stairs').slice(1)
+      const gateIndex = result.guide.steps.findIndex(step => step.facility === 'gate')
+      expect(gateIndex).toBeGreaterThanOrEqual(0)
+      expect(result.guide.steps.slice(0, gateIndex).some(step => step.facility === 'stairs')).toBe(false)
+      expect(findSafeGateRejoin(graph, '410P1', ['410N0016'])).toMatchObject({ ok: true, candidateCount: 11 })
+      const postGateStairs = result.guide.steps.slice(gateIndex + 1).filter(step => step.facility === 'stairs')
       expect(postGateStairs).toHaveLength(2)
       expect(postGateStairs.at(-1)?.evidence?.edgeIds).toEqual(['410L0164', '410L0165', '410L0166'])
     }
@@ -252,7 +251,6 @@ describe('course station guides', () => {
     ['427', '427P2', '427N0084', buildYoyogiStationMapCompressionContext, '地下1階'],
     ['403', '403P2', '403N0019', buildHigashiShinjukuStationMapCompressionContext, '地下2階'],
     ['428', '428P7', '428N0193', buildShinjukuStationMapCompressionContext, '地下3階'],
-    ['402', '402P1', '402N0002', buildShinjukuNishiguchiStationMapCompressionContext, '地下3階'],
     ['410', '410P1', '410N0016', buildUenoOkachimachiStationMapCompressionContext, '地下1階'],
     ['429', '429P4', '429N0093', buildTochomaeStationMapCompressionContext, '地下2階'],
   ] as const)('resolves the visible fare-gate floor generically for station %s', (stationId, platformId, exitNodeId, buildContext, expectedFloor) => {

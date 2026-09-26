@@ -46,23 +46,43 @@ export function scoreElderlyRoute(graph: IndoorGraph, originId: string, exitId: 
   return { originId, exitId, route, stairs, escalators, elevators, equipmentChanges: changes, decisionPoints: decisions, distanceMeters: route.distanceMeters, equipmentUses, ranking: [stairs, changes, decisions, route.distanceMeters, equipmentUses] }
 }
 
-function compare(a: ElderlyRouteScore, b: ElderlyRouteScore) {
-  // The first three criteria are hard priorities. Distance and number of
-  // equipment uses are compared normally, except that nearly-equal routes
-  // may use ES as a small tie-breaker (ES is never globally preferred over EV).
-  for (let i = 0; i < 3; i += 1) {
-    if (a.ranking[i] !== b.ranking[i]) return a.ranking[i] - b.ranking[i]
+function canonicalTraversalKey(candidate: ElderlyRouteScore): string {
+  return JSON.stringify([candidate.originId, candidate.exitId,
+    candidate.route.edges.map(edge => [edge.id, edge.fromNodeId, edge.toNodeId])])
+}
+
+/** Selects from an already-generated set; never changes search or semantic scoring.
+ * Distance equivalence is anchored once to the hard-priority group's minimum,
+ * not to each pair (which would make the preference non-transitive).
+ */
+export function selectBestElderlyRoute(candidates: readonly ElderlyRouteScore[]): ElderlyRouteScore | null {
+  let group = candidates.filter(candidate => {
+    const { route } = candidate
+    return [candidate.stairs, candidate.equipmentChanges, candidate.decisionPoints,
+      candidate.distanceMeters, candidate.equipmentUses, candidate.escalators, candidate.elevators]
+      .every(value => Number.isFinite(value) && value >= 0)
+      && route.nodes.length === route.edges.length + 1
+      && route.nodes[0]?.id === candidate.originId
+      && route.nodes.at(-1)?.id === candidate.exitId
+      && route.edges.every((edge, index) => edge.fromNodeId === route.nodes[index].id
+        && edge.toNodeId === route.nodes[index + 1].id)
+  })
+  if (!group.length) return null
+  const retainMinimum = (value: (candidate: ElderlyRouteScore) => number) => {
+    const minimum = group.reduce((best, candidate) => Math.min(best, value(candidate)), Infinity)
+    group = group.filter(candidate => value(candidate) === minimum)
   }
-  const distanceDelta = a.distanceMeters - b.distanceMeters
-  if (Math.abs(distanceDelta) <= ELDERLY_ROUTE_DISTANCE_TIE_METERS) {
-    if (a.equipmentUses !== b.equipmentUses) return a.equipmentUses - b.equipmentUses
-    if (a.escalators !== b.escalators) return b.escalators - a.escalators
-  }
-  if (distanceDelta !== 0) return distanceDelta
-  if (a.equipmentUses !== b.equipmentUses) return a.equipmentUses - b.equipmentUses
-  if (a.escalators !== b.escalators) return b.escalators - a.escalators
-  if (a.elevators !== b.elevators) return a.elevators - b.elevators
-  return a.route.edges.map(edge => edge.id).join(',').localeCompare(b.route.edges.map(edge => edge.id).join(','))
+  retainMinimum(candidate => candidate.stairs)
+  retainMinimum(candidate => candidate.equipmentChanges)
+  retainMinimum(candidate => candidate.decisionPoints)
+  const minimumDistance = group.reduce((best, candidate) => Math.min(best, candidate.distanceMeters), Infinity)
+  group = group.filter(candidate => candidate.distanceMeters <= minimumDistance + ELDERLY_ROUTE_DISTANCE_TIE_METERS)
+  retainMinimum(candidate => candidate.equipmentUses)
+  retainMinimum(candidate => -candidate.escalators)
+  retainMinimum(candidate => candidate.distanceMeters)
+  retainMinimum(candidate => candidate.elevators)
+  // IDs have no semantic priority: use directed traversals only after all scores tie.
+  return group.reduce((best, candidate) => canonicalTraversalKey(candidate) < canonicalTraversalKey(best) ? candidate : best)
 }
 
 /**
@@ -82,7 +102,7 @@ export function findBestElderlyRoute(graph: IndoorGraph, platformId: string, exi
       }
     }
   }
-  return [...candidates.values()].sort(compare)[0] ?? null
+  return selectBestElderlyRoute([...candidates.values()])
 }
 
 export function formatElderlyRouteScore(score: ElderlyRouteScore) {
