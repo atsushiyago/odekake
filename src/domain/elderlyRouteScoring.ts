@@ -1,4 +1,5 @@
 import { compactIndoorRouteSteps, findRoutesFromPlatform, routeTopologyContext, type IndoorGraph, type IndoorMovementType, type IndoorRoute, type IndoorRouteCompressionContext } from './indoorRouting'
+import { computeRouteCost, type RouteCost } from './routeCost'
 
 export interface ElderlyRouteScore {
   originId: string
@@ -16,6 +17,33 @@ export interface ElderlyRouteScore {
 }
 
 export const ELDERLY_ROUTE_DISTANCE_TIE_METERS = 10
+
+export type MobilityProfileId = 'balanced' | 'escalator-preferred' | 'elevator-preferred'
+export interface MobilityProfile {
+  id: MobilityProfileId
+  equipmentPreference: 'neutral' | 'escalator' | 'elevator'
+}
+export const MOBILITY_PROFILES: Readonly<Record<MobilityProfileId, MobilityProfile>> = {
+  balanced: { id: 'balanced', equipmentPreference: 'neutral' },
+  'escalator-preferred': { id: 'escalator-preferred', equipmentPreference: 'escalator' },
+  'elevator-preferred': { id: 'elevator-preferred', equipmentPreference: 'elevator' },
+}
+
+/** Profile-level distance-equivalence setting; retained at the existing 10m. */
+export const MOBILITY_PROFILE_DISTANCE_TIE_METERS = ELDERLY_ROUTE_DISTANCE_TIE_METERS
+
+export interface MobilityRouteCandidate { score: ElderlyRouteScore; cost: RouteCost }
+export interface MobilityCandidateDiagnostic extends MobilityRouteCandidate {
+  inBaseGroup: boolean
+  inDistanceGroup: boolean
+  selected: boolean
+  reason: string
+}
+export interface MobilitySelectionResult {
+  profile: MobilityProfile
+  selected: MobilityRouteCandidate | null
+  candidates: MobilityCandidateDiagnostic[]
+}
 
 const equipment = new Set<IndoorMovementType>(['stairs', 'escalator', 'elevator'])
 
@@ -85,12 +113,113 @@ export function selectBestElderlyRoute(candidates: readonly ElderlyRouteScore[])
   return group.reduce((best, candidate) => canonicalTraversalKey(candidate) < canonicalTraversalKey(best) ? candidate : best)
 }
 
+function routeKey(candidate: ElderlyRouteScore) {
+  return JSON.stringify([candidate.originId, candidate.exitId,
+    candidate.route.edges.map(edge => [edge.id, edge.fromNodeId, edge.toNodeId])])
+}
+
+function baseGroup(candidates: readonly MobilityRouteCandidate[]) {
+  let group = [...candidates].filter(({ score }) => selectBestElderlyRoute([score]) !== null)
+  const minimize = (value: (candidate: MobilityRouteCandidate) => number) => {
+    if (!group.length) return
+    const best = Math.min(...group.map(value))
+    group = group.filter(candidate => value(candidate) === best)
+  }
+  minimize(({ score }) => score.stairs)
+  minimize(({ score }) => score.equipmentChanges)
+  minimize(({ score }) => score.decisionPoints)
+  return group
+}
+
+function validRouteCost(cost: RouteCost) {
+  const knownValues = [cost.knownWalkingMeters, cost.knownPathwayMeters, cost.equipmentInstanceTransfers,
+    cost.equipmentTypeChanges, cost.unresolvedEquipmentTransitions, cost.unresolvedEquipmentGroups,
+    cost.decisionPoints, ...Object.values(cost.observedSemanticUses), ...Object.values(cost.verticalActions)]
+  const optionalValues = [cost.walkingMeters, cost.totalPathwayMeters, cost.stairs.uses, cost.escalatorUses,
+    cost.elevatorUses, cost.equipmentBoardings]
+  return knownValues.every(value => Number.isFinite(value) && value >= 0)
+    && optionalValues.every(value => value === null || (Number.isFinite(value) && value >= 0))
+}
+
+/** Pure candidate-set profile selection with a trace explaining every rejection. */
+export function selectBestRoute(candidates: readonly MobilityRouteCandidate[], profile: MobilityProfile = MOBILITY_PROFILES.balanced): MobilitySelectionResult {
+  const valid = candidates.filter(candidate => validRouteCost(candidate.cost) && selectBestElderlyRoute([candidate.score]) !== null)
+  const base = baseGroup(valid)
+  const minDistance = base.length ? Math.min(...base.map(({ score }) => score.distanceMeters)) : Infinity
+  const distanceGroup = base.filter(({ score }) => score.distanceMeters <= minDistance + MOBILITY_PROFILE_DISTANCE_TIE_METERS)
+  let preferenceGroup = [...distanceGroup]
+  if (profile.id !== 'balanced' && preferenceGroup.length) {
+    // Unresolved evidence cannot masquerade as a zero-cost/known transition.
+    const uncertainty = (candidate: MobilityRouteCandidate) => candidate.cost.unresolvedEquipmentGroups + candidate.cost.unresolvedEquipmentTransitions
+    const bestUncertainty = Math.min(...preferenceGroup.map(uncertainty))
+    preferenceGroup = preferenceGroup.filter(candidate => uncertainty(candidate) === bestUncertainty)
+    const confirmedTransfers = preferenceGroup.map(candidate => candidate.cost.equipmentInstanceTransfers)
+    if (confirmedTransfers.every(Number.isFinite)) {
+      const fewestTransfers = Math.min(...confirmedTransfers)
+      preferenceGroup = preferenceGroup.filter(candidate => candidate.cost.equipmentInstanceTransfers === fewestTransfers)
+    }
+    const boardings = preferenceGroup.map(candidate => candidate.cost.equipmentBoardings)
+    // If any remaining route has unknown boardings, do not treat null as zero;
+    // retain the whole set and let only known per-type preference evidence apply.
+    if (boardings.every((value): value is number => value !== null)) {
+      const fewest = Math.min(...boardings)
+      preferenceGroup = preferenceGroup.filter(candidate => candidate.cost.equipmentBoardings === fewest)
+    }
+    const preferredCounts = preferenceGroup.map(candidate => profile.equipmentPreference === 'escalator'
+      ? candidate.cost.escalatorUses : candidate.cost.elevatorUses)
+    if (preferredCounts.every((value): value is number => value !== null)) {
+      const most = Math.max(...preferredCounts)
+      preferenceGroup = preferenceGroup.filter(candidate => (profile.equipmentPreference === 'escalator'
+        ? candidate.cost.escalatorUses : candidate.cost.elevatorUses) === most)
+    }
+  }
+  // Balanced retains the prior deterministic collection rule exactly. Preferred
+  // profiles use its remaining neutral tie-breaks after applying their preference.
+  const tieBreak = (pool: MobilityRouteCandidate[]) => {
+    if (!pool.length) return null
+    if (profile.id === 'balanced') return selectBestElderlyRoute(pool.map(candidate => candidate.score))
+    const minUses = Math.min(...pool.map(({ score }) => score.equipmentUses))
+    pool = pool.filter(({ score }) => score.equipmentUses === minUses)
+    const minDistance = Math.min(...pool.map(({ score }) => score.distanceMeters))
+    pool = pool.filter(({ score }) => score.distanceMeters === minDistance)
+    const minElevators = Math.min(...pool.map(({ score }) => score.elevators))
+    pool = pool.filter(({ score }) => score.elevators === minElevators)
+    return pool.map(candidate => candidate.score).reduce((best, current) => routeKey(current) < routeKey(best) ? current : best)
+  }
+  const selectedScore = tieBreak(preferenceGroup)
+  const selected = selectedScore ? valid.find(candidate => routeKey(candidate.score) === routeKey(selectedScore)) ?? null : null
+  const diagnostics = candidates.map(candidate => {
+    const isValid = valid.includes(candidate)
+    const inBaseGroup = base.some(item => routeKey(item.score) === routeKey(candidate.score))
+    const inDistanceGroup = distanceGroup.some(item => routeKey(item.score) === routeKey(candidate.score))
+    const isSelected = selected !== null && routeKey(candidate.score) === routeKey(selected.score)
+    const reason = isSelected ? 'Selected after base burden, global distance window and profile preference'
+      : !isValid ? 'Rejected: invalid route or malformed cost evidence'
+      : !inBaseGroup ? 'Rejected by stairs, equipment type changes, or decision points'
+        : !inDistanceGroup ? `Outside global Dmin + ${MOBILITY_PROFILE_DISTANCE_TIE_METERS}m window`
+          : !preferenceGroup.some(item => routeKey(item.score) === routeKey(candidate.score))
+            ? profile.id === 'balanced' ? 'Rejected by balanced semantic-use/ES/distance tie-breaks'
+              : 'Rejected by unresolved-evidence, boarding-count, or profile equipment preference'
+            : 'Deterministic canonical traversal tie-break'
+    return { ...candidate, inBaseGroup, inDistanceGroup, selected: isSelected, reason }
+  })
+  return { profile, selected, candidates: diagnostics }
+}
+
+function mobilityCandidates(graph: IndoorGraph, candidates: readonly ElderlyRouteScore[], compressionContext?: IndoorRouteCompressionContext): MobilityRouteCandidate[] {
+  return candidates.map(score => ({ score, cost: computeRouteCost(score.route, { graph, compression: compressionContext }) }))
+}
+
+export function selectBestMobilityRoute(graph: IndoorGraph, candidates: readonly ElderlyRouteScore[], profile: MobilityProfile = MOBILITY_PROFILES.balanced, compressionContext?: IndoorRouteCompressionContext): MobilitySelectionResult {
+  return selectBestRoute(mobilityCandidates(graph, candidates, compressionContext), profile)
+}
+
 /**
  * Collects the repository's existing route variants, then chooses a route
  * using transparent elderly-oriented criteria. No station or pathway IDs are
  * embedded here; official car-position wording remains separate data.
  */
-export function findBestElderlyRoute(graph: IndoorGraph, platformId: string, exitIds: string[], compressionContext?: IndoorRouteCompressionContext): ElderlyRouteScore | null {
+export function findBestElderlyRoute(graph: IndoorGraph, platformId: string, exitIds: string[], compressionContext?: IndoorRouteCompressionContext, profile: MobilityProfile = MOBILITY_PROFILES.balanced): ElderlyRouteScore | null {
   const variants = ['shortest', 'avoid-stairs', 'elevator-priority', 'escalator-priority'] as const
   const candidates = new Map<string, ElderlyRouteScore>()
   for (const exitId of exitIds) {
@@ -102,7 +231,9 @@ export function findBestElderlyRoute(graph: IndoorGraph, platformId: string, exi
       }
     }
   }
-  return selectBestElderlyRoute([...candidates.values()])
+  const scores = [...candidates.values()]
+  if (profile.id === 'balanced') return selectBestElderlyRoute(scores)
+  return selectBestMobilityRoute(graph, scores, profile, compressionContext).selected?.score ?? null
 }
 
 export function formatElderlyRouteScore(score: ElderlyRouteScore) {
