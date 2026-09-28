@@ -42,7 +42,7 @@ describe('generic RouteCost measurement (not selection)', () => {
     expect(cost.waitingSeconds).toBeNull()
   })
   it.each(['escalator', 'elevator'] as const)('C: explicitly proven %s entrance/flight/exit is one session', type => {
-    const f = fixture([type, type, type], [2, 10, 2], [-2, -2, -1, -1])
+    const f = fixture(['walk', type, 'walk'], [2, 10, 2], [-2, -2, -1, -1])
     const compression: IndoorRouteCompressionContext = { byPathwayId: Object.fromEntries(f.route.edges.map(edge => [edge.id, { facilityId: 'fixture-device' }])) }
     const cost = computeRouteCost(f.route, { ...f, compression, sessionProofs: [proof(0, 2, 'survey/device', [0, 2])] })
     expect(cost[type === 'escalator' ? 'escalatorUses' : 'elevatorUses']).toBe(1)
@@ -50,8 +50,9 @@ describe('generic RouteCost measurement (not selection)', () => {
     expect(cost.equipmentInstanceTransfers).toBe(0)
     expect(cost.verticalActions).toEqual({ up: 1, down: 0, unknown: 0 })
     const action = cost.evidence.find(e => e.metric === 'equipment')!
-    expect(action.semanticAction!.evidence.edgeIds).toEqual(f.route.edges.map(e => e.id))
-    expect(action.semanticAction!.evidence.routeOrder![0].traversals).toHaveLength(3)
+    expect(action.semanticAction!.evidence.edgeIds).toEqual([f.route.edges[1].id])
+    expect(action.semanticAction!.evidence.routeOrder![0].traversals).toHaveLength(1)
+    expect(action.sessionProof?.connectorRouteIndices).toEqual([0, 2])
     expect(action.sessionProof?.source).toContain('explicit-session-survey')
   })
   it('D: distinct ES instances, same type, two boardings and one transfer', () => {
@@ -111,9 +112,9 @@ describe('generic RouteCost measurement (not selection)', () => {
     expect(cost.unresolvedEquipmentTransitions).toBe(0)
   })
   it('explicit session evidence does not invent unknown flight direction', () => {
-    const f = fixture(['escalator', 'escalator', 'escalator'], [2, 10, 2], [-2, -2, undefined, undefined])
+    const f = fixture(['walk', 'escalator', 'walk'], [2, 10, 2], [-2, -2, -2, -2])
     const compression = { byPathwayId: Object.fromEntries(f.route.edges.map(edge => [edge.id, { facilityId: 'device' }])) }
-    const cost = computeRouteCost(f.route, { ...f, compression, sessionProofs: [proof(0, 2, 'survey/A', [0])] })
+    const cost = computeRouteCost(f.route, { ...f, compression, sessionProofs: [proof(0, 2, 'survey/A', [0, 2])] })
     expect(cost.escalatorUses).toBe(1)
     expect(cost.verticalActions).toEqual({ up: 0, down: 0, unknown: 1 })
   })

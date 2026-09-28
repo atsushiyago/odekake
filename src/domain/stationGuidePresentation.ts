@@ -101,15 +101,96 @@ export function withWalkDistanceInstructions(guide: StationGuide, options: { ena
   return { ...guide, steps }
 }
 
-/** Adds a gate-following turn only when adjacent GTFS geometry passes safety checks. */
+const directionInstruction: Record<'left' | 'right' | 'straight', string> = {
+  left: '左へ進む', right: '右へ進む', straight: 'まっすぐ進む',
+}
+
+/**
+ * A turn can be separated from a gate only when the actual directed route
+ * proves a contiguous walk → gate → walk sequence for every represented
+ * candidate. The turn is a zero-length semantic event at the boundary; the
+ * adjacent steps keep ownership of their pathway traversals.
+ */
+function gateMovementRouteContext(before: GuideStep | undefined, gate: GuideStep, after: GuideStep, decision: NonNullable<ReturnType<typeof deriveFareGateExitDirection>>) {
+  const beforeSources = before?.evidence?.routeOrder ?? []
+  const gateSources = gate.evidence?.routeOrder ?? []
+  const afterSources = after.evidence?.routeOrder ?? []
+  if (!before || before.facility || after.facility || beforeSources.length === 0 || gateSources.length === 0 || afterSources.length === 0) return undefined
+  if (gate.evidence?.fromNodeId !== decision.currentNodeId || after.evidence?.toNodeId !== decision.nextNodeId) return undefined
+
+  const contexts: NonNullable<NonNullable<GuideStep['evidence']>['direction']>['routeContext'] = []
+  for (const gateSource of gateSources) {
+    const matching = (sources: typeof beforeSources) => sources.filter(source => source.originNodeId === gateSource.originNodeId && source.exitNodeId === gateSource.exitNodeId)
+    const [approach] = matching(beforeSources)
+    const [movement] = matching(afterSources)
+    if (matching(beforeSources).length !== 1 || matching(afterSources).length !== 1 || !approach || !movement) return undefined
+    const gateTraversal = gateSource.traversals.length === 1 ? gateSource.traversals[0] : undefined
+    const approachStart = approach.traversals[0]
+    const approachEnd = approach.traversals.at(-1)
+    const movementTraversal = movement.traversals[0]
+    if (!gateTraversal || gateSource.semanticType !== 'fare-gate' || approach.semanticType !== 'walk' || movement.semanticType !== 'walk') return undefined
+    if (approach.lastRouteIndex - approach.firstRouteIndex !== approach.traversals.length - 1
+      || gateSource.lastRouteIndex !== gateSource.firstRouteIndex
+      || movement.lastRouteIndex - movement.firstRouteIndex !== movement.traversals.length - 1) return undefined
+    if (approach.lastRouteIndex + 1 !== gateSource.firstRouteIndex || gateSource.lastRouteIndex + 1 !== movement.firstRouteIndex) return undefined
+    if (gateTraversal.fromNodeId !== gate.evidence?.fromNodeId || gateTraversal.toNodeId !== gate.evidence?.toNodeId) return undefined
+    if (approachStart?.fromNodeId !== decision.previousNodeId || approachEnd?.toNodeId !== gateTraversal.fromNodeId
+      || movementTraversal?.fromNodeId !== gateTraversal.toNodeId || movement.traversals.at(-1)?.toNodeId !== decision.nextNodeId) return undefined
+    contexts.push({
+      originNodeId: gateSource.originNodeId,
+      exitNodeId: gateSource.exitNodeId,
+      approachRouteIndex: approach.lastRouteIndex,
+      gateRouteIndex: gateSource.firstRouteIndex,
+      movementRouteIndex: movement.firstRouteIndex,
+    })
+  }
+  return contexts.length === gateSources.length ? contexts : undefined
+}
+
+/** Splits a proven post-gate turn into its own semantic action, without moving route traversals between steps. */
 export function withFareGateExitDirections(guide: StationGuide, graph: IndoorGraph, options: { enabled?: boolean } = {}): StationGuide {
   if (!options.enabled) return guide
-  const steps = guide.steps.map((step, index, all) => {
-    if (step.facility !== 'gate' || !step.evidence) return step
-    const decision = deriveFareGateExitDirection(graph, all[index - 1], step, all[index + 1])
-    if (!decision || !decision.result) return step
-    const gatePrefix = step.evidence?.officialFloor ? `${step.evidence.officialFloor.label}の改札を通ったら` : '改札を通ったら'
-    return { ...step, instruction: `${gatePrefix}${decision.result === 'left' ? '左' : '右'}へ進む`, evidence: { ...step.evidence, direction: { previousNodeId: decision.previousNodeId, currentNodeId: decision.currentNodeId, nextNodeId: decision.nextNodeId, angleDegrees: decision.angleDegrees, result: decision.result, reason: decision.reason } } }
+  const steps: GuideStep[] = []
+  guide.steps.forEach((step, index, all) => {
+    if (step.facility !== 'gate' || !step.evidence || all[index + 1]?.id === `${step.id}-post-gate-movement`) {
+      steps.push(step)
+      return
+    }
+    const before = all[index - 1]
+    const after = all[index + 1]
+    const decision = deriveFareGateExitDirection(graph, before, step, after)
+    const routeContext = decision?.result && after ? gateMovementRouteContext(before, step, after, decision) : undefined
+    if (!decision?.result || !routeContext || !after) {
+      steps.push(step)
+      return
+    }
+
+    const gateEvidence = { ...step.evidence }
+    delete gateEvidence.direction
+    steps.push({
+      ...step,
+      instruction: step.evidence.officialFloor ? `${step.evidence.officialFloor.label}の改札を通る` : '改札を通る',
+      evidence: gateEvidence,
+    })
+    steps.push({
+      id: `${step.id}-post-gate-movement`,
+      instruction: directionInstruction[decision.result],
+      evidence: {
+        source: after.evidence?.source ?? step.evidence.source,
+        sourceUrl: after.evidence?.sourceUrl ?? step.evidence.sourceUrl,
+        fromNodeId: step.evidence.toNodeId,
+        toNodeId: decision.nextNodeId,
+        direction: {
+          previousNodeId: decision.previousNodeId,
+          currentNodeId: decision.currentNodeId,
+          nextNodeId: decision.nextNodeId,
+          angleDegrees: decision.angleDegrees,
+          result: decision.result,
+          reason: decision.reason,
+          routeContext,
+        },
+      },
+    })
   })
   return { ...guide, steps }
 }

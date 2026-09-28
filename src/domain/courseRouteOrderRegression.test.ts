@@ -3,9 +3,12 @@ import { outingCoursePresets } from '../data/coursePresets'
 import { loadedOedo2026IndoorDatasets } from '../data/catalogs/oedo2026IndoorDatasets'
 import { buildRegisteredStationMapCompressionContext } from '../data/stationMaps/registry'
 import { stationOfficialGuidanceByStationId } from '../data/stationOfficialGuidance'
+import { staticGtfsRailJourneyRepository } from '../data/repositories/staticGtfsRailJourneyRepository'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
 import { buildGtfsStationGuide, buildGtfsStationGuideFromRoute, buildIndoorGraph } from './indoorRouting'
 import { buildHomeToGateGuideModel } from './homeToGateGuide'
+import { resolveArrivalPlatform, resolveDeparturePlatform } from './itineraryConnection'
+import { buildTrainJourneyPaperPresentation, formatStationName } from './trainJourneyPaperPresentation'
 import { withFareGateExitDirections, withWalkDistanceInstructions } from './stationGuidePresentation'
 
 // Test data only: before/after actual paper wording and directed route digests.
@@ -24,6 +27,14 @@ const regression = [
   {"station":"上野御徒町","id":"410","routeHash":"105f469bd191e9e4248e5bbaf65127bd0b6f04e6ee159c81f5e39a21b119e42a","before":["エスカレーターで改札階へ上がる","地下1階の改札を通る","通路を約130m（約220歩）進む","階段を使う","通路を約15m（約30歩）進む","階段を使う","通路を約3m（約10歩）進む","A7へ出る"],"after":["エスカレーターで改札階へ上がる","地下1階の改札を通る","通路を約130m（約220歩）進む","階段を使う","通路を約15m（約30歩）進む","階段を使う","通路を約3m（約10歩）進む","A7へ出る"],"car":"できれば6号車付近に乗る","rejoin":true,"coverage":11},
   {"station":"都庁前","id":"429","routeHash":"d2a8d2f6fdaa055fa5ec9ff0fdfd3813e072facf060036469878694326fa7d7d","before":["エレベーターで改札階へ上がる","地下2階の改札を通ったら左へ進む","通路を約90m（約150歩）進む","エスカレーターで上がる","通路を約20m（約40歩）進む","エスカレーターで上がる","通路を約20m（約40歩）進む","階段を使う","通路を約4m（約10歩）進む","A4へ出る"],"after":["エレベーターで改札階へ上がる","地下2階の改札を通ったら左へ進む","通路を約90m（約150歩）進む","エスカレーターで上がる","通路を約20m（約40歩）進む","エスカレーターで上がる","通路を約20m（約40歩）進む","階段を使う","通路を約4m（約10歩）進む","A4へ出る"],"car":"できれば4号車付近に乗る","rejoin":true,"coverage":13},
 ]
+
+/** Historical paper snapshots predate the evidence-backed gate/turn split. */
+function splitLegacyGateTurnExpectation(instructions: string[]) {
+  return instructions.flatMap(instruction => {
+    const match = instruction.match(/^(.*の改札)を通ったら(左|右|まっすぐ)へ進む$/)
+    return match ? [`${match[1]}を通る`, `${match[2]}へ進む`] : [instruction]
+  })
+}
 
 describe('all supported courses through the domain paper model', () => {
   it.each(regression)('$station: preserves route truth, post-gate detail, ordered provenance and audited paper wording', async expected => {
@@ -60,8 +71,9 @@ describe('all supported courses through the domain paper model', () => {
       humanizeWalkDistance: true, humanizeGateDirection: true,
     })
     expect(JSON.stringify(built.guide)).toBe(before)
-    expect(model.guide.steps.map(step => step.instruction)).toEqual(expected.after)
+    expect(model.guide.steps.map(step => step.instruction)).toEqual(splitLegacyGateTurnExpectation(expected.after))
     expect(model.carPositionHint).toBe(expected.car)
+    expect(model.carPositionLabel).toBe(expected.car?.replace(/^できれば/, '').replace(/に乗る$/, ''))
     expect(model.safeRejoin.ok).toBe(expected.rejoin)
     if (model.safeRejoin.ok) expect(model.safeRejoin.candidateCount).toBe(expected.coverage)
     expect(model.guide.steps.filter(step => step.facility === 'gate')).toHaveLength(1)
@@ -70,6 +82,43 @@ describe('all supported courses through the domain paper model', () => {
     const visibleGate = model.guide.steps.findIndex(step => step.facility === 'gate')
     expect(model.guide.steps.slice(visibleGate)).toEqual(original.steps.slice(originalGate))
     expect(model.sections.flatMap(section => section.steps.map(entry => entry.step))).toEqual(model.guide.steps)
+
+    const journey = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: course.originStationName, destinationName: course.arrivalStationName,
+      departureDate: '2026-09-21', departureTime: '07:00',
+    })
+    expect(journey.ok, `${expected.station}: train leg`).toBe(true)
+    if (!journey.ok) return
+    const arrival = resolveArrivalPlatform(journey.leg, course.arrivalStationId, course.arrivalPlatformAssignments)
+    const departure = resolveDeparturePlatform(journey.leg, course.originStationId, course.departurePlatformAssignments)
+    expect(arrival.ok, `${expected.station}: official arrival platform`).toBe(true)
+    expect(departure.ok, `${expected.station}: official departure platform`).toBe(true)
+    if (!arrival.ok || !departure.ok) return
+    const trainPaper = buildTrainJourneyPaperPresentation({
+      stationGuide: model.guide, arrivalConnection: arrival.connection, departurePlatform: departure.assignment,
+      carPositionLabel: model.carPositionLabel, verifiedArrivalFloorLabel: model.arrivalFloorLabel,
+    })
+    expect(trainPaper.departure).toMatchObject({
+      stationName: formatStationName(journey.leg.from.stationName),
+      time: journey.leg.from.departureTime,
+      routeName: journey.leg.routeName,
+      headsign: journey.leg.headsign,
+      platformLabel: `${departure.assignment.platformCode}番ホーム`,
+      carPositionLabel: expected.car?.replace(/^できれば/, '').replace(/に乗る$/, ''),
+      platformSourceUrl: departure.assignment.source.url,
+    })
+    expect(trainPaper.arrival).toMatchObject({
+      stationName: formatStationName(journey.leg.to.stationName),
+      time: journey.leg.to.arrivalTime,
+      platformLabel: model.guide.arrivalPlatform,
+      floorLabel: model.arrivalFloorLabel,
+      platformSourceUrl: arrival.connection.assignment.source.url,
+    })
+    expect(trainPaper.stationGuide).toBe(model.guide)
+    expect(trainPaper.stationGuide.steps).toHaveLength(splitLegacyGateTurnExpectation(expected.after).length)
+    expect(trainPaper.stationGuide.steps.map(step => step.id)).toEqual(model.guide.steps.map(step => step.id))
+    expect(trainPaper.stationGuide.steps.map(step => step.evidence?.edgeIds)).toEqual(model.guide.steps.map(step => step.evidence?.edgeIds))
+    expect(trainPaper.stationGuide.steps.map(step => step.evidence?.routeOrder)).toEqual(model.guide.steps.map(step => step.evidence?.routeOrder))
 
     // Also exercise the unselected candidate-merge path, not only the scorer.
     const merged = buildGtfsStationGuide(graph, dataset.station, { platformId, exitNodeId: course.preferredExitId! }, 'shortest', context)

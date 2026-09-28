@@ -15,13 +15,6 @@ export const akabanebashiToTokyoTowerWalkingRoute = buildPublishedOutdoorWalking
   from: { label: '赤羽橋駅 赤羽橋口', latitude: 35.654787, longitude: 139.744901 },
   to: { label: '東京タワー（フットタウン）', latitude: 35.658581, longitude: 139.745433 },
   officialMinutes: 5,
-  directions: [
-    '赤羽橋口を出たら、正面の横断歩道を渡る。',
-    '渡り終えたら、右側の横断歩道を渡る。ガソリンスタンドがある側へ進む。',
-    'ガソリンスタンドを左にして、歩道をまっすぐ進む。',
-    '左側に公園の木が見える歩道を進み、交差点で左へ進む。',
-    '少し進むと東京タワーに着く。',
-  ],
   sourceUrl: 'https://en.tokyotower.co.jp/access/railroad/',
   retrievedAt: '2026-09-20',
   stationExitConnection: { stationId: '422', exitNodeId: '422N0012', exitLabel: '赤羽橋口' },

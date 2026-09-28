@@ -1,10 +1,11 @@
 import type { StationOfficialGuidance } from '../data/stationOfficialGuidance'
-import { findPlatformGateLevelConsensus, type IndoorGraph, type IndoorRoute } from './indoorRouting'
+import { findPlatformGateLevelConsensus, type IndoorGraph, type IndoorRoute, type IndoorRouteCompressionContext } from './indoorRouting'
 import { presentOfficialHomeGuidance } from './officialGuidancePresentation'
 import { fareGateIdentity } from './routeOrder'
 import { findSafeGateRejoin } from './safeRejoin'
 import { withFareGateExitDirections, withStationGuidePresentation, withWalkDistanceInstructions } from './stationGuidePresentation'
 import type { GuideStep, StationGuide } from './types'
+import { withVerifiedVerticalMovementInstructions } from './verticalMovementPresentation'
 
 /** Domain-owned paper composition. The UI never chooses a semantic boundary,
  * removes GTFS actions or decides whether an official route can be spliced in.
@@ -19,12 +20,14 @@ export function buildHomeToGateGuideModel(input: {
   arrivalPlatformFloor?: { label: string; levelIndex: number }
   humanizeWalkDistance?: boolean
   humanizeGateDirection?: boolean
+  compressionContext?: IndoorRouteCompressionContext
 }) {
   const { graph, platformId, metadata } = input
   const consensus = findPlatformGateLevelConsensus(graph, platformId, input.exitNodeIds)
   const safeRejoin = findSafeGateRejoin(graph, platformId, input.exitNodeIds, input.selectedRoute)
   const directed = withFareGateExitDirections(input.guide, graph, { enabled: input.humanizeGateDirection })
-  const presentation = withWalkDistanceInstructions(directed, { enabled: input.humanizeWalkDistance })
+  const walked = withWalkDistanceInstructions(directed, { enabled: input.humanizeWalkDistance })
+  const presentation = withVerifiedVerticalMovementInstructions(walked, graph, input.compressionContext?.officialFloorsByLevelIndex)
   const official = presentOfficialHomeGuidance(
     metadata && (!metadata.requiresLevelConsensus || consensus) ? metadata.officialGuidance : [],
     consensus?.direction,
@@ -69,7 +72,15 @@ export function buildHomeToGateGuideModel(input: {
   const sections = (guide.sections ?? []).map(section => ({ ...section, steps: section.steps.map(step => ({ step, number: ++number })) }))
   const floor = input.arrivalPlatformFloor
   const arrivalFloorLabel = floor && [...graph.nodes.values()].some(node => node.parentPlatformId === platformId && node.levelIndex === floor.levelIndex) ? floor.label : undefined
-  return { guide, sections, carPositionHint: official.carPositionHint, arrivalFloorLabel, safeRejoin, hiddenHomeDetails }
+  return {
+    guide,
+    sections,
+    carPositionLabel: official.carPositionLabel,
+    carPositionHint: official.carPositionHint,
+    arrivalFloorLabel,
+    safeRejoin,
+    hiddenHomeDetails,
+  }
 }
 
 export type HomeToGateGuideModel = ReturnType<typeof buildHomeToGateGuideModel>

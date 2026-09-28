@@ -19,6 +19,6 @@ export const yamatoToKozashibuyaFixture: PrintableGuide = {
   },
   walkingRoute: {
     id: 'fixture-koza-shibuya-west-to-learning-center', from: { label: '高座渋谷駅 西口' }, to: { label: '大和市渋谷学習センター' }, distanceMeters: 550, baseMinutes: 8, slowWalkingMultiplier: 1.5,
-    directions: ['西口を出たら、目的地の案内を確認する。', 'この地図は概略図です。交差点では周囲の案内表示を確認する。', '大和市渋谷学習センターに着く。'], verifiedAt: '2026-09-20', confidence: 'needs-review'
+    verifiedAt: '2026-09-20', confidence: 'needs-review'
   }
 }

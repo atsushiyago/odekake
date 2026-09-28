@@ -43,6 +43,172 @@ export interface MobilitySelectionResult {
   profile: MobilityProfile
   selected: MobilityRouteCandidate | null
   candidates: MobilityCandidateDiagnostic[]
+  /** Present when unresolved evidence prevents a defensible winner. */
+  selectionBlockedBy?: string
+}
+
+type EvidenceMetric = 'stairs' | 'escalator' | 'elevator' | 'boardings' | 'transfers' | 'typeChanges'
+interface EvidenceBounds { lower: number; upper: number }
+
+function evidenceBounds(candidate: MobilityRouteCandidate, metric: EvidenceMetric): EvidenceBounds {
+  const { cost } = candidate
+  if (metric === 'stairs') return cost.stairs.uses === null
+    ? { lower: cost.observedSemanticUses.stairs, upper: Infinity }
+    : { lower: cost.stairs.uses, upper: cost.stairs.uses }
+  if (metric === 'escalator') return cost.escalatorUses === null
+    ? { lower: cost.observedSemanticUses.escalator, upper: Infinity }
+    : { lower: cost.escalatorUses, upper: cost.escalatorUses }
+  if (metric === 'elevator') return cost.elevatorUses === null
+    ? { lower: cost.observedSemanticUses.elevator, upper: Infinity }
+    : { lower: cost.elevatorUses, upper: cost.elevatorUses }
+  if (metric === 'boardings') return cost.equipmentBoardings === null
+    ? { lower: Object.values(cost.observedSemanticUses).reduce((sum, value) => sum + value, 0), upper: Infinity }
+    : { lower: cost.equipmentBoardings, upper: cost.equipmentBoardings }
+  if (metric === 'transfers') return cost.unresolvedEquipmentTransitions > 0
+    ? { lower: cost.equipmentInstanceTransfers, upper: Infinity }
+    : { lower: cost.equipmentInstanceTransfers, upper: cost.equipmentInstanceTransfers }
+  return { lower: cost.equipmentTypeChanges, upper: cost.equipmentTypeChanges }
+}
+
+/**
+ * Retain a minimum/maximum only when the available exact values and lower bounds
+ * prove a candidate (or tied candidates) no worse than every alternative.
+ * Overlapping intervals are incomparable; their lower bounds are never treated
+ * as exact values.
+ */
+function retainProvablyBest(candidates: readonly MobilityRouteCandidate[], metric: EvidenceMetric,
+  preference: 'min' | 'max'): { candidates: MobilityRouteCandidate[]; comparable: boolean } {
+  if (candidates.length < 2) return { candidates: [...candidates], comparable: true }
+  const bounds = new Map(candidates.map(candidate => [candidate, evidenceBounds(candidate, metric)]))
+  const proven = candidates.filter(candidate => candidates.every(other => {
+    if (candidate === other) return true
+    const own = bounds.get(candidate)!, alternative = bounds.get(other)!
+    return preference === 'min' ? own.upper <= alternative.lower : own.lower >= alternative.upper
+  }))
+  if (proven.length) return { candidates: proven, comparable: true }
+  return { candidates: [...candidates], comparable: false }
+}
+
+/** Shadow-only selector. Production keeps using selectBestRoute unchanged. */
+export function selectBestEvidenceAwareRoute(candidates: readonly MobilityRouteCandidate[],
+  profile: MobilityProfile = MOBILITY_PROFILES.balanced): MobilitySelectionResult {
+  const valid = candidates.filter(candidate => validRouteCost(candidate.cost) && selectBestElderlyRoute([candidate.score]) !== null)
+  let pool = [...valid]
+  let basePool = [...valid]
+  let distancePool = [...valid]
+  let selectionBlockedBy: string | undefined
+  const comparisonNotes = new Map<MobilityRouteCandidate, string[]>()
+  const applyEvidenceMinimum = (metric: EvidenceMetric) => {
+    const result = retainProvablyBest(pool, metric, 'min')
+    if (!result.comparable) {
+      selectionBlockedBy = metric
+      for (const candidate of pool) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push(`${metric} unresolved/incomparable; lower bound not treated as exact`)
+        comparisonNotes.set(candidate, note)
+      }
+    } else {
+      const retained = new Set(result.candidates)
+      for (const candidate of pool) if (!retained.has(candidate)) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push(`${metric} count proven no better than another candidate`)
+        comparisonNotes.set(candidate, note)
+      }
+    }
+    pool = result.candidates
+  }
+
+  // Preserve the established burden priority, but do not let an unresolved
+  // observed count masquerade as a confirmed low count.
+  applyEvidenceMinimum('stairs')
+  if (!selectionBlockedBy) applyEvidenceMinimum('typeChanges')
+  if (!selectionBlockedBy) {
+    const decisions = pool.length ? Math.min(...pool.map(candidate => candidate.cost.decisionPoints)) : Infinity
+    pool = pool.filter(candidate => candidate.cost.decisionPoints === decisions)
+  }
+  basePool = [...pool]
+
+  // Distance is measured independently of equipment certainty.
+  if (!selectionBlockedBy) {
+    const minDistance = pool.length ? Math.min(...pool.map(({ score }) => score.distanceMeters)) : Infinity
+    pool = pool.filter(({ score }) => score.distanceMeters <= minDistance + MOBILITY_PROFILE_DISTANCE_TIE_METERS)
+  }
+  distancePool = [...pool]
+
+  // Balanced preserves its established neutral equipment-change semantics;
+  // transfers are only an explicit profile tie-break today.
+  if (!selectionBlockedBy && profile.id !== 'balanced') applyEvidenceMinimum('transfers')
+  if (!selectionBlockedBy) applyEvidenceMinimum('boardings')
+  const preferredMetric: EvidenceMetric | null = profile.equipmentPreference === 'escalator' ? 'escalator'
+    : profile.equipmentPreference === 'elevator' ? 'elevator' : null
+  if (!selectionBlockedBy && preferredMetric) {
+    const result = retainProvablyBest(pool, preferredMetric, 'max')
+    if (!result.comparable) {
+      for (const candidate of pool) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push(`evidence insufficient for ${profile.equipmentPreference} preference`)
+        comparisonNotes.set(candidate, note)
+      }
+    } else {
+      const retained = new Set(result.candidates)
+      for (const candidate of pool) if (!retained.has(candidate)) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push(`${profile.equipmentPreference} use proven no better than another candidate`)
+        comparisonNotes.set(candidate, note)
+      }
+    }
+    pool = result.candidates
+  } else if (!selectionBlockedBy) {
+    const result = retainProvablyBest(pool, 'escalator', 'max')
+    if (!result.comparable) {
+      for (const candidate of pool) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push('escalator evidence insufficient for balanced tie-break')
+        comparisonNotes.set(candidate, note)
+      }
+    } else {
+      const retained = new Set(result.candidates)
+      for (const candidate of pool) if (!retained.has(candidate)) {
+        const note = comparisonNotes.get(candidate) ?? []
+        note.push('escalator use proven no better than another candidate')
+        comparisonNotes.set(candidate, note)
+      }
+    }
+    pool = result.candidates
+  }
+  // Stable, evidence-neutral tie-breaks; no observed unresolved use count here.
+  if (!selectionBlockedBy && pool.length) {
+    const shortest = Math.min(...pool.map(({ score }) => score.distanceMeters))
+    pool = pool.filter(({ score }) => score.distanceMeters === shortest)
+  }
+  if (!selectionBlockedBy) {
+    const finalElevators = retainProvablyBest(pool, 'elevator', 'min')
+    pool = finalElevators.candidates
+  }
+  const selected = selectionBlockedBy ? null : pool.reduce<MobilityRouteCandidate | null>((best, candidate) =>
+    !best || routeKey(candidate.score) < routeKey(best.score) ? candidate : best, null)
+
+  const diagnostics = candidates.map(candidate => {
+    const isValid = valid.includes(candidate)
+    const isSelected = selected !== null && routeKey(candidate.score) === routeKey(selected.score)
+    const inBaseGroup = basePool.includes(candidate)
+    const inDistanceGroup = distancePool.includes(candidate)
+    const notes = [...(comparisonNotes.get(candidate) ?? [])]
+    if (candidate.cost.unresolvedEquipmentGroups > 0) notes.push('equipment use counts include unresolved groups')
+    if (candidate.cost.unresolvedEquipmentTransitions > 0) notes.push('equipment transfer count is a confirmed lower bound')
+    if (profile.equipmentPreference === 'escalator' && candidate.cost.escalatorUses === null)
+      notes.push('evidence insufficient for escalator preference')
+    if (profile.equipmentPreference === 'elevator' && candidate.cost.elevatorUses === null)
+      notes.push('evidence insufficient for elevator preference')
+    const reason = !isValid ? 'Rejected: invalid route or malformed cost evidence'
+      : selectionBlockedBy ? `No winner: ${selectionBlockedBy} evidence is incomparable; cannot rank lower-priority criteria`
+      : isSelected ? `Selected by evidence-aware ordering${notes.length ? `; ${notes.join('; ')}` : ''}`
+        : !inBaseGroup ? `Rejected by a proven higher-priority burden comparison${notes.length ? `; ${notes.join('; ')}` : ''}`
+          : !inDistanceGroup ? `Outside global Dmin + ${MOBILITY_PROFILE_DISTANCE_TIE_METERS}m window${notes.length ? `; ${notes.join('; ')}` : ''}`
+          : `Not selected after evidence-neutral canonical traversal tie-break${notes.length ? `; ${notes.join('; ')}` : ''}`
+    return { ...candidate, inBaseGroup, inDistanceGroup, selected: isSelected, reason }
+  })
+  return { profile, selected, candidates: diagnostics, ...(selectionBlockedBy ? { selectionBlockedBy } : {}) }
 }
 
 const equipment = new Set<IndoorMovementType>(['stairs', 'escalator', 'elevator'])

@@ -20,6 +20,28 @@ export interface RouteActionSource {
   traversals: Array<{ edgeId: string; fromNodeId: string; toNodeId: string }>
 }
 
+/** Optional evidence attached only to GTFS Pathways with an audited one-to-one walking link. */
+export interface PathwayEnrichment {
+  pathwayId: string
+  verified: true
+  walkingLinkId: string
+  walkingDirection: number
+  pathwayMode: number
+  routeType: number
+  fromStopId: string
+  toStopId: string
+  walkingFromNodeId: string
+  walkingToNodeId: string
+  fromWalkingFloor: number
+  toWalkingFloor: number
+  facilityKind?: 'elevator' | 'escalator'
+  spaceId?: string
+  facilityId?: string | null
+  matchMethod?: 'contained' | 'intersection' | 'nearby' | 'unmatched'
+  /** An elevator may have a distinct area on each served floor. */
+  floorMatches?: Array<{ floor: number; spaceId?: string; facilityId: string | null; method: 'contained' | 'intersection' | 'nearby' | 'unmatched' }>
+}
+
 export interface GuideStep {
   id: string; instruction: string; facility?: 'stairs' | 'escalator' | 'elevator' | 'gate' | 'exit'
   evidence?: {
@@ -38,6 +60,7 @@ export interface GuideStep {
     /** Sum of the source pathway lengths represented by this semantic step. */
     distanceMeters?: number
     mapLocations?: Array<{ pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string }>
+    pathwayEnrichments?: PathwayEnrichment[]
     /** Source levels retained when multiple facility edges are shown as one action. */
     fromLevelIndex?: number; toLevelIndex?: number
     /** Official station-map floor resolved at the semantic layer (never inferred from a raw GTFS level). */
@@ -46,6 +69,11 @@ export interface GuideStep {
     direction?: {
       previousNodeId: string; currentNodeId: string; nextNodeId: string
       angleDegrees: number; result: 'left' | 'right' | 'straight'; reason: string
+      /** Route positions used to derive a standalone post-gate movement. The adjacent route actions retain their own traversal provenance. */
+      routeContext?: Array<{
+        originNodeId: string; exitNodeId: string
+        approachRouteIndex: number; gateRouteIndex: number; movementRouteIndex: number
+      }>
     }
   }
 }
@@ -67,7 +95,7 @@ export interface StationGuide {
 export interface WalkingRoute {
   id: string; from: { label: string; latitude?: number; longitude?: number }
   to: { label: string; latitude?: number; longitude?: number }; distanceMeters?: number
-  baseMinutes: number; slowWalkingMultiplier: number; directions: string[]; timeBasis?: 'official' | 'routing'
+  baseMinutes: number; slowWalkingMultiplier: number; timeBasis?: 'official' | 'routing'
   sourceUrl?: string; verifiedAt: string; confidence: Confidence
   /** Kept separate from station GTFS provenance. No map geometry or turns are inferred. */
   dataSource?: { type: 'official-destination-access' | 'manual-review'; retrievedAt: string; humanReviewed: boolean }

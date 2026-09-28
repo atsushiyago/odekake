@@ -6,7 +6,6 @@ export interface PublishedOutdoorWalkingRoute {
   to: WalkingRoute['to']
   officialMinutes?: number
   routingMinutes?: number
-  directions: string[]
   sourceUrl: string
   retrievedAt: string
   stationExitConnection: NonNullable<WalkingRoute['stationExitConnection']>
@@ -24,7 +23,6 @@ export function buildPublishedOutdoorWalkingRoute(route: PublishedOutdoorWalking
     to: route.to,
     baseMinutes: route.officialMinutes ?? route.routingMinutes ?? 0,
     slowWalkingMultiplier: 1.5,
-    directions: route.directions,
     timeBasis: route.officialMinutes !== undefined ? 'official' : 'routing',
     sourceUrl: route.sourceUrl,
     verifiedAt: route.retrievedAt,

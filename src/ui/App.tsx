@@ -20,6 +20,8 @@ import {
   type IndoorStationDataset,
 } from '../data/catalogs/oedo2026IndoorDatasets';
 import { buildRegisteredStationMapCompressionContext } from '../data/stationMaps/registry';
+import { buildVerifiedPathwayEnrichments } from '../data/verifiedPathwayCrosswalk';
+import { withVerifiedPathwayEnrichment } from '../domain/verifiedPathwayEnrichment';
 import {
   auditIndoorGraph,
   buildGtfsStationGuide,
@@ -46,10 +48,10 @@ import {
 import { stationOfficialGuidanceByStationId } from '../data/stationOfficialGuidance';
 import { buildHomeToGateGuideModel, type HomeToGateGuideModel } from '../domain/homeToGateGuide';
 import {
-  formatAlightingHomeAction,
   formatExitAction,
   formatExitLabel,
 } from '../domain/paperLabels';
+import { buildTrainJourneyPaperPresentation } from '../domain/trainJourneyPaperPresentation';
 import { normalizeStationMapFacilities } from '../domain/stationMap';
 import { buildWalkingNetworkGraph } from '../domain/walkingNetwork';
 import type { ArrivalPlatformConnection } from '../domain/itineraryConnection';
@@ -71,7 +73,6 @@ import {
   outingCoursePresets,
   type OutingCoursePreset,
 } from '../data/coursePresets';
-import { akabanebashiToTokyoTowerWalkingRoute } from '../data/fixtures/akabanebashi-to-tokyo-tower';
 import {
   adjacentCourseIndex,
   isTextEntryTarget,
@@ -413,11 +414,6 @@ function BackPage({
         <small>（{guide.walkingRoute.distanceMeters}m・fixtureの目安）</small>
       </div>
       <WalkingMap />
-      <ol className="walk-steps">
-        {guide.walkingRoute.directions.map((step) => (
-          <li key={step}>{step}</li>
-        ))}
-      </ol>
       <section className="safe">
         <b>迷ったら</b>
         <p>
@@ -533,48 +529,53 @@ function IndoorStationPaper({
   departurePlatform?: OfficialDeparturePlatformAssignment;
   backRoute?: WalkingRoute;
 }) {
-  const leg = connection?.leg;
-  const { guide: presentation, sections, arrivalFloorLabel: corroboratedFloor, carPositionHint } = paperModel;
-  const boardingInstruction = departurePlatform || carPositionHint
-    ? `${departurePlatform ? `${departurePlatform.platformCode}番ホームで` : ''}${carPositionHint ? `${departurePlatform ? '、' : ''}${carPositionHint}` : '乗る'}`
+  const { guide: presentation, sections, arrivalFloorLabel: corroboratedFloor, carPositionLabel } = paperModel;
+  const trainJourney = connection
+    ? buildTrainJourneyPaperPresentation({
+        stationGuide: presentation,
+        arrivalConnection: connection,
+        departurePlatform,
+        carPositionLabel,
+        verifiedArrivalFloorLabel: corroboratedFloor,
+      })
     : undefined;
   const blocks: PaginationBlock[] = [];
-  if (leg)
+  if (trainJourney)
     blocks.push({
       id: 'train',
       node: (
-        <section className="arrival-train">
-          <div className="train-primary-line">
-            <strong className="train-departure-line">
-              {leg.from.stationName} {leg.from.departureTime}発
-            </strong>
-            <span className="train-arrow" aria-hidden="true">→</span>
-            <strong className="train-arrival-line">
-              {leg.to.stationName} {leg.to.arrivalTime}着
+        <section className="arrival-train" aria-label="電車移動">
+          <div className="train-leg-block train-departure-block">
+            <div className="train-station-heading train-departure-heading">
+              <span className="train-action-label">乗る</span>
+              <strong className="train-station-name">{trainJourney.departure.stationName}</strong>
+              <strong className="train-station-time">{trainJourney.departure.time}発</strong>
+            </div>
+            <span className="train-route-line train-departure-route">
+              {trainJourney.departure.routeName}　{trainJourney.departure.headsign}行
+            </span>
+            {trainJourney.departure.platformLabel && (
+              <strong className="train-platform-label train-departure-platform">
+                {trainJourney.departure.platformLabel}
+              </strong>
+            )}
+            {trainJourney.departure.carPositionLabel && (
+              <span className="train-car-position train-departure-car">
+                できれば{trainJourney.departure.carPositionLabel}
+              </span>
+            )}
+          </div>
+          <span className="train-arrow" aria-hidden="true">→</span>
+          <div className="train-leg-block train-arrival-block">
+            <div className="train-station-heading train-arrival-heading">
+              <span className="train-action-label">降りる</span>
+              <strong className="train-station-name">{trainJourney.arrival.stationName}</strong>
+              <strong className="train-station-time">{trainJourney.arrival.time}着</strong>
+            </div>
+            <strong className="train-arrival-platform">
+              {trainJourney.arrival.platformDisplayLabel}
             </strong>
           </div>
-          {boardingInstruction && (
-            <strong className="train-boarding-line">
-              {boardingInstruction}
-            </strong>
-          )}
-          <span className="train-route-line">
-            {leg.routeName}　{leg.headsign}行
-          </span>
-        </section>
-      ),
-    });
-  if (connection)
-    blocks.push({
-      id: 'platform',
-      node: (
-        <section className="arrival-platform">
-          <strong>
-            {formatAlightingHomeAction(
-              presentation.arrivalPlatform,
-              corroboratedFloor,
-            )}
-          </strong>
         </section>
       ),
     });
@@ -675,98 +676,6 @@ function OutdoorWalkingPaper({ route }: { route: WalkingRoute }) {
   return (
     <article className="paper walking-back-paper back-page">
       <OutdoorWalkingContent route={route} />
-    </article>
-  );
-}
-
-/** A sequence diagram, not a geographic map: no unavailable geometry is fabricated. */
-function CompactWalkingDiagram() {
-  return (
-    <div
-      className="compact-walking-map"
-      role="img"
-      aria-label="赤羽橋口から東京タワーまでの徒歩経路図。縮尺や方位は示さない。"
-    >
-      <div>赤羽橋口</div>
-      <i>↓</i>
-      <div>横断歩道を2回</div>
-      <i>↓</i>
-      <div>ガソリンスタンドを左に</div>
-      <i>↓</i>
-      <div>公園の木を左に</div>
-      <i>↓</i>
-      <div className="destination">東京タワー</div>
-      <small>縮尺・方位なし／公式アクセス案内の順序図</small>
-    </div>
-  );
-}
-
-/** The one-page paper is intentionally focused on the station guide; provenance stays compact. */
-function CompactTripPaper({
-  stationGuide,
-  connection,
-  contact,
-}: {
-  stationGuide: StationGuide;
-  connection: ArrivalPlatformConnection;
-  contact: string;
-}) {
-  const walking = akabanebashiToTokyoTowerWalkingRoute;
-  const slowMinutes = Math.ceil(
-    walking.baseMinutes * walking.slowWalkingMultiplier,
-  );
-  return (
-    <article className="paper compact-trip-paper">
-      <h1>東京タワーへ行く</h1>
-      <section className="compact-train">
-        <b>1. 電車に乗る</b>
-        <strong>
-          {connection.leg.from.stationName} {connection.leg.from.departureTime}
-          発
-        </strong>
-        <span>
-          {connection.leg.routeName}　{connection.leg.headsign}行　→　
-          {connection.leg.to.stationName} {connection.leg.to.arrivalTime}着
-        </span>
-      </section>
-      <section className="compact-indoor">
-        <div className="compact-platform">
-          <b>到着ホーム</b>
-          <strong>{stationGuide.arrivalPlatform}</strong>
-          <span>目標：{stationGuide.exit}</span>
-        </div>
-        <ol>
-          {stationGuide.steps.map((step, index) => (
-            <li key={step.id}>
-              <span>{index + 1}</span>
-              {step.instruction}
-            </li>
-          ))}
-        </ol>
-      </section>
-      <section className="compact-outdoor">
-        <h2>3. 赤羽橋口を出たら　東京タワーまで歩く</h2>
-        <div className="compact-outdoor-content">
-          <CompactWalkingDiagram />
-          <div>
-            <p className="compact-walk-time">
-              ゆっくり歩いて 約{slowMinutes}分
-            </p>
-            <ol>
-              {walking.directions.slice(0, 3).map((direction) => (
-                <li key={direction}>{direction}</li>
-              ))}
-            </ol>
-            <p className="compact-arrival">
-              公園の木が左に見える歩道を進み、交差点で左へ。少し進むと東京タワーです。
-            </p>
-          </div>
-        </div>
-      </section>
-      <section className="compact-help">
-        <b>迷ったら</b>{' '}
-        駅では案内表示または係員へ。駅の外では「東京タワーへの行き方」をこの紙を見せて聞いてください。
-      </section>
     </article>
   );
 }
@@ -1490,21 +1399,25 @@ export default function App() {
           'shortest',
           compressionContext,
         );
-    const paperModel = stationGuide.ok
+    const enrichedGuide = stationGuide.ok
+      ? withVerifiedPathwayEnrichment(stationGuide.guide, graph, buildVerifiedPathwayEnrichments(graph))
+      : undefined;
+    const paperModel = enrichedGuide
       ? buildHomeToGateGuideModel({
-          guide: stationGuide.guide, graph,
+          guide: enrichedGuide, graph,
           platformId: arrival.connection.platformId,
           exitNodeIds: Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId],
           selectedRoute: elderlyScore?.route,
           metadata: stationOfficialGuidanceByStationId[dataset.station.id],
           arrivalPlatformFloor: course.arrivalPlatformFloor,
+          compressionContext,
           humanizeWalkDistance: true, humanizeGateDirection: true,
         })
       : undefined;
     return stationGuide.ok
       ? {
           ok: true as const,
-          guide: stationGuide.guide,
+          guide: enrichedGuide!,
           graph,
           connection: arrival.connection,
           departurePlatform: departure.ok ? departure.assignment : undefined,
@@ -1639,6 +1552,24 @@ export default function App() {
           )}
         </div>
       </section>
+      {debugEnabled && itineraryGuide.ok && (
+        <details className="no-print network-note">
+          <summary>選択経路のPathway enrichment</summary>
+          <pre>{JSON.stringify(itineraryGuide.paperModel.guide.steps.flatMap((step) =>
+            (step.evidence?.edgeIds ?? []).map((pathwayId) => {
+              const enrichment = step.evidence?.pathwayEnrichments?.find((item) => item.pathwayId === pathwayId);
+              const edge = itineraryGuide.graph.edges.find((item) => item.id === pathwayId);
+              return {
+                step: step.instruction, pathwayId, verified: Boolean(enrichment),
+                walkingLinkId: enrichment?.walkingLinkId,
+                pathwayType: edge?.movementType, routeType: enrichment?.routeType,
+                direction: enrichment?.walkingDirection,
+                spaceId: enrichment?.spaceId, facilityId: enrichment?.facilityId,
+                matchMethod: enrichment?.matchMethod,
+              };
+            })), null, 2)}</pre>
+        </details>
+      )}
       <section className="print-area">
         <div className="preview-pages">
           {itineraryGuide.ok && itineraryGuide.walkingRoute ? (

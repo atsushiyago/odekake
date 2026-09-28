@@ -18,7 +18,7 @@ describe('station guide presentation', () => {
     expect(withWalkDistanceInstructions(guide, { enabled: true }).steps.map(step => step.instruction)).toEqual(['通路を約8m（約15歩）進む', '通路を約15m（約30歩）進む', '通路を約70m（約120歩）進む', '階段を上がる'])
     expect(withWalkDistanceInstructions(guide, { enabled: true }).steps[1].evidence?.distanceMeters).toBe(14.7)
   })
-  it('humanizes only the experimental Daimon B2 guide and keeps gate direction evidence', () => {
+  it('separates the experimental Daimon B2 gate action from its geometry-backed turn', () => {
     const dataset = loadedOedo2026IndoorDatasets.find(item => item.station.id === '421')!
     const graph = buildIndoorGraph(dataset.gtfs)
     const result = buildGtfsStationGuide(graph, dataset.station, { platformId: '421P3', exitNodeId: '421N0015' }, 'shortest', buildDaimonStationMapCompressionContext(graph))
@@ -27,8 +27,14 @@ describe('station guide presentation', () => {
     const presented = withWalkDistanceInstructions(withFareGateExitDirections(result.guide, graph, { enabled: true }), { enabled: true })
     const directed = withStationGuidePresentation(presented)
     expect(directed.steps.some(step => step.instruction === '通路を約70m（約120歩）進む')).toBe(true)
-    const gate = directed.steps.find(step => step.facility === 'gate')
-    expect(gate?.instruction).toBe('地下3階の改札を通ったら左へ進む')
+    const gateIndex = directed.steps.findIndex(step => step.facility === 'gate')
+    const gate = directed.steps[gateIndex]
+    const movement = directed.steps[gateIndex + 1]
+    expect(gate?.instruction).toBe('地下3階の改札を通る')
+    expect(gate?.evidence?.edgeIds?.length).toBeGreaterThan(0)
+    expect(gate?.evidence?.direction).toBeUndefined()
+    expect(movement?.instruction).toBe('左へ進む')
+    expect(movement?.evidence?.direction?.routeContext?.length).toBeGreaterThan(0)
     const withoutExperiment = withWalkDistanceInstructions(result.guide, { enabled: false })
     expect(withoutExperiment.steps.some(step => step.instruction.includes('約68m'))).toBe(false)
   })

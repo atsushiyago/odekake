@@ -1,4 +1,4 @@
-import type { IndoorGraph, IndoorMovementType, IndoorRouteCompressionContext, IndoorSource } from './indoorRouting.ts'
+import type { FacilityMappingEvidence, IndoorGraph, IndoorMovementType, IndoorRouteCompressionContext, IndoorSource } from './indoorRouting.ts'
 
 export type IndoorMapFacilityCategory = 'F011' | 'F012' | 'F013'
 export interface RawStationMapFloor { id: string; ordinal: number; name: string }
@@ -18,7 +18,7 @@ export interface StationMapFacility extends RawStationMapFacility { floorName: s
  */
 export interface StationMapCompressionOverlay {
   sourceUrl: string
-  byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string }>
+  byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string; facilityMapping?: FacilityMappingEvidence }>
   officialFloorsByLevelIndex?: Record<number, { label: string; sourceUrl: string }>
 }
 
@@ -100,7 +100,15 @@ export function buildStationMapCompressionOverlay(input: {
       const candidates = facilityFeatures.filter(item => item.category === category).map(item => ({ ...item, distance: Math.min(...endpoints.map(point => distanceMeters(point, item.point!)), distanceMeters(midpoint, item.point!)) })).filter(item => item.distance <= (input.facilityMatchRadiusMeters ?? 15)).sort((a, b) => a.distance - b.distance)
       chosenFacility = candidates[0]
     }
-    if (chosenSpace || chosenFacility) byPathwayId[edge.id] = { spaceId: chosenSpace ? String(chosenSpace.properties?.id ?? '') || undefined : undefined, facilityId: chosenFacility ? String(chosenFacility.feature.properties?.id ?? '') || undefined : undefined, facilityGroupId: chosenFacility ? groupFor(chosenFacility) : undefined }
+    if (chosenSpace || chosenFacility) byPathwayId[edge.id] = {
+      spaceId: chosenSpace ? String(chosenSpace.properties?.id ?? '') || undefined : undefined,
+      facilityId: chosenFacility ? String(chosenFacility.feature.properties?.id ?? '') || undefined : undefined,
+      facilityGroupId: chosenFacility ? groupFor(chosenFacility) : undefined,
+      // Current pathway-to-point association is nearest-feature matching. Preserve
+      // that provenance for display compression, but never promote it to physical
+      // equipment identity proof.
+      ...(chosenFacility ? { facilityMapping: { method: 'nearest', identityStrength: 'supporting', sourceUrl: input.sourceUrl } as const } : {}),
+    }
   }
   return { sourceUrl: input.sourceUrl, byPathwayId, officialFloorsByLevelIndex }
 }

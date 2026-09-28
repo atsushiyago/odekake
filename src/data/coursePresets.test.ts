@@ -29,6 +29,20 @@ describe('outing course presets', () => {
     expect(outingCoursePresets[11]).toMatchObject({ preferredExitId: '429N0093', walkingRoute: { stationExitConnection: { exitNodeId: '429N0093' } } })
   })
 
+  it('keeps outdoor paper data to route, time, and endpoints without hand-written directions', () => {
+    expect(outingCoursePresets).toHaveLength(12)
+    for (const course of outingCoursePresets) {
+      const route = course.walkingRoute!
+      expect('directions' in route).toBe(false)
+      expect(route.geometry?.type).toBe('LineString')
+      expect(route.geometry?.coordinates.length).toBeGreaterThan(1)
+      expect(route.baseMinutes).toBeGreaterThan(0)
+      expect(route.from.label).toBeTruthy()
+      expect(route.to.label).toBeTruthy()
+      expect(route.stationExitConnection?.exitLabel).toBeTruthy()
+    }
+  })
+
   it('keeps user-facing floors as explicit official metadata', () => {
     expect(outingCoursePresets[8].arrivalPlatformFloor).toMatchObject({ label: '地下7階', levelIndex: -6 })
     expect(outingCoursePresets[8].gateFloor).toMatchObject({ label: '地下3階', levelIndex: -2 })

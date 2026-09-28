@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { MOBILITY_PROFILES, selectBestRoute, type ElderlyRouteScore, type MobilityRouteCandidate } from './elderlyRouteScoring'
+import { MOBILITY_PROFILES, selectBestEvidenceAwareRoute, selectBestRoute, type ElderlyRouteScore, type MobilityRouteCandidate } from './elderlyRouteScoring'
 import { computeRouteCost } from './routeCost'
 import type { IndoorGraph, IndoorMovementType, IndoorRoute } from './indoorRouting'
 
@@ -80,5 +80,80 @@ describe('generic mobility-profile route selection', () => {
     expect(selectBestRoute(candidates, MOBILITY_PROFILES['escalator-preferred']).selected?.score).toBe(esFirst)
     expect(selectBestRoute(candidates, MOBILITY_PROFILES.balanced).selected?.score).toBe(balanced)
     expect(selectBestRoute(candidates, MOBILITY_PROFILES['elevator-preferred']).candidates.every(candidate => candidate.reason.length > 0)).toBe(true)
+  })
+})
+
+describe('shadow-only evidence-aware route selection', () => {
+  it('A: unresolved observed zero-use is not preferred over a confirmed route or known shorter distance', () => {
+    const uncertain = routeCandidate('z-uncertain-es', ['walk'], 120)
+    uncertain.cost = { ...uncertain.cost, escalatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, unresolvedEquipmentTransitions: 1,
+      observedSemanticUses: { ...uncertain.cost.observedSemanticUses, escalator: 0 } }
+    const confirmed = routeCandidate('a-confirmed-es', ['escalator'], 100)
+    const result = selectBestEvidenceAwareRoute([uncertain, confirmed], MOBILITY_PROFILES.balanced)
+    expect(result.selected?.score).toBe(confirmed.score)
+    expect(result.candidates.find(candidate => candidate.score === uncertain.score)?.reason).toContain('Outside global Dmin')
+  })
+
+  it('B: confirmed one use is provably no worse than an unresolved lower bound of three', () => {
+    const one = routeCandidate('one-confirmed', ['escalator'], 100)
+    const atLeastThree = routeCandidate('three-observed', ['escalator', 'walk', 'escalator', 'walk', 'escalator'], 100)
+    atLeastThree.cost = { ...atLeastThree.cost, escalatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, unresolvedEquipmentTransitions: 1,
+      equipmentInstanceTransfers: 3,
+      observedSemanticUses: { ...atLeastThree.cost.observedSemanticUses, escalator: 3 } }
+    expect(selectBestEvidenceAwareRoute([atLeastThree, one]).selected?.score).toBe(one.score)
+  })
+
+  it('C: two unresolved lower bounds are incomparable, not treated as exact counts', () => {
+    const zero = routeCandidate('a-lower-zero', ['walk'], 100)
+    zero.cost = { ...zero.cost, equipmentBoardings: null, unresolvedEquipmentGroups: 1,
+      observedSemanticUses: { ...zero.cost.observedSemanticUses, escalator: 0 } }
+    const one = routeCandidate('b-lower-one', ['escalator'], 100)
+    one.cost = { ...one.cost, escalatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, observedSemanticUses: { ...one.cost.observedSemanticUses, escalator: 1 } }
+    const result = selectBestEvidenceAwareRoute([zero, one])
+    expect(result.candidates.every(candidate => candidate.reason.includes('No winner:'))).toBe(true)
+  })
+
+  it('D: a confirmed count of one is no worse than an unresolved lower bound of one', () => {
+    const confirmed = routeCandidate('a-confirmed-one', ['escalator'], 100)
+    const unresolved = routeCandidate('b-unresolved-one', ['escalator'], 100)
+    unresolved.cost = { ...unresolved.cost, escalatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, unresolvedEquipmentTransitions: 1,
+      observedSemanticUses: { ...unresolved.cost.observedSemanticUses, escalator: 1 } }
+    expect(selectBestEvidenceAwareRoute([unresolved, confirmed]).selected?.score).toBe(confirmed.score)
+  })
+
+  it('E: ES/EV profiles do not reward unresolved observed zero preference counts', () => {
+    const confirmedEs = routeCandidate('a-confirmed-es', ['escalator'], 100)
+    const uncertainEs = routeCandidate('z-uncertain-es', ['walk'], 100)
+    uncertainEs.cost = { ...uncertainEs.cost, escalatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, unresolvedEquipmentTransitions: 1 }
+    const esResult = selectBestEvidenceAwareRoute([uncertainEs, confirmedEs], MOBILITY_PROFILES['escalator-preferred'])
+    expect(esResult.selected?.score).toBe(confirmedEs.score)
+    expect(esResult.candidates.find(candidate => candidate.score === uncertainEs.score)?.reason)
+      .toContain('evidence insufficient for escalator preference')
+
+    const confirmedEv = routeCandidate('a-confirmed-ev', ['elevator'], 100)
+    const uncertainEv = routeCandidate('z-uncertain-ev', ['walk'], 100)
+    uncertainEv.cost = { ...uncertainEv.cost, elevatorUses: null, equipmentBoardings: null,
+      unresolvedEquipmentGroups: 1, unresolvedEquipmentTransitions: 1 }
+    const evResult = selectBestEvidenceAwareRoute([uncertainEv, confirmedEv], MOBILITY_PROFILES['elevator-preferred'])
+    expect(evResult.selected?.score).toBe(confirmedEv.score)
+    expect(evResult.candidates.find(candidate => candidate.score === uncertainEv.score)?.reason)
+      .toContain('evidence insufficient for elevator preference')
+  })
+
+  it('F: an unresolved zero-transfer observation is not compared as confirmed zero', () => {
+    const confirmed = routeCandidate('a-transfer-one', ['escalator'], 100)
+    confirmed.cost = { ...confirmed.cost, equipmentInstanceTransfers: 1, unresolvedEquipmentTransitions: 0 }
+    const uncertain = routeCandidate('z-transfer-unknown', ['escalator'], 100)
+    uncertain.cost = { ...uncertain.cost, equipmentInstanceTransfers: 0, unresolvedEquipmentTransitions: 1 }
+    const result = selectBestEvidenceAwareRoute([uncertain, confirmed], MOBILITY_PROFILES['escalator-preferred'])
+    expect(result.selected).toBeNull()
+    expect(result.selectionBlockedBy).toBe('transfers')
+    expect(result.candidates.find(candidate => candidate.score === uncertain.score)?.reason)
+      .toContain('No winner: transfers evidence is incomparable')
   })
 })

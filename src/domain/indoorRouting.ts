@@ -25,7 +25,15 @@ export interface IndoorEdge {
 }
 export interface IndoorGraph { source: IndoorSource; stationId: string; stationName: string; nodes: Map<string, IndoorNode>; edges: IndoorEdge[]; adjacency: Map<string, IndoorEdge[]> }
 export interface IndoorRoute { nodes: IndoorNode[]; edges: IndoorEdge[]; distanceMeters: number }
-export interface IndoorRouteStep { type: IndoorMovementType; distanceMeters: number; verticalDirection?: 'up' | 'down'; /** Complete only when all vertical edges agree; verified nonvertical connectors are neutral, never directional evidence. */ verticalDirectionEvidence?: VerticalDirectionEvidence; evidence: { routeOrder?: RouteActionSource[]; edgeIds: string[]; fromNodeId: string; toNodeId: string; fromLevelIndex?: number; toLevelIndex?: number; mapLocations?: Array<{ pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string }> } }
+export type FacilityMappingMethod = 'direct' | 'geometry-intersection' | 'nearest' | 'facility-group' | 'unknown'
+export type FacilityIdentityStrength = 'strong' | 'supporting' | 'insufficient'
+export interface FacilityMappingEvidence {
+  method: FacilityMappingMethod
+  identityStrength: FacilityIdentityStrength
+  sourceUrl?: string
+}
+export interface PathwayMapEvidence { pathwayId: string; spaceId?: string; facilityId?: string; facilityGroupId?: string; facilityMapping?: FacilityMappingEvidence }
+export interface IndoorRouteStep { type: IndoorMovementType; distanceMeters: number; verticalDirection?: 'up' | 'down'; /** Complete only when all vertical edges agree; verified nonvertical connectors are neutral, never directional evidence. */ verticalDirectionEvidence?: VerticalDirectionEvidence; evidence: { routeOrder?: RouteActionSource[]; edgeIds: string[]; fromNodeId: string; toNodeId: string; fromLevelIndex?: number; toLevelIndex?: number; mapLocations?: PathwayMapEvidence[] } }
 
 const verticalMovementTypes = new Set<IndoorMovementType>(['stairs', 'escalator', 'elevator'])
 
@@ -42,7 +50,7 @@ export function resolveVerticalDirectionConsensus(directions: VerticalDirection[
 }
 /** Optional, published-map-derived evidence used only to make step compression safer. */
 export interface IndoorRouteCompressionContext {
-  byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string }>
+  byPathwayId: Record<string, { spaceId?: string; facilityId?: string; facilityGroupId?: string; facilityMapping?: FacilityMappingEvidence }>
   /** Official Floor metadata keyed by the GTFS level it explicitly corroborates. */
   officialFloorsByLevelIndex?: Record<number, { label: string; sourceUrl: string }>
   /** Nodes proven not to offer an outgoing branch in the source graph. */

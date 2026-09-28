@@ -1,6 +1,6 @@
 # StationGuide route integrity audit
 
-生成日: 2026-09-25T05:19:58.757Z
+生成日: 2026-09-28T04:56:45.036Z
 
 対象は登録済み12コースの到着ホーム→出口です。公式構内図との一致を、GTFSの座標・Facility/Spaceと機械的に照合できる範囲で監査しました。公式図上の改札名・実際の平面動線は、機械可読な対応表がないため推測していません。
 
@@ -8,10 +8,10 @@
 
 - 対象コース: 12
 - A（raw route問題）: 0
-- B（semantic/presentation問題）: 8
+- B（semantic/presentation問題）: 9
 - C（Facility/Space対応問題）: 0（自動検出なし）
 - D（source topology問題）: 0
-- E（データだけでは判定不能）: 4
+- E（データだけでは判定不能）: 3
 
 raw edgeのprovenanceはsemantic stepのevidence.edgeIdsに残っており、今回の12コースでは垂直edgeの完全消失は検出しなかった。
 
@@ -661,7 +661,6 @@ raw edgeのprovenanceはsemantic stepのevidence.edgeIdsに残っており、今
 
 | instruction | facility | edgeIds | level |
 |---|---|---|---|
-| 地下3階の改札を通る | gate | 402L0190, 402L0194 | ?→? |
 | 通路を進む | walk | 402L0088, 402L0089 | -1→-1 |
 | 階段を上がる | stairs | 402L0043 | -1→-0.5 |
 | 通路を進む | walk | 402L0044, 402L0045, 402L0046 | -0.5→-0.5 |
@@ -679,9 +678,9 @@ raw edgeのprovenanceはsemantic stepのevidence.edgeIdsに残っており、今
 - fare gate: 410L0100 (-1→-1)
 - fare gate階/公式名称: 410L0100: -1→-1; 名称はGTFS/GeoJSONから確定できず
 - raw vertical: 410L0048:stairs -2→-1.5, 410L0050:stairs -1.5→-1, 410L0159:stairs -1→-0.5, 410L0161:stairs -0.5→-0.5, 410L0164:stairs -0.5→-0.5, 410L0166:stairs -0.5→0
-- semantic vertical: 階段を上がる [410L0048,410L0049,410L0050,410L0043,410L0045] / 階段を使う [410L0159,410L0160,410L0161] / 階段を使う [410L0164,410L0165,410L0166]
+- semantic vertical: 階段を使う [410L0159,410L0160,410L0161] / 階段を使う [410L0164,410L0165,410L0166]
 - level transition: 410L0048 -2→-1.5, 410L0050 -1.5→-1, 410L0159 -1→-0.5, 410L0166 -0.5→0
-- 分類: **E**
+- 分類: **B**
 - 公式図整合性: 機械判定はGTFS内部整合まで。公式図上の設備名・平面位置は要目視確認
 - 利用者報告への回答: 複数出口候補の改札名・階は公式図との対応表がなく未確定。
 
@@ -718,7 +717,6 @@ raw edgeのprovenanceはsemantic stepのevidence.edgeIdsに残っており、今
 
 | instruction | facility | edgeIds | level |
 |---|---|---|---|
-| 階段を上がる | stairs | 410L0048, 410L0049, 410L0050, 410L0043, 410L0045 | -2→-1 |
 | 通路を進む | walk | 410L0098, 410L0099 | -1→-1 |
 | 地下1階の改札を通る | gate | 410L0100 | -1→-1 |
 | 通路を進む | walk | 410L0101, 410L0103, 410L0105, 410L0123, 410L0124 | -1→-1 |
@@ -727,7 +725,7 @@ raw edgeのprovenanceはsemantic stepのevidence.edgeIdsに残っており、今
 | 階段を使う | stairs | 410L0164, 410L0165, 410L0166 | -0.5→0 |
 | 通路を進む | walk | 410L0221 | 0→0 |
 
-判定メモ: raw vertical edgeは全てsemantic evidenceから追跡可能。
+判定メモ: 垂直edgeのsemantic evidence欠落候補 410L0048, 410L0050
 
 ## 東京都庁展望室（都庁前）
 

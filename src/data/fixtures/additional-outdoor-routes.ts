@@ -23,7 +23,6 @@ export const roppongiExit7ToNationalArtCenterWalkingRoute: WalkingRoute = buildP
   from: { label: '六本木駅 7出口', latitude: 35.664555, longitude: 139.731115 },
   to: { label: '国立新美術館', latitude: 35.66519, longitude: 139.72636 },
   officialMinutes: 4,
-  directions: ['六本木駅7出口を出たら、地図の赤い線に沿って国立新美術館まで歩く。'],
   sourceUrl: 'https://www.nact.jp/information/access/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '424', exitNodeId: '424N0053', exitLabel: '7' },
@@ -35,7 +34,6 @@ export const kokuritsuA2ToStadiumWalkingRoute: WalkingRoute = buildPublishedOutd
   from: { label: '国立競技場駅 A2出口', latitude: 35.679704, longitude: 139.714318 },
   to: { label: '国立競技場', latitude: 35.677784, longitude: 139.713608 },
   officialMinutes: 1,
-  directions: ['国立競技場駅A2出口を出たら、地図の赤い線に沿って国立競技場まで歩く。'],
   sourceUrl: 'https://jns-e.com/access/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '426', exitNodeId: '426N0139', exitLabel: 'A2' },
@@ -47,7 +45,6 @@ export const daimonB2ToKyuShibaRikyuWalkingRoute: WalkingRoute = buildPublishedO
   from: { label: '大門駅 B2出口', latitude: 35.656496, longitude: 139.756834 },
   to: { label: '旧芝離宮恩賜庭園', latitude: 35.65545, longitude: 139.756697 },
   officialMinutes: 3,
-  directions: ['大門駅B2出口を出たら、地図の赤い線に沿って旧芝離宮恩賜庭園まで歩く。'],
   sourceUrl: 'https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '421', exitNodeId: '421N0015', exitLabel: 'B2' },
@@ -59,7 +56,6 @@ export const azabuJubanExit7ToPatioJubanWalkingRoute: WalkingRoute = buildPublis
   from: { label: '麻布十番駅 7出口', latitude: 35.656863, longitude: 139.735146 },
   to: { label: 'パティオ十番（きみちゃん像）', latitude: 35.65517, longitude: 139.73512 },
   officialMinutes: 7,
-  directions: ['麻布十番駅7出口を出たら、地図の赤い線に沿ってパティオ十番まで歩く。'],
   sourceUrl: 'https://www.azabujuban.or.jp/about/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '423', exitNodeId: '423N0063', exitLabel: '7' },
@@ -71,7 +67,6 @@ export const aoyamaItchomeExit1ToJinguGaienWalkingRoute: WalkingRoute = buildPub
   from: { label: '青山一丁目駅 1出口', latitude: 35.672862, longitude: 139.723773 },
   to: { label: '明治神宮外苑いちょう並木', latitude: 35.672401, longitude: 139.720975 },
   officialMinutes: 5,
-  directions: ['青山一丁目駅1出口を出たら、地図の赤い線に沿って明治神宮外苑いちょう並木まで歩く。'],
   sourceUrl: 'https://www.meijijingugaien.jp/pdf/pamphlet.pdf',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '425', exitNodeId: '425N0123', exitLabel: '1' },
@@ -83,7 +78,6 @@ export const yoyogiA2ToMeijiJinguYoyogiGateWalkingRoute: WalkingRoute = buildPub
   from: { label: '代々木駅 A2出口', latitude: 35.683032, longitude: 139.701891 },
   to: { label: '明治神宮・代々木口', latitude: 35.682642, longitude: 139.701892 },
   officialMinutes: 2,
-  directions: ['代々木駅A2出口を出たら、地図の赤い線に沿って明治神宮・代々木口まで歩く。'],
   sourceUrl: 'https://www.meijijingu.or.jp/access/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '427', exitNodeId: '427N0084', exitLabel: 'A2' },
@@ -95,7 +89,6 @@ export const higashiShinjukuA2ToBunkaCenterWalkingRoute: WalkingRoute = buildPub
   from: { label: '東新宿駅 A2出口', latitude: 35.69801, longitude: 139.708025 },
   to: { label: '新宿文化センター', latitude: 35.695443, longitude: 139.70945 },
   officialMinutes: 7,
-  directions: ['東新宿駅A2出口を出たら、地図の赤い線に沿って新宿文化センターまで歩く。'],
   sourceUrl: 'https://www.regasu-shinjuku.or.jp/bunka-center/traffic-access/',
   retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '403', exitNodeId: '403N0019', exitLabel: 'A2' },
@@ -104,12 +97,12 @@ export const higashiShinjukuA2ToBunkaCenterWalkingRoute: WalkingRoute = buildPub
 
 export const shinjukuA1ToSouthernTowerWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
   id: 'shinjuku-a1-to-southern-tower', from: { label: '新宿駅 A1出口', latitude: 35.686914, longitude: 139.699431 }, to: { label: '小田急ホテルセンチュリーサザンタワー', latitude: 35.686442, longitude: 139.700367 }, officialMinutes: 1,
-  directions: ['新宿駅A1出口を出たら、地図の赤い線に沿って小田急ホテルセンチュリーサザンタワーまで歩く。'], sourceUrl: 'https://www.southerntower.co.jp/access/', retrievedAt: '2026-09-21', stationExitConnection: { stationId: '428', exitNodeId: '428N0193', exitLabel: 'A1' }, geometry: routeGeometry(shinjukuHotelRouteJson),
+  sourceUrl: 'https://www.southerntower.co.jp/access/', retrievedAt: '2026-09-21', stationExitConnection: { stationId: '428', exitNodeId: '428N0193', exitLabel: 'A1' }, geometry: routeGeometry(shinjukuHotelRouteJson),
 })
 
 export const shinjukuNishiguchiD3ToOmoideYokochoWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
   id: 'shinjuku-nishiguchi-d3-to-omoide-yokocho', from: { label: '新宿西口駅 D3出口', latitude: 35.693327, longitude: 139.699273 }, to: { label: '新宿西口 思い出横丁', latitude: 35.693093, longitude: 139.699502 }, officialMinutes: 2,
-  directions: ['新宿西口駅D3出口を出たら、地図の赤い線に沿って新宿西口 思い出横丁まで歩く。'], sourceUrl: 'https://shinjuku-omoide.com/access', retrievedAt: '2026-09-21', stationExitConnection: { stationId: '402', exitNodeId: '402N0002', exitLabel: 'D3' }, geometry: routeGeometry(omoideYokochoRouteJson),
+  sourceUrl: 'https://shinjuku-omoide.com/access', retrievedAt: '2026-09-21', stationExitConnection: { stationId: '402', exitNodeId: '402N0002', exitLabel: 'D3' }, geometry: routeGeometry(omoideYokochoRouteJson),
 })
 
 export const uenoOkachimachiA7ToAmeyokoWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
@@ -117,7 +110,6 @@ export const uenoOkachimachiA7ToAmeyokoWalkingRoute: WalkingRoute = buildPublish
   from: { label: '上野御徒町駅 A7出口', latitude: 35.708018, longitude: 139.775417 },
   to: { label: 'アメ横入口', latitude: 35.7100241, longitude: 139.7745414 },
   routingMinutes: 4,
-  directions: ['上野御徒町駅A7出口を出たら、地図の赤い線に沿ってアメ横まで歩く。'],
   sourceUrl: 'https://www.ameyoko.net/access/', retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '410', exitNodeId: '410N0016', exitLabel: 'A7' },
   geometry: routeGeometry(uenoA7RouteJson),
@@ -128,7 +120,6 @@ export const tochomaeA4ToTokyoMetropolitanGovernmentWalkingRoute: WalkingRoute =
   from: { label: '都庁前駅 A4出口', latitude: 35.690192, longitude: 139.691341 },
   to: { label: '東京都庁第一本庁舎1階 展望室専用エレベーター入口付近', latitude: 35.6902989, longitude: 139.6915456 },
   routingMinutes: 2,
-  directions: ['都庁前駅A4出口を出たら、地図の赤い線に沿って第一本庁舎へ歩く。', '第一本庁舎1階から、展望室専用エレベーターに乗る。'],
   sourceUrl: 'https://www.zaimu.metro.tokyo.lg.jp/tochousha/goannai/tenbou', retrievedAt: '2026-09-21',
   stationExitConnection: { stationId: '429', exitNodeId: '429N0093', exitLabel: 'A4' },
   geometry: routeGeometry(tochomaeA4RouteJson),

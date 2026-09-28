@@ -74,3 +74,50 @@
 @media print{
   .preview-pages{display:block;zoom:1}
 }
+
+/* Chronological train header: board at left, alight at right. */
+.arrival-train{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);
+  grid-template-rows:repeat(4,auto);
+  align-items:start;
+  column-gap:5px;
+  row-gap:2px;
+  border:2px solid #d4482f;
+  border-radius:10px;
+  background:#fff;
+  padding:4px 7px;
+  break-inside:avoid;
+}
+.train-leg-block{display:grid;grid-template-rows:subgrid;grid-row:1 / span 4;min-width:0;align-self:stretch}
+.train-departure-block{grid-column:1}
+.train-arrival-block{grid-column:3}
+.train-station-heading{display:flex;align-items:baseline;gap:4px;min-width:0;white-space:nowrap}
+.train-departure-heading,.train-arrival-heading{grid-row:1}
+.train-action-label{flex:0 0 auto}
+.train-station-name{flex:0 0 auto;min-width:0;font-size:28px;font-weight:900;line-height:1.1;white-space:nowrap}
+.train-station-time{flex:0 0 auto;min-width:0;font-size:28px;font-weight:900;line-height:1.1;white-space:nowrap}
+.train-departure-route{grid-column:1;grid-row:2;min-width:0}
+.train-departure-platform{grid-column:1;grid-row:3;min-width:0}
+.train-departure-car{grid-column:1;grid-row:4;min-width:0}
+.train-arrival-platform{grid-column:1;grid-row:3;min-width:0}
+.train-action-label{font-size:17px;font-weight:900;line-height:1.1;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.arrival-train .train-route-line{grid-column:1;white-space:normal;order:initial;text-align:left;font-size:20px;font-weight:800;line-height:1.12;overflow-wrap:anywhere}
+.train-platform-label,.train-arrival-platform{color:#a7311f;font-size:24px;font-weight:900;line-height:1.12;overflow-wrap:anywhere}
+.train-car-position{font-size:20px;font-weight:800;line-height:1.12;overflow-wrap:anywhere}
+.train-arrow{grid-column:2;grid-row:3;align-self:center;justify-self:center;position:relative;left:-3px;color:#111;font-size:32px;font-weight:900;line-height:.85}
+@media(max-width:850px){
+  .arrival-train{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);column-gap:3px;padding:4px 5px}
+  .train-station-heading{grid-template-columns:max-content minmax(0,1fr);column-gap:3px;row-gap:0}
+  .train-station-name{grid-column:2;grid-row:1;font-size:clamp(17px,3.8vw,28px)}
+  .train-station-time{grid-column:2;grid-row:2;font-size:clamp(17px,3.8vw,28px)}
+  .train-action-label{grid-row:1 / span 2;align-self:center;font-size:clamp(12px,2.3vw,17px)}
+  .arrival-train .train-route-line{font-size:clamp(13px,2.7vw,20px)}
+  .train-platform-label,.train-arrival-platform{font-size:clamp(17px,3.2vw,24px)}
+  .train-car-position{font-size:clamp(15px,2.7vw,20px)}
+  .train-arrow{font-size:clamp(27px,4.3vw,32px)}
+}
+@media print{
+  .arrival-train{border-color:#111;background:#fff}
+  .train-platform-label{color:#111}
+}
