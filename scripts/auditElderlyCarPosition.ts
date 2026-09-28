@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)))
@@ -41,9 +41,7 @@ for (const row of findings) {
 md.push('', '## GTFS / StationMap照合', '', ...findings.map(row => `- **${row.station}**: ${row.consistency}`), '', '## 集計', '', `- A. CAR POSITION CONFIRMED: ${findings.filter(row => row.classification.startsWith('A')).length}`, `- B. MULTIPLE OPTIONS: ${findings.filter(row => row.classification.startsWith('B')).length}`, `- C. NO SUITABLE OFFICIAL POSITION: ${findings.filter(row => row.classification.startsWith('C')).length}`, `- D. DATA CONFLICT: ${findings.filter(row => row.classification.startsWith('D')).length}`, '', '## 国立競技場の重点結果', '', '4号車付近→国立競技場方面改札（2基）→A2出口が公式表に明記される。一方、1号車・5号車も同改札への候補であり、8号車は東京体育館方面改札のためA2向けの第一候補にはしなかった。設備アイコンの種別と利用時間はPDF画像の確認が必要で、現段階では「4号車付近」を紙面へ自動表示しない。', '', '## 結論', '', '号車位置を公式に確定できる駅はあるが、目的出口・改札・設備種別・時間制限まで全12駅で一意に揃うわけではない。まずはA判定駅だけを対象に、公式資料の画像確認と列車方向の検証を追加するのが安全である。', '', '## 出典', '', `- 東京都交通局 大江戸線バリアフリー一覧: ${officialPdf}`, '- 各駅公式ページ（StationMap metadataおよびcourse presetのsourceUrl）'
 )
 const report = join(root, 'reports', 'elderly-car-position-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(report, `${md.join('\n')}\n`)
-console.log(`Wrote ${report}`)
+if (writeAuditReportIfRequested(report, `${md.join('\n')}\n`)) console.log(`Wrote ${report}`)
 
 it('covers all 12 arrival stations without changing production data', () => {
   if (findings.length !== 12) throw new Error(`expected 12 findings, got ${findings.length}`)

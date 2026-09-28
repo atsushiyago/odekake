@@ -1,7 +1,8 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, buildGtfsStationGuide, findRoutesFromPlatform, movementTypeForGtfsPathway, type IndoorGraph, type IndoorRouteCompressionContext } from '../src/domain/indoorRouting.ts'
@@ -95,8 +96,6 @@ for (const row of rows) {
 
 markdown.push('## 今回の結論', '', '- rawとsemanticのmode対応、および垂直移動edgeのprovenance消失は12コースで検出されなかった。', '- 公式構内図上の改札名・平面位置・設備記号との厳密な対応は、GTFS/GeoJSONに名称対応表がないためE（判定不能）として残した。', '- 赤羽橋のES表示、国立競技場・大門・麻布十番の垂直動線、青山一丁目のsame-level EV、新宿の複数ESは、まず公式図の目視照合を行ってからgenericルールを検討すべきである。', '- 今回は表示・経路・compressionロジックを変更していない。')
 
-const reportDir = join(root, 'reports')
-mkdirSync(reportDir, { recursive: true })
-writeFileSync(join(reportDir, 'station-guide-route-integrity-audit.md'), `${markdown.join('\n')}\n`)
-console.log(`Wrote ${join(reportDir, 'station-guide-route-integrity-audit.md')}`)
+const reportPath = join(root, 'reports', 'station-guide-route-integrity-audit.md')
+if (writeAuditReportIfRequested(reportPath, `${markdown.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 it('generates the station-guide integrity report', () => {})

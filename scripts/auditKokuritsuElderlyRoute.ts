@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, findRoutesFromPlatform, type IndoorEdge, type IndoorRoute } from '../src/domain/indoorRouting.ts'
@@ -66,9 +66,7 @@ ranked.forEach((row, index) => md.push(`| ${index + 1} | ${row.origin} | ${row.e
 md.push('', '## 上位候補の比較', '', `- **scoring上位**: ${best.origin} → ${best.exitId}: ${best.m.stairs} stairs, ${best.m.escalator} ES, ${best.m.elevator} EV, ${best.m.walk.toFixed(1)}m, 設備変更${best.m.equipmentChanges}回, 分岐${best.m.decisions}箇所。`, `- **最短**: ${shortest.origin} → ${shortest.exitId}: ${shortest.m.stairs} stairs, ${shortest.m.escalator} ES, ${shortest.m.elevator} EV, ${shortest.m.walk.toFixed(1)}m。`, `- 最短候補も階段0回で、今回の優先順位ではscoring上位と一致${best.origin === shortest.origin && best.exitId === shortest.exitId ? 'した' : 'しない'}。`, '', '## boarding areaと案内可否', '', `選出候補のboarding areaは **${best.origin}** だが、GTFSに号車・ドア位置との対応はない。したがって「何号車・何番ドア」や、全乗客がそのboarding areaで降りることは表示できない。`, '', '## 公式構内図との整合', '', `駅構内データ: ${kokuritsuKyogijoStationMapMetadata.stationMapResourceUrl}`, `公式駅情報: ${preset.arrivalPlatformFloor?.sourceUrl ?? '未登録'}`, '- 選出候補は地下3階ホームから地下1階改札へ垂直移動し、A2出口候補へ連続するGTFS経路を持つ。', '- ただし公式構内図だけでは、列車の停止位置から選出boarding areaへ利用者を確実に誘導できる根拠はない。', '', '## StationGuide試験表示', '', '**今回は表示変更なし。** 候補boarding areaを紙面上で指定できないため、選出routeを全利用者向けcanonical routeとして採用するのは安全ではない。現行commonRouteSuffix版を維持する。', '', '## Generic化', '', '- scoring関数自体は駅固有IDを参照せず、candidateの構造化指標でgeneric化できる。', '- ただし紙面採用には、boarding areaと実際の列車停止位置を結ぶ公式根拠（号車・ドア等）が別途必要。', '- EV/ESの優先順位を固定しないため、同点・僅差では「選択不能」として提示する安全策が必要。',
 )
 const reportPath = join(root, 'reports', 'kokuritsu-elderly-route-scoring-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${md.join('\n')}\n`)
-console.log(`Wrote ${reportPath}`)
+if (writeAuditReportIfRequested(reportPath, `${md.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('scores all 国立競技場 candidates without changing production routing', () => {
   if (rows.length !== 36) throw new Error(`expected 36 candidate routes, got ${rows.length}`)

@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it, expect } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, compactIndoorRouteSteps, findRoutesFromPlatform } from '../src/domain/indoorRouting.ts'
 import { findBestElderlyRoute, formatElderlyRouteScore, type ElderlyRouteScore } from '../src/domain/elderlyRouteScoring.ts'
@@ -54,9 +54,7 @@ for (const row of rows) {
 markdown.push('', '## 紙面への試験表示', '', '- 国立競技場: 「できれば4号車付近に乗る」／「エレベーターで国立競技場方面改札へ」', '- 六本木: 「できれば8号車付近に乗る」／「エレベーターまたはエスカレーターで東京ミッドタウン方面改札へ」', '', '号車・ドアとGTFS boarding areaの対応は提供されていないため、個別の号車位置から特定boarding areaを断定していない。上の文言は公式バリアフリー資料の補助的な目安として表示する。', '', '## before / after', '', '従来のStationGuideは最短経路を使っていた。今回の2駅だけ、同じA4構造のまま候補routeを評価し、選択したrouteのsemantic stepsとsummaryを表示する。', '')
 
 const reportPath = join(root, 'reports', 'elderly-route-scoring-trial.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${markdown.join('\n')}\n`)
-console.log(`Wrote ${reportPath}`)
+if (writeAuditReportIfRequested(reportPath, `${markdown.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('scores both trial stations without station-specific pathway rules', () => {
   for (const row of rows) {

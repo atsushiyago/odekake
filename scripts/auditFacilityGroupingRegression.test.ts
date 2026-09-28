@@ -1,7 +1,8 @@
-import { mkdirSync, writeFileSync, readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it, expect } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, buildGtfsStationGuide, type IndoorGraph, type IndoorRouteCompressionContext } from '../src/domain/indoorRouting.ts'
@@ -117,9 +118,7 @@ if (kokuritsuDataset) {
 }
 markdown.push('## 変化のない駅', '', '赤羽橋、六本木、国立競技場（通常route）、大門、麻布十番、代々木、東新宿、新宿西口、上野御徒町、都庁前ではsemantic step数・EV回数に変化なし。六本木はEV1のまま。', '')
 const report = join(root, 'reports', 'facility-grouping-regression-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(report, `${markdown.join('\n')}\n`)
-console.log(markdown.join('\n'))
+if (writeAuditReportIfRequested(report, `${markdown.join('\n')}\n`)) console.log(`Wrote ${report}`)
 
 it('keeps all 12 courses routable and records grouping regressions', () => {
   expect(rows).toHaveLength(12)

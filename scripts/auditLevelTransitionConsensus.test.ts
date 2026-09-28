@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect, it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, findRoutesFromPlatform, type IndoorGraph, type IndoorMovementType, type IndoorRoute } from '../src/domain/indoorRouting.ts'
 
@@ -81,9 +81,7 @@ for (const row of rows) {
 markdown.push('', '## 結論', '', `- LEVEL CONSENSUS: ${rows.filter(row => row.consensus === 'LEVEL CONSENSUS').map(row => row.item.name).join('、') || 'なし'}`, `- NO CONSENSUS: ${rows.filter(row => row.consensus === 'NO CONSENSUS').map(row => row.item.name).join('、') || 'なし'}`, `- DATA CONFLICT: ${rows.filter(row => row.consensus === 'DATA CONFLICT').map(row => row.item.name).join('、') || 'なし'}`, '', 'LEVEL CONSENSUSの場合も、設備名は本文に出さず、「ホームから改札階へ上がる」だけをgenericに表示候補とする。Floorの正式名称が未照合なら「地下○階」は生成しない。')
 
 const reportPath = join(root, 'reports', 'level-transition-consensus-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${markdown.join('\n')}\n`)
-console.log(`Wrote ${reportPath}`)
+if (writeAuditReportIfRequested(reportPath, `${markdown.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('audits all six station prefixes without changing production guides', () => {
   expect(rows).toHaveLength(6)

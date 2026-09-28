@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, findRoutesFromPlatform, type IndoorRoute } from '../src/domain/indoorRouting.ts'
@@ -72,9 +72,7 @@ for (const item of selected) md.push(`| ${item.origin} | ${item.exitId} | ${item
 md.push('', '## 18本のsemantic比較', '', `- 共通して成立: ${commonActions.length ? commonActions.join('、') : 'なし'}`, `- 階段を使わないこと: **${stairsZero}/${selected.length}** のみ。2番ホーム全体の共通指示にはできない。`, `- EVまたはESで上がること: **${assisted}/${selected.length}**。残りは階段を含む。`, '- 18本は地下1階の改札を通過するが、ホーム側の設備種別は一致しない。', '- 改札後の細かな出口経路は既存StationGuideの構造を維持し、この監査では変更しない。', '', '## 共通StationGuide案', '', '**厳密に18/18で共通する高齢者向け設備案内は作成不可。**', '', '安全に言える最小表現は、次のように設備を断定しない表現に限られる。', '', '1. ホームから地下1階の改札へ上がる', '2. 改札を1回通る', '3. A2出口へ進む', '', '「階段は使わず、エレベーターまたはエスカレーターで上がる」は16/18には当てはまるが、2つのboarding areaでは階段を含むため、共通紙面には採用しない。', '', '## 号車・ドア指定なしでの成立性', '', 'boarding areaと列車の号車・ドア位置を結ぶ公式データがないため、個別best routeを利用者へ直接割り当てることはできない。現段階では内部監査用の選択結果に留める。', '', '## 結論', '', '- 各boarding areaについてbest routeは選択できた。', '- 18本のsemantic consensusは「地下1階改札を1回通り、A2へ向かう」まで。', '- ホーム側のEV/ES/階段を一つの設備案内へ統合することはできない。', '- scoringはgeneric化可能だが、紙面採用には停止位置（号車・ドア）または現地でのboarding area選択根拠が必要。', '- 本番StationGuideは変更していない。',
 )
 const report = join(root, 'reports', 'kokuritsu-boarding-best-routes-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(report, `${md.join('\n')}\n`)
-console.log(`Wrote ${report}`)
+if (writeAuditReportIfRequested(report, `${md.join('\n')}\n`)) console.log(`Wrote ${report}`)
 
 it('selects one best route for each of 18 boarding areas', () => {
   if (selected.length !== 18) throw new Error(`expected 18 boarding areas, got ${selected.length}`)

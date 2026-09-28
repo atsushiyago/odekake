@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it, expect } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, compactIndoorRouteSteps, formatIndoorStep, routeTopologyContext } from '../src/domain/indoorRouting.ts'
 import { findBestElderlyRoute } from '../src/domain/elderlyRouteScoring.ts'
@@ -31,9 +31,7 @@ for (const item of cases) {
   lines.push('', `圧縮後semantic設備列: ${compacted.filter(step => ['elevator', 'escalator', 'stairs'].includes(step.type)).map(step => `${step.type}[${step.evidence.edgeIds.join(',')}]`).join(' → ')}`, `semantic設備step数: ${semanticEquipmentCount}`, `scorer集計: EV${score.elevators} / ES${score.escalators}`, '', '### 圧縮後の行動文', ...compacted.map((step, index) => `${index + 1}. ${formatIndoorStep(step)}`), '')
 }
 const reportPath = join(root, 'reports', 'elderly-route-semantics-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${lines.join('\n')}\n`)
-console.log(lines.join('\n'))
+if (writeAuditReportIfRequested(reportPath, `${lines.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('audits the two trial routes without changing production output', () => {
   for (const item of cases) {

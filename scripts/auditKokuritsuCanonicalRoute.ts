@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, findRoutesFromPlatform, type IndoorEdge } from '../src/domain/indoorRouting.ts'
@@ -88,9 +88,7 @@ md.push('', '## Canonical anchor判定', '',
   '- 一致しない場合はcommonRouteSuffixを維持し、単一設備を推測しない。',
 )
 const reportPath = join(root, 'reports', 'kokuritsu-canonical-route-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${md.join('\n')}\n`)
-console.log(`Wrote ${reportPath}`)
+if (writeAuditReportIfRequested(reportPath, `${md.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('generates the 国立競技場 canonical route audit', () => {
   if (rows.length === 0) throw new Error('候補経路がありません')

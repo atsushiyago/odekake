@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect, it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, compactIndoorRouteSteps, findRoutesFromPlatform, type IndoorGraph, type IndoorRouteCompressionContext } from '../src/domain/indoorRouting.ts'
 import { findBestElderlyRoute, scoreElderlyRoute, type ElderlyRouteScore } from '../src/domain/elderlyRouteScoring.ts'
@@ -94,9 +94,7 @@ for (const row of rows) {
 markdown.push('## 結論', '', '- RECOMMENDED: 0駅', '- MULTIPLE OPTIONS: 0駅（公式候補は複数だが、号車→boarding area mapping未解決のため選択結果を確定扱いしない）', '- UNRESOLVED MAPPING: 5駅', '- DATA CONFLICT: 0駅', '', '内部trialでは全5駅でGTFS route候補の比較自体は可能だった。しかし、号車位置と具体的boarding areaを公式に接続できないため、本番StationGuideへの高齢者route選択はまだ進めない。', '', '## 都庁前 A4', '', 'A4側EVは始発〜22:00。時間外はこの設備を前提にした紙面を出さず、別候補または係員確認が必要。', '')
 
 const reportPath = join(root, 'reports', 'five-station-elderly-route-selection-audit.md')
-mkdirSync(join(root, 'reports'), { recursive: true })
-writeFileSync(reportPath, `${markdown.join('\n')}\n`)
-console.log(`Wrote ${reportPath}`)
+if (writeAuditReportIfRequested(reportPath, `${markdown.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 
 it('audits all five stations without changing production StationGuide', () => {
   expect(rows).toHaveLength(5)

@@ -1,7 +1,7 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { it } from 'vitest'
+import { writeAuditReportIfRequested } from './auditReportWriter.ts'
 import { outingCoursePresets } from '../src/data/coursePresets.ts'
 import { loadedOedo2026IndoorDatasets } from '../src/data/catalogs/oedo2026IndoorDatasets.ts'
 import { buildIndoorGraph, commonRouteSuffix, findRoutesFromPlatform, type IndoorEdge, type IndoorGraph, type IndoorRoute } from '../src/domain/indoorRouting.ts'
@@ -87,8 +87,6 @@ for (const row of rows) {
 const counts = { consensus: rows.filter(row => row.classification.startsWith('A')).length, choice: rows.filter(row => row.classification.startsWith('B')).length, uncertain: rows.filter(row => row.classification.startsWith('C')).length }
 markdown.push('## 集計', '', `- SEMANTIC CONSENSUS: ${counts.consensus}`, `- CHOICE REQUIRED: ${counts.choice}`, `- UNCERTAIN / TOPOLOGY ISSUE: ${counts.uncertain}`, '', '## 結論', '', '- candidate間で意味が一致する場合は、commonRouteSuffixの前段からsemantic actionを復元するgeneric設計が可能。', '- CHOICE REQUIREDでは「EV/ESのどちらか」など単一設備を断定しない。', '- UNCERTAINでは垂直移動を補完しない。', '- 改札階はcandidateで一意なlevel値が取れる場合のみ内部値として扱えるが、「地下○階」表示にはFloor GeoJSONまたは公式図との照合が別途必要。', '- 本番StationGuide生成ロジックは今回変更していない。')
 
-const reportDir = join(root, 'reports')
-mkdirSync(reportDir, { recursive: true })
-writeFileSync(join(reportDir, 'vertical-movement-semantic-consensus-audit.md'), `${markdown.join('\n')}\n`)
-console.log(`Wrote ${join(reportDir, 'vertical-movement-semantic-consensus-audit.md')}`)
+const reportPath = join(root, 'reports', 'vertical-movement-semantic-consensus-audit.md')
+if (writeAuditReportIfRequested(reportPath, `${markdown.join('\n')}\n`)) console.log(`Wrote ${reportPath}`)
 it('generates the vertical movement consensus report', () => {})
