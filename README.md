@@ -1,8 +1,8 @@
-# 迷わないおでかけ紙
+# 迷わないおでかけ紙 — 駅構内オープンデータで案内を自動生成
 
 **電車を降りてから、出口まで。**
 
-「迷わないおでかけ紙」は、高齢者を主な利用者として、駅で迷いやすい人が電車に乗るところから、到着ホーム・目的出口・目的地までを紙で確認できるようにする Web アプリです。駅構内の案内と出口から目的地までの地図を、A4両面の紙面にまとめます。現在は都営大江戸線の12コースを収録しています。任意の駅や目的地を検索するサービスではありません。
+「迷わないおでかけ紙」は、高齢者を主な利用者として、駅構内のオープンデータを利用して、電車を降りてから目的の出口までの経路を、紙の案内として自動生成するWebアプリです。駅構内の案内と出口から目的地までの地図を、A4両面の紙面にまとめます。現在は都営大江戸線の12コースを収録しています。任意の駅や目的地を検索するサービスではありません。
 
 ## なぜ作ったのか
 
@@ -24,10 +24,10 @@
 
 赤羽橋の同じ乗車位置から同じ出口への候補比較では、次の2経路が確認されています。
 
-| 候補 | 距離 | 階段 | ES（案内上の観測） | balancedでの扱い |
-|---|---:|---:|---:|---|
-| A | 139.7m | 2 | 2 | 選択されない |
-| B | 142.6m | 1 | 3 | 選択 |
+| 候補 |   距離 | 階段 | ES（案内上の観測） | balancedでの扱い |
+| ---- | -----: | ---: | -----------------: | ---------------- |
+| A    | 139.7m |    2 |                  2 | 選択されない     |
+| B    | 142.6m |    1 |                  3 | 選択             |
 
 Bは2.9m長い一方、階段利用を1回減らします。候補全体の比較では、距離差より階段負担を優先した例です。ESの数は経路の案内表現から数えた観測値で、実際のエスカレーター設備を1基ずつ数えた確定値ではありません。
 
@@ -85,15 +85,15 @@ SAFE REJOINは、同じ階にいることだけを根拠に案内を再接続す
 
 ## 使用データ
 
-| データ | 主な役割 | 出典 |
-|---|---|---|
-| 都営地下鉄 GTFS-Pathways（現在のfixture: `20260924`） | 駅構内のnode、Pathway、接続トポロジー | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip) |
-| 都営地下鉄 静的GTFS（fixture抽出: `20260916`） | 列車時刻・駅間移動のデモ用データ | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip) |
-| ほこナビDPの駅構内データ | Facility、Space、Floor、walking network。意味付け・補強用 | [データセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)、[チャレンジ2026](https://challenge2026.odpt.org/) |
-| 東京都交通局の公式駅情報・バリアフリー資料 | 登録されたホーム、号車位置、設備、出口、公式Floor等の根拠 | [大江戸線バリアフリー設備一覧](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf) および各駅公式情報 |
-| OpenStreetMap | 地図タイル等の地図表示 | [OpenStreetMap](https://www.openstreetmap.org/)、[著作権・表示](https://www.openstreetmap.org/copyright) |
-| 徒歩経路データ | 事前に保存した屋外の徒歩経路形状 | 開発時に利用した[徒歩routing service](https://routing.openstreetmap.de/routed-foot/route/v1/driving)。実行時には呼び出しません |
-| 目的地のアクセス情報 | コースごとの目的地名・出口対応等のデータ確認 | 出典URLをcourse preset／fixtureに記録。下記コース表の目的地名から各アクセス情報へリンク |
+| データ                                                | 主な役割                                                  | 出典                                                                                                                                                           |
+| ----------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 都営地下鉄 GTFS-Pathways（現在のfixture: `20260924`） | 駅構内のnode、Pathway、接続トポロジー                     | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip)                                                                 |
+| 都営地下鉄 静的GTFS（fixture抽出: `20260916`）        | 列車時刻・駅間移動のデモ用データ                          | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip)                                                                         |
+| ほこナビDPの駅構内データ                              | Facility、Space、Floor、walking network。意味付け・補強用 | [データセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)、[チャレンジ2026](https://challenge2026.odpt.org/) |
+| 東京都交通局の公式駅情報・バリアフリー資料            | 登録されたホーム、号車位置、設備、出口、公式Floor等の根拠 | [大江戸線バリアフリー設備一覧](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf) および各駅公式情報     |
+| OpenStreetMap                                         | 地図タイル等の地図表示                                    | [OpenStreetMap](https://www.openstreetmap.org/)、[著作権・表示](https://www.openstreetmap.org/copyright)                                                       |
+| 徒歩経路データ                                        | 事前に保存した屋外の徒歩経路形状                          | 開発時に利用した[徒歩routing service](https://routing.openstreetmap.de/routed-foot/route/v1/driving)。実行時には呼び出しません                                 |
+| 目的地のアクセス情報                                  | コースごとの目的地名・出口対応等のデータ確認              | 出典URLをcourse preset／fixtureに記録。下記コース表の目的地名から各アクセス情報へリンク                                                                        |
 
 各データ源の役割と証拠の強さは同一ではありません。GTFS-Pathwaysはトポロジー、公式メタデータは利用者向け情報、StationMapは対応関係が確認できた範囲の補助情報として扱います。
 
@@ -103,20 +103,20 @@ SAFE REJOINは、同じ階にいることだけを根拠に案内を再接続す
 
 ## 収録コース
 
-| コース | 出発駅 | 到着駅 | 目的出口 | 目的地 |
-|---|---|---|---|---|
-| 東京タワー | 大門 | 赤羽橋 | 赤羽橋口 | [東京タワー（フットタウン）](https://www.tokyotower.co.jp/access/railroad/) |
-| 国立新美術館 | 大門 | 六本木 | 7出口 | [国立新美術館](https://www.nact.jp/information/access/) |
-| 国立競技場 | 六本木 | 国立競技場 | A2出口 | [国立競技場](https://jns-e.com/access/) |
-| 旧芝離宮恩賜庭園 | 赤羽橋 | 大門 | B2出口 | [旧芝離宮恩賜庭園](https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/) |
-| パティオ十番 | 大門 | 麻布十番 | 7出口 | [パティオ十番（きみちゃん像）](https://www.azabujuban.or.jp/about/) |
-| 明治神宮外苑いちょう並木 | 六本木 | 青山一丁目 | 1出口 | [明治神宮外苑いちょう並木](https://www.meijijingugaien.jp/) |
-| 明治神宮・代々木口 | 国立競技場 | 代々木 | A2出口 | [明治神宮・代々木口](https://www.meijijingu.or.jp/access/) |
-| 新宿文化センター | 新宿西口 | 東新宿 | A2出口 | [新宿文化センター](https://www.regasu-shinjuku.or.jp/bunka-center/traffic-access/) |
-| サザンタワー | 代々木 | 新宿 | A1出口 | [小田急ホテルセンチュリーサザンタワー](https://www.southerntower.co.jp/access/) |
-| 思い出横丁 | 東新宿 | 新宿西口 | D3出口 | [新宿西口 思い出横丁](https://shinjuku-omoide.com/access) |
-| アメ横 | 新宿西口 | 上野御徒町 | A7出口 | [アメ横](https://www.ameyoko.net/access/) |
-| 東京都庁展望室 | 新宿 | 都庁前 | A4出口 | [東京都庁展望室](https://www.zaimu.metro.tokyo.lg.jp/tochousha/goannai/tenbou) |
+| コース                   | 出発駅     | 到着駅     | 目的出口 | 目的地                                                                             |
+| ------------------------ | ---------- | ---------- | -------- | ---------------------------------------------------------------------------------- |
+| 東京タワー               | 大門       | 赤羽橋     | 赤羽橋口 | [東京タワー（フットタウン）](https://www.tokyotower.co.jp/access/railroad/)        |
+| 国立新美術館             | 大門       | 六本木     | 7出口    | [国立新美術館](https://www.nact.jp/information/access/)                            |
+| 国立競技場               | 六本木     | 国立競技場 | A2出口   | [国立競技場](https://jns-e.com/access/)                                            |
+| 旧芝離宮恩賜庭園         | 赤羽橋     | 大門       | B2出口   | [旧芝離宮恩賜庭園](https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/)             |
+| パティオ十番             | 大門       | 麻布十番   | 7出口    | [パティオ十番（きみちゃん像）](https://www.azabujuban.or.jp/about/)                |
+| 明治神宮外苑いちょう並木 | 六本木     | 青山一丁目 | 1出口    | [明治神宮外苑いちょう並木](https://www.meijijingugaien.jp/)                        |
+| 明治神宮・代々木口       | 国立競技場 | 代々木     | A2出口   | [明治神宮・代々木口](https://www.meijijingu.or.jp/access/)                         |
+| 新宿文化センター         | 新宿西口   | 東新宿     | A2出口   | [新宿文化センター](https://www.regasu-shinjuku.or.jp/bunka-center/traffic-access/) |
+| サザンタワー             | 代々木     | 新宿       | A1出口   | [小田急ホテルセンチュリーサザンタワー](https://www.southerntower.co.jp/access/)    |
+| 思い出横丁               | 東新宿     | 新宿西口   | D3出口   | [新宿西口 思い出横丁](https://shinjuku-omoide.com/access)                          |
+| アメ横                   | 新宿西口   | 上野御徒町 | A7出口   | [アメ横](https://www.ameyoko.net/access/)                                          |
+| 東京都庁展望室           | 新宿       | 都庁前     | A4出口   | [東京都庁展望室](https://www.zaimu.metro.tokyo.lg.jp/tochousha/goannai/tenbou)     |
 
 ## 実験中の経路探索
 
