@@ -2,110 +2,149 @@
 
 **電車を降りてから、出口まで。**
 
-## Overview
+「迷わないおでかけ紙」は、高齢者を主な利用者として、駅で迷いやすい人が電車に乗るところから、到着ホーム・目的出口・目的地までを紙で確認できるようにする Web アプリです。駅構内の案内と出口から目的地までの地図を、A4両面の紙面にまとめます。現在は都営大江戸線の12コースを収録しています。任意の駅や目的地を検索するサービスではありません。
 
-「迷わないおでかけ紙」は、駅構内オープンデータから、電車を降りたホームから目的出口までの案内を生成し、A4両面の紙としてプレビュー・印刷する Web アプリです。
+## なぜ作ったのか
 
-複雑な駅構内グラフをそのまま見せるのではなく、利用者が「次に何をすればよいか」を追える短い StationGuide step に変換することを中心にしています。現在は都営大江戸線の12コースを収録しています。
+一般的な乗換案内から電車や出口は分かっても、到着後に「ホームからどちらへ進み、どの改札を通って、目的出口へどう行くか」を判断するのは簡単ではありません。構内図を見ながらスマートフォンを操作し続ける負担を減らし、事前に確認できる案内を作ることを目指しています。
 
-## 利用者にとっての価値
+根拠が確認できる場合は設備、階、改札後の方向などを具体化します。根拠が足りない場合は、設備や方向を決めつけず、より抽象的な案内へ戻します。常に特定のエレベーターや改札名まで案内できるわけではありません。
 
-- 地下駅で起こりやすい「ホームから出口まで分からない」を減らす
-- 構内図を見ながらスマートフォンを操作する負担を減らす
-- 紙なので、駅構内での通信やバッテリーを必要としない
-- 高齢者を主な利用者として想定しつつ、駅で迷いやすい人全般に使える
+## なぜ紙なのか
 
-## 現在の機能
+出発前に確認して印刷でき、駅構内でスマートフォンを操作し続ける必要がありません。表面を列車と駅構内、裏面を出口から目的地までの地図に分け、比較的大きな文字で次の行動を追える構成にしています。
 
-- 12個の目的地コースから選択（駅名付きコースボタン）
-- 到着ホーム → 改札 → 目的出口の StationGuide
-- 公式根拠に基づく推奨号車案内（登録があるコースのみ）
-- エレベーター・エスカレーター・階段・通路・改札の案内
-- 公式 Floor 情報が確定した改札の「地下○階の改札を通る」表示
-- 長い通路の距離・歩数の目安
-- 階段を避ける候補を評価する高齢者向け route scoring
-- 駅構内の A4 表面／裏面プレビューと印刷
-- 駅出口から目的地までの屋外地図・徒歩案内（補助情報）
-- 通常画面は利用者向け表示、`?debug=1` では開発・検証用の診断 UI を表示
+## この経路をどう選んでいるのか
 
-収録コースは、東京タワー、国立新美術館、国立競技場、旧芝離宮恩賜庭園、パティオ十番、明治神宮外苑いちょう並木、明治神宮・代々木口、新宿文化センター、サザンタワー、思い出横丁、アメ横、東京都庁展望室です。
+先に「EVにする」「ESにする」と設備だけを決めるのではなく、ホームから目的出口までの候補経路を作り、設備を使った後の通路も含めた経路全体を比較します。
 
-## 技術的な特徴
+productionでは、各乗車位置（boarding area）と目的出口について、概ね「最短」「階段回避」「エレベーター優先」「エスカレーター優先」の探索設定から候補を集めます。これらは候補を探す設定であり、4つが必ず異なる経路になるわけではありません。同じ乗車位置・出口・Pathway列の重複候補はまとめます。
 
-### GTFS-Pathways から StationGuide へ
+候補選択は単純な最短距離順ではありません。まず階段利用、設備種類の切り替え、分岐・判断点のproxyを比較します。その上で、候補群の最小距離 `Dmin` を基準に `Dmin + 10m` 以内を距離的に近い候補群とし、その中でsemantic actionとして観測した設備利用などを比べます。balanced選択ではES利用が弱い同点要素として働き、最後は距離などと有向Pathway列による再現可能なtie-breakを使います。
 
-`src/domain/indoorRouting.ts` が GTFS-Pathways を有向グラフへ正規化し、候補経路を探索します。候補の共通 suffix や fare gate の意味イベントを比較し、実際のエッジを根拠として step を生成します。
+赤羽橋の同じ乗車位置から同じ出口への候補比較では、次の2経路が確認されています。
 
-### semantic grouping と安全な圧縮
+| 候補 | 距離 | 階段 | ES（semantic上の観測） | balancedでの扱い |
+|---|---:|---:|---:|---|
+| A | 139.7m | 2 | 2 | 選択されない |
+| B | 142.6m | 1 | 3 | 選択 |
 
-利用者の行動単位に近づけるため、次の情報を使います。
+Bは2.9m長い一方、階段利用を1回減らします。候補全体の比較では距離差より階段負担を優先した例です。ESの数は経路のsemantic表現から数えた観測値で、実際のエスカレーター設備を1基ずつ数えた確定値ではありません。
 
-- Facility / Space / Floor の連続性
-- stairs + 短い connector + stairs の decision-point compression
-- 同一設備内の短い通路の吸収
-- same-level のエレベーター接続の吸収
-- 分岐、設備境界、改札、出口をまたがないことの確認
-- 全候補で共通する level transition consensus
-- 公式案内と GTFS 詳細経路を混ぜないための SAFE REJOIN
+### 候補探索の限界
 
-圧縮しても、元 Pathway、node、Facility、Space などの provenance は保持します。安全条件が不足する場合は、無理に短くせず basic な案内へ fallback します。
+productionは全経路を列挙する探索ではなく、限られた探索設定から候補を作ります。そのため、出口までの別のES／EV経路が候補に入らず、比較対象から漏れる可能性があります。shadow監査ではproduction candidateにない別Pathway列も確認されています。「必ず最適」「すべての設備経路を比較」とは言えません。現在はproductionと切り離したshadow探索で、候補の広がりや選択の安全性を検証しています。
 
-### 高齢者向け route scoring
+## 紙面の構成
 
-候補経路を、階段利用、設備乗換、分岐・判断点、徒歩距離などで比較します。EV と ES の固定的な優先順位を置くのではなく、データ上説明できる範囲で負担の少ない候補を評価します。
+### 表面 — 列車と駅構内
 
-### 人間向けの表示
+上部に「乗る／降りる」の左右ブロックを置き、出発駅・発車時刻、路線・行先、乗車ホーム、根拠がある場合の号車位置と、到着駅・到着時刻・到着ホームを表示します。到着ホームの物理階名は公式Floor情報で確認できる場合だけ加えます。
 
-通路距離は実 Pathway 距離を合計して表示し、10m 以上では 5m 単位の距離と、0.6m/歩・10歩単位切り上げの歩数目安を付けます。A4 の文字サイズを自動縮小せず、内容量に応じて表裏へ block 単位で pagination します。
+その下に目的出口と、到着ホームから出口までのStationGuideを表示します。案内は「1 step = 1 action」を基本にし、改札通過と改札後の方向転換など、別々の行動は根拠があれば分けます。
+
+### 裏面 — 出口から目的地
+
+駅出口、目的地、ゆっくり歩く目安時間、固定の徒歩地図とroute lineを表示します。逐次的な徒歩案内文は表示しません。屋外のroute geometryは固定データで、実行時にrouting APIから経路を取得するものではありません。
+
+## 経路生成の流れ
+
+```text
+静的な列車時刻データ
+  → 登録済みのホーム・乗車位置
+  → GTFS-Pathways graph
+  → 経路候補の生成
+  → balanced route selection
+  → semanticな構内stepへ変換
+  → 根拠が確認できた情報で補強
+  → A4表裏のStationGuide・地図
+```
+
+駅構内の経路トポロジーの正本はGTFS-Pathwaysです。StationMapやwalking networkで経路を置き換えるのではなく、対応が確認できた範囲で意味付けや案内表示を補助します。
+
+## 分からないものを推測しない
+
+案内の具体性よりも、根拠の強さを優先します。
+
+- GTFS `level_index` は相対的な階層情報として扱い、値から「地下2階」などの物理階名を推測しません。
+- 物理階名は、対応が確認された公式Floor情報がある場合に表示します。
+- 最近傍のFacility、同じSpace、近接、同じ設備種別だけでは、同じ物理設備だとは断定しません。
+- 階段・ES・EVの方向や設備instanceを確定できない場合は、unknownまたはgenericな表現へfallbackします。
+
+この方針は、情報が豊富な駅だけでなく、データが部分的な駅でももっともらしい誤案内を避けるためのものです。
+
+## 汎用エンジンと安全な補強
+
+構内経路選択・紙面生成のruntime logicでは、駅IDによる特殊分岐を原則として持ちません。駅IDはfixture、StationMap登録、公式metadataなどのデータキーとして使います。駅固有なのは主にデータで、利用可能なFacility／Space／Floor情報に応じて機能を補い、情報がなければGTFS中心のbasic guideへfallbackします。
+
+verified crosswalkがあるPathwayだけwalking network由来の設備・方向情報を補助に使います。crosswalkのcoverageは部分的で、全Pathwayに対応があるわけではありません。設備sessionのproofを扱う仕組みもありますが、強い設備同一性の根拠がない場合、連続する同種のedgeを物理的なエレベーター1基などと数えません。
+
+SAFE REJOINは、同じ階にいることだけを根拠に案内を再接続するものではありません。candidate間で同じsemanticなfare-gate境界を通ることと、経路順序が確認できた場合に限り、その改札境界の後で共通の詳細案内へ戻します。
+
+架空駅を使う `src/domain/newStationOnboarding.test.ts` では、未知の駅IDに対してGTFSのみのbasic guide、登録データがある場合のsemantic grouping、データ不足時のfallbackを検証しています。これは新駅のデータを加えるだけで公式案内まで自動的に完成する、という保証ではありません。
 
 ## 使用データ
 
-- **都営地下鉄の静的 GTFS / GTFS-Pathways**
-  - [GTFS-Pathways 配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip)
-  - [都営静的 GTFS](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip)
-- **ほこナビDP／公共交通オープンデータチャレンジの駅構内データ**
-  - Facility、Space、Floor、walking network の GeoJSON
-  - [チャレンジ2026](https://challenge2026.odpt.org/)
-  - [都営地下鉄のほこナビDPデータセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)
-  - 例：[六本木駅](https://ckan.hokonavi.go.jp/dataset/mlit_station_oedo_roppongi)、[国立競技場駅](https://ckan.hokonavi.go.jp/dataset/station_oedo_kokuritsu-kyogijo)
-- **東京都交通局の公式駅情報・構内図・バリアフリー資料**
-  - 駅ごとの公式ページを到着ホーム、出口、Floor、号車案内の根拠として登録
-  - [大江戸線バリアフリー設備一覧 PDF](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf)
-- **目的地公式アクセス情報**
-  - 各コースの目的地公式ページを `src/data/coursePresets.ts` と徒歩 fixture に保持
-- **屋外徒歩ルート**
-  - 開発時に固定した GeoJSON を使用
-  - ルート形状の取得元は [OpenStreetMap routing.openstreetmap.de](https://routing.openstreetmap.de/routed-foot/route/v1/driving)
-  - 実行時に routing API へ依存しません。地図タイル表示は OpenStreetMap を使用します。
+| データ | 主な役割 | 出典 |
+|---|---|---|
+| 都営地下鉄 GTFS-Pathways（現在のfixture: `20260924`） | 駅構内のnode、Pathway、接続トポロジー | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip) |
+| 都営地下鉄 静的GTFS（fixture抽出: `20260916`） | 列車時刻・駅間移動のデモ用データ | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip) |
+| ほこナビDPの駅構内データ | Facility、Space、Floor、walking network。意味付け・補強用 | [データセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)、[チャレンジ2026](https://challenge2026.odpt.org/) |
+| 東京都交通局の公式駅情報・バリアフリー資料 | 登録されたホーム、号車位置、設備、出口、公式Floor等の根拠 | [大江戸線バリアフリー設備一覧](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf) および各駅公式情報 |
+| OpenStreetMap | 地図タイル等の地図表示 | [OpenStreetMap](https://www.openstreetmap.org/)、[著作権・表示](https://www.openstreetmap.org/copyright) |
+| 徒歩routeデータ | 事前に保存した屋外route geometry | 開発時に利用した[徒歩routing service](https://routing.openstreetmap.de/routed-foot/route/v1/driving)。実行時には呼び出しません |
+| 目的地のアクセス情報 | コースごとの目的地名・出口対応等のdata確認 | 出典URLをcourse preset／fixtureに記録。下記コース表の目的地名から各アクセス情報へリンク |
 
-出典 URL、取得日、ライセンス、provenance はデータモデルまたは fixture に保持します。公式根拠を確認できない値は生成しません。
+各sourceの役割と証拠の強さは同一ではありません。GTFS-Pathwaysはトポロジー、公式metadataは利用者向け情報、StationMapは対応関係が確認できた範囲の補助情報として扱います。
 
-## 自動化の範囲と制約
+## GTFSデータ更新の確認
 
-- routing core は駅名や Pathway ID の特例ではなく、共通の GTFS graph・semantic 処理で動作します。
-- GTFS-Pathways だけでも、basic な graph 構築、経路探索、改札検出、level transition、StationGuide 生成が可能です。
-- Facility / Space / Floor と walking-network を登録すると、設備群の圧縮など advanced な semantic 処理が有効になります。
-- 公式構内図由来の「○号車付近」は optional metadata です。機械可読な boarding area と直接対応しない場合もあります。
-- 不明な設備、出口、左右、号車位置を推測せず、安全な抽象表現へ fallback します。
-- したがって、新しい駅データを追加するだけで全ての公式案内が完全自動化されるわけではありません。出口の採用、公式 Floor、バリアフリー設備、目的地アクセスは、必要に応じて人が根拠を確認して metadata として登録します。
+開発中、GTFS-Pathwaysの接続上の不整合を確認して提供元へ報告し、2026年9月24日版での更新を確認しました。現在アプリで使うPathways fixtureは `20260924` です。旧版との差分とrouteへの影響は[更新監査レポート](reports/toei-gtfs-pathways-update-audit.md)に記録しています。このレポートはfixture更新前に作成された履歴資料で、本文の当時点のfixture記述は現在の状態を示すものではありません。
 
-## 新駅 onboarding の検証
+## 収録コース
 
-`src/domain/newStationOnboarding.test.ts` には、既存12駅とは異なる `test-generic-station` の合成 fixture があります。runtime に駅 ID の特例を追加せず、次を確認します。
+| コース | 出発駅 | 到着駅 | 目的出口 | 目的地 |
+|---|---|---|---|---|
+| 東京タワー | 大門 | 赤羽橋 | 赤羽橋口 | [東京タワー（フットタウン）](https://www.tokyotower.co.jp/access/railroad/) |
+| 国立新美術館 | 大門 | 六本木 | 7出口 | [国立新美術館](https://www.nact.jp/information/access/) |
+| 国立競技場 | 六本木 | 国立競技場 | A2出口 | [国立競技場](https://jns-e.com/access/) |
+| 旧芝離宮恩賜庭園 | 赤羽橋 | 大門 | B2出口 | [旧芝離宮恩賜庭園](https://www.tokyo-park.or.jp/park/kyu-shiba-rikyu/) |
+| パティオ十番 | 大門 | 麻布十番 | 7出口 | [パティオ十番（きみちゃん像）](https://www.azabujuban.or.jp/about/) |
+| 明治神宮外苑いちょう並木 | 六本木 | 青山一丁目 | 1出口 | [明治神宮外苑いちょう並木](https://www.meijijingugaien.jp/) |
+| 明治神宮・代々木口 | 国立競技場 | 代々木 | A2出口 | [明治神宮・代々木口](https://www.meijijingu.or.jp/access/) |
+| 新宿文化センター | 新宿西口 | 東新宿 | A2出口 | [新宿文化センター](https://www.regasu-shinjuku.or.jp/bunka-center/traffic-access/) |
+| サザンタワー | 代々木 | 新宿 | A1出口 | [小田急ホテルセンチュリーサザンタワー](https://www.southerntower.co.jp/access/) |
+| 思い出横丁 | 東新宿 | 新宿西口 | D3出口 | [新宿西口 思い出横丁](https://shinjuku-omoide.com/access) |
+| アメ横 | 新宿西口 | 上野御徒町 | A7出口 | [アメ横](https://www.ameyoko.net/access/) |
+| 東京都庁展望室 | 新宿 | 都庁前 | A4出口 | [東京都庁展望室](https://www.zaimu.metro.tokyo.lg.jp/tochousha/goannai/tenbou) |
 
-1. GTFS-only で graph、経路、改札、level transition、距離・歩数付き basic guide を生成できる
-2. StationMap registry を登録すると、階段 + 短い flat connector + 階段が1つの semantic actionへ安全に圧縮され、provenance が残る
-3. metadata がない場合は高度な圧縮を行わず、guide 生成自体は fallback する
-4. 可能な範囲で elderly route scoring が駅 ID whitelist なしに動作する
+## Experimental / Shadow
 
-これは「データ追加だけで常に正しい案内が完成する」という証明ではなく、未知の駅でも engine が安全に basic 処理へ戻れることを確認するテストです。
+multi-objective routing、origin別multi-target探索、目的出口向け `g+h` queue ordering、evidence-aware selection、shadow cutover gateは、productionとは分離した検証用機能です。現時点で公開紙面のroute選択には使っていません。探索予算に達すると `complete=false` になることがあり、全Pareto経路を列挙する機能ではありません。
+
+`balanced`、`escalator-preferred`、`elevator-preferred` のMobilityProfileもdomain側にありますが、利用者向けUIの選択機能ではありません。production UIはbalancedを使い、現在の12コースのprofile比較監査では選択routeの差は確認されていません。
+
+## 時刻表と現在の制約
+
+列車検索は静的な平日時刻表を使うデモ設定です。現在の初期検索条件は **2026-09-21 07:00** で、UIから日付・時刻は変更できません。静的GTFS fixtureの有効期間は **2026-03-14〜2026-12-31** です。リアルタイム運行情報はありません。
+
+- 登録済みの都営大江戸線12コースが対象で、任意駅・目的地検索はありません。
+- productionの候補探索は限定的で、全経路の列挙や大域最適を保証しません。
+- 号車位置や公式設備情報は登録されたdataの範囲に限られます。
+- verified Pathway crosswalkや設備identityの証拠は部分的です。
+- ES／EVの優先設定を利用者が選ぶUIはありません。
+- shadow routingはproduction未採用です。
+- 裏面は地図中心で、逐次的なturn-by-turn徒歩案内はありません。
+
+## QAと検証
+
+現在の基準HEADでは、**47 test files、335 tests passed**、`npm run build` 成功を確認しています。A4用CSSで印刷を想定し、12コースのブラウザpreviewと代表例の印刷表示を確認しています。これは自動PDF regression testを意味するものではありません。
+
+通常の `npm test -- --run` はtracked audit reportを更新しません。監査レポートを明示的に再生成する場合は `npm run audit:reports` を使います。このコマンドは監査reportを生成・更新します。
 
 ## Demo / Debug
 
-公開 URL や動画 URL はこの repository に登録していません。ローカルで `npm run dev` を実行して確認してください。
-
-- 通常画面：コース選択と A4 プレビュー
-- 開発診断画面：`http://localhost:5173/?debug=1`
+公開demo URLや動画URLは登録していません。ローカルで起動した通常画面はコース選択とA4 previewを表示します。開発・検証者はURLへ `?debug=1` を付けると診断UIを確認できます（例: `http://localhost:5173/?debug=1`）。
 
 ## Development
 
@@ -114,24 +153,25 @@ npm install
 npm run dev
 ```
 
-テストと production build:
+テストとproduction build:
 
 ```bash
 npm test -- --run
 npm run build
 ```
 
-個別の監査スクリプトは `package.json` の `audit:*` scripts と `scripts/` を参照してください。駅構内データの追加・再取得は [駅構内データ取り込み手順](docs/indoor-data-import-runbook.md) に従います。
-
-## Repository layout
+主な構成:
 
 ```text
-src/domain/           共通の graph、route、semantic、presentation ロジック
-src/data/fixtures/    GTFS、時刻、徒歩 route などの固定データ
-src/data/stationMaps/ 駅構内 Facility / Space / Floor / walking network
-src/data/catalogs/    駅・データセットのレジストリ
-src/data/repositories/データ取得・検索との境界
-src/ui/               コース選択、A4 表裏プレビュー、印刷 UI
+src/domain/           graph、route、semantic処理、paper presentation
+src/data/fixtures/    GTFS、時刻表、徒歩routeなどの固定データ
+src/data/stationMaps/ Facility / Space / Floor / walking network
+src/data/catalogs/    駅・データセット登録
+src/ui/               コース選択、A4表裏preview、印刷UI
 scripts/              監査・抽出用スクリプト
 docs/                 データ取り込み・出典監査メモ
 ```
+
+## License / data attribution
+
+データごとに出典URL、取得情報、確認できたライセンスをmetadataやfixtureへ記録しています。一部の公開データは利用条件の再確認が必要なため、ライセンスや再配布条件を一律に断定していません。利用・再配布時は各sourceの最新条件を確認してください。
