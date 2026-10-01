@@ -323,7 +323,7 @@ function OutdoorRouteMap({
         </g>
       </svg>
       <small className="outdoor-map-attribution">
-        © OpenStreetMap contributors　／　地図：OpenStreetMap
+        © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>　／　地図：OpenStreetMap
       </small>
     </div>
   );

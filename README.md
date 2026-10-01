@@ -85,15 +85,22 @@ SAFE REJOINは、同じ階にいることだけを根拠に案内を再接続す
 
 ## 使用データ
 
-| データ                                                | 主な役割                                                  | 出典                                                                                                                                                           |
-| ----------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 都営地下鉄 GTFS-Pathways（現在のfixture: `20260924`） | 駅構内のnode、Pathway、接続トポロジー                     | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip)                                                                 |
-| 都営地下鉄 静的GTFS（fixture抽出: `20260916`）        | 列車時刻・駅間移動のデモ用データ                          | [配布ファイル](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip)                                                                         |
-| ほこナビDPの駅構内データ                              | Facility、Space、Floor、walking network。意味付け・補強用 | [データセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)、[チャレンジ2026](https://challenge2026.odpt.org/) |
-| 東京都交通局の公式駅情報・バリアフリー資料            | 登録されたホーム、号車位置、設備、出口、公式Floor等の根拠 | [大江戸線バリアフリー設備一覧](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf) および各駅公式情報     |
-| OpenStreetMap                                         | 地図タイル等の地図表示                                    | [OpenStreetMap](https://www.openstreetmap.org/)、[著作権・表示](https://www.openstreetmap.org/copyright)                                                       |
-| 徒歩経路データ                                        | 事前に保存した屋外の徒歩経路形状                          | 開発時に利用した[徒歩routing service](https://routing.openstreetmap.de/routed-foot/route/v1/driving)。実行時には呼び出しません                                 |
-| 目的地のアクセス情報                                  | コースごとの目的地名・出口対応等のデータ確認              | 出典URLをcourse preset／fixtureに記録。下記コース表の目的地名から各アクセス情報へリンク                                                                        |
+| データ | 利用方法・出典・ライセンス |
+| --- | --- |
+| 東京都交通局 GTFS / GTFS-Pathways | 東京都交通局・公共交通オープンデータ協議会提供。CC BY 4.0。Pathwaysは駅構内のnode、Pathway、接続トポロジーに、静的GTFSはデモ用の列車時刻・駅間移動に使用します。[GTFS-Pathways](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS-Pathway.zip) / [静的GTFS](https://api-public.odpt.org/api/v4/files/Toei/data/Toei-Train-GTFS.zip)。 |
+| ほこナビDP 駅構内データ | 国土交通省提供。公共データ利用規約（第1.0版、PDL1.0）。Facility、Space、Floor、歩行空間ネットワーク等の元データを本作品で抽出・加工し、意味付け・経路案内の補助に利用しています。[都営大江戸線のデータセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84)、[公共データ利用規約（第1.0版）](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0)。個別データセットに追加条件や第三者権利の記載がある場合はその条件も確認してください。 |
+| 東京都交通局の公式駅情報・バリアフリー資料 | 登録されたホーム、号車位置、設備、出口、公式Floor等の根拠。[大江戸線バリアフリー設備一覧](https://www.kotsu.metro.tokyo.jp/initiatives/accessibility/subway/kanren/pdf/barrierfree_guide_oedo.pdf) および各駅公式情報。 |
+| OpenStreetMap | 地図タイルおよび徒歩経路データの一部に利用。地図上に「© OpenStreetMap contributors」と表示しています。[OpenStreetMap](https://www.openstreetmap.org/)、[著作権・帰属表示](https://www.openstreetmap.org/copyright)。 |
+| 徒歩経路データ | 事前に保存した屋外徒歩経路形状。開発時に[徒歩routing service](https://routing.openstreetmap.de/routed-foot/route/v1/driving)を利用し、実行時には呼び出しません。 |
+| 目的地のアクセス情報 | コースごとの目的地名・出口対応等。出典URLをcourse preset／fixtureに記録し、下記コース表の目的地名から各アクセス情報へリンクしています。 |
+
+### データのクレジットとコードのライセンス
+
+東京都交通局のGTFSデータを改変して利用しています。クレジット：東京都交通局・公共交通オープンデータ協議会「東京都交通局 鉄道関連情報（GTFS / GTFS-Pathways）」、[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)。
+
+出典：国土交通省「歩行空間ネットワークデータ（都営地下鉄大江戸線・各駅）」([ほこナビDPデータセット一覧](https://ckan.hokonavi.go.jp/dataset/?tags=%E9%83%BD%E5%96%B6%E5%9C%B0%E4%B8%8B%E9%89%84))、[公共データ利用規約（第1.0版、PDL1.0）](https://www.digital.go.jp/resources/open_data/public_data_license_v1.0)。本作品「迷わないおでかけ紙」の開発者が元データを抽出・加工して作成しました。データセットに個別の条件や第三者権利の記載がある場合は、そちらも適用されます。これらのデータライセンスは本リポジトリのアプリケーションコードには適用されません。
+
+本リポジトリではアプリケーションコードのライセンスを別途指定していません。上記は外部データの出典・ライセンス表示であり、コードを含むリポジトリ全体へのライセンス付与を意味しません。
 
 各データ源の役割と証拠の強さは同一ではありません。GTFS-Pathwaysはトポロジー、公式メタデータは利用者向け情報、StationMapは対応関係が確認できた範囲の補助情報として扱います。
 

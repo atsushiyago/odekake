@@ -1,7 +1,7 @@
 import type { PrintableGuide } from '../../domain/types'
 
 export const yamatoToKozashibuyaFixture: PrintableGuide = {
-  contact: '家族：090-1234-5678',
+  contact: '連絡先：テスト用（架空）',
   trip: {
     id: 'fixture-yamato-kozashibuya-weekday', serviceDate: '平日（fixture）', leaveHomeAt: '14:45', arriveBy: '15:30ごろ',
     originLabel: '大和駅', destinationLabel: '大和市渋谷学習センター',
