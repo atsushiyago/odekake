@@ -83,6 +83,31 @@ export const jrEastYamanoteWeekdayTrips: ScheduledRailLeg[] = [
       retrievedAt: '2026-11-05',
     },
   },
+  {
+    tripId: '4200605G',
+    routeId: '42',
+    routeName: '山手線',
+    serviceDay: 'weekday',
+    directionId: '0',
+    headsign: '品川・渋谷方面',
+    from: {
+      stationId: '4224',
+      stationName: '東京',
+      departureTime: '07:13',
+      stopSequence: 24,
+    },
+    to: {
+      stationId: '4230',
+      stationName: '品川',
+      arrivalTime: '07:26',
+      stopSequence: 30,
+    },
+    source: {
+      url: 'https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip',
+      feedVersion: '20261025',
+      retrievedAt: '2026-11-05',
+    },
+  },
 ]
 
 export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
@@ -126,6 +151,37 @@ export const ikebukuroOfficialPlatformAssignments: OfficialPlatformAssignment[] 
       url: 'https://www.jreast.co.jp/estation/stations/108.html',
       checkedAt: '2026-11-05',
       description: 'JR東日本公式：池袋駅 7番線（山手線外回り・田端・上野方面）ホーム',
+    },
+  },
+]
+
+export const shinagawaOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
+  {
+    stationId: '4230',
+    platformId: '4230P3',
+    routeId: '42',
+    directionId: '0',
+    headsign: '品川・渋谷方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/788.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：品川駅 3番線（山手線外回り・渋谷・新宿方面）ホーム',
+    },
+  },
+]
+
+export const tokyoOfficialDeparturePlatformAssignments: OfficialDeparturePlatformAssignment[] = [
+  {
+    stationId: '4224',
+    platformId: '4224P5',
+    platformCode: '5',
+    routeId: '42',
+    directionId: '0',
+    headsign: '品川・渋谷方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/1039.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：東京駅 5番線（山手線外回り・品川・渋谷方面）ホーム',
     },
   },
 ]
@@ -284,6 +340,44 @@ export const ikebukuroToTokyoMetropolitanTheatreWalkingRoute: WalkingRoute = bui
     source: {
       provider: 'OpenStreetMap',
       endpoint: 'https://www.geigeki.jp/access/',
+      acquiredAt: '2026-11-05',
+    },
+  },
+})
+
+export const shinagawaToAquaParkWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
+  id: 'shinagawa-to-aqua-park',
+  from: {
+    label: '品川駅 高輪口',
+    latitude: 35.628668,
+    longitude: 139.738204,
+  },
+  to: {
+    label: 'マクセル アクアパーク品川（品川プリンスホテル）',
+    latitude: 35.628121,
+    longitude: 139.736475,
+  },
+  officialMinutes: 2,
+  sourceUrl: 'https://www.aqua-park.jp/aqua/access/',
+  retrievedAt: '2026-11-05',
+  stationExitConnection: {
+    stationId: '4230',
+    exitNodeId: '4230N0005',
+    exitLabel: '高輪口',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [139.738204, 35.628668],
+      [139.7376, 35.6285],
+      [139.7370, 35.6283],
+      [139.736475, 35.628121],
+    ],
+    distanceMeters: 170,
+    durationSeconds: 120,
+    source: {
+      provider: 'OpenStreetMap',
+      endpoint: 'https://www.aqua-park.jp/aqua/access/',
       acquiredAt: '2026-11-05',
     },
   },

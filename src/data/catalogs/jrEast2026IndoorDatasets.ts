@@ -1,6 +1,7 @@
 import takanawaGatewayExtraction from '../fixtures/jr2026-takanawa-gateway-gtfs-pathways.json'
 import shibuyaExtraction from '../fixtures/jr2026-shibuya-gtfs-pathways.json'
 import ikebukuroExtraction from '../fixtures/jr2026-ikebukuro-gtfs-pathways.json'
+import shinagawaExtraction from '../fixtures/jr2026-shinagawa-gtfs-pathways.json'
 import type { IndoorStationDataset } from './oedo2026IndoorDatasets'
 import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../adapters/gtfsPathwaysAdapter'
 import type { StationRef } from '../../domain/types'
@@ -37,6 +38,15 @@ export const loadedJrEast2026IndoorDatasets: IndoorStationDataset[] = [
     gtfs: extractGtfsPathwaysStation(
       ikebukuroExtraction as GtfsPathwaysFeed,
       { id: '4212', name: '池袋' }
+    ),
+    reviewedAnchors: [],
+  },
+  {
+    key: 'shinagawa',
+    station: jrEast('4230', '品川', '山手線'),
+    gtfs: extractGtfsPathwaysStation(
+      shinagawaExtraction as GtfsPathwaysFeed,
+      { id: '4230', name: '品川' }
     ),
     reviewedAnchors: [],
   },

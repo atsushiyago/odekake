@@ -11,9 +11,12 @@ import {
   shibuyaOfficialPlatformAssignments,
   shibuyaToHachikoWalkingRoute,
   shinagawaOfficialDeparturePlatformAssignments,
+  shinagawaOfficialPlatformAssignments,
+  shinagawaToAquaParkWalkingRoute,
   shinjukuJrOfficialDeparturePlatformAssignments,
   takanawaGatewayOfficialPlatformAssignments,
   takanawaGatewayToSengakujiWalkingRoute,
+  tokyoOfficialDeparturePlatformAssignments,
 } from './fixtures/jr-east-schedule'
 
 export interface OutingCoursePreset {
@@ -182,6 +185,34 @@ export const jrEastCoursePresets: OutingCoursePreset[] = [
     departurePlatformAssignments: shinjukuJrOfficialDeparturePlatformAssignments,
     arrivalPlatformAssignments: ikebukuroOfficialPlatformAssignments,
     walkingRoute: ikebukuroToTokyoMetropolitanTheatreWalkingRoute,
+  },
+  {
+    id: 'tokyo-shinagawa-aqua-park',
+    label: 'アクアパーク品川',
+    originStationId: '4224',
+    originStationName: '東京',
+    arrivalStationId: '4230',
+    arrivalStationName: '品川',
+    destination: {
+      name: 'マクセル アクアパーク品川（品川プリンスホテル）',
+      latitude: 35.628121,
+      longitude: 139.736475,
+      sourceUrl: 'https://www.aqua-park.jp/aqua/access/',
+    },
+    preferredExitId: '4230N0005',
+    arrivalPlatformFloor: {
+      label: '1階',
+      levelIndex: 1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/788.html',
+    },
+    gateFloor: {
+      label: '2階',
+      levelIndex: 2,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/788.html',
+    },
+    departurePlatformAssignments: tokyoOfficialDeparturePlatformAssignments,
+    arrivalPlatformAssignments: shinagawaOfficialPlatformAssignments,
+    walkingRoute: shinagawaToAquaParkWalkingRoute,
   },
 ]
 

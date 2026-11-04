@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import takanawaExtraction from '../data/fixtures/jr2026-takanawa-gateway-gtfs-pathways.json'
 import shibuyaExtraction from '../data/fixtures/jr2026-shibuya-gtfs-pathways.json'
 import ikebukuroExtraction from '../data/fixtures/jr2026-ikebukuro-gtfs-pathways.json'
+import shinagawaExtraction from '../data/fixtures/jr2026-shinagawa-gtfs-pathways.json'
 import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../data/adapters/gtfsPathwaysAdapter'
 import { buildGtfsStationGuideFromRoute, buildIndoorGraph } from './indoorRouting'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
@@ -315,5 +316,82 @@ describe('JR East Ikebukuro Station', () => {
     expect(geigekiCourse).toBeDefined()
     expect(geigekiCourse?.label).toBe('東京芸術劇場')
     expect(geigekiCourse?.arrivalStationId).toBe('4212')
+  })
+})
+
+describe('JR East Shinagawa Station', () => {
+  const station: StationRef = {
+    id: '4230',
+    name: '品川',
+    operator: '東日本旅客鉄道',
+    line: '山手線',
+  }
+
+  const rawData = extractGtfsPathwaysStation(
+    shinagawaExtraction as GtfsPathwaysFeed,
+    { id: '4230', name: '品川' }
+  )
+
+  it('extracts exit groups (excluding Shinkansen transfer gates) and builds paper guide model for every exit of Shinagawa', () => {
+    const graph = buildIndoorGraph(rawData)
+    const groups = getStationExitGroups(graph)
+    console.log('Shinagawa exit groups:', groups.map(g => ({ rawName: g.rawName, label: g.label, nodeIds: g.nodeIds })))
+    expect(groups.length).toBe(4)
+
+    for (const group of groups) {
+      const elderlyScore = findBestElderlyRoute(graph, '4230P3', group.nodeIds)
+      expect(elderlyScore).not.toBeNull()
+      if (!elderlyScore) continue
+
+      const stationGuide = buildGtfsStationGuideFromRoute(
+        graph,
+        station,
+        { platformId: '4230P3', exitNodeId: elderlyScore.exitId },
+        elderlyScore.route,
+      )
+      expect(stationGuide.ok).toBe(true)
+      if (!stationGuide.ok) continue
+
+      const model = buildHomeToGateGuideModel({
+        guide: stationGuide.guide,
+        graph,
+        platformId: '4230P3',
+        exitNodeIds: group.nodeIds,
+        preferredExitNodeIds: ['4230N0005'],
+        selectedRoute: elderlyScore.route,
+        arrivalPlatformFloor: { label: '1階', levelIndex: 1 },
+        humanizeWalkDistance: true,
+        humanizeGateDirection: true,
+      })
+
+      console.log(
+        `Shinagawa [${group.rawName}] (${elderlyScore.exitId}) Car: ${model.carPositionLabel}`,
+        model.sections.map(sec => ({ title: sec.title, steps: sec.steps.map(s => `${s.number}. ${s.step.instruction}`) }))
+      )
+      expect(model.guide.steps.length).toBeGreaterThan(0)
+      expect(model.carPositionLabel).toMatch(/\d+号車付近/)
+    }
+  })
+
+  it('finds direct Yamanote Line scheduled journey from Tokyo to Shinagawa and registers preset', () => {
+    const result = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: '東京',
+      destinationName: '品川',
+      departureDate: '2026-09-21',
+      departureTime: '07:00',
+    })
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(result.leg.tripId).toBe('4200605G')
+    expect(result.leg.from.departureTime).toBe('07:13')
+    expect(result.leg.to.arrivalTime).toBe('07:26')
+    expect(result.leg.routeName).toBe('山手線')
+
+    const aquaParkCourse = outingCoursePresetById.get('tokyo-shinagawa-aqua-park')
+    expect(aquaParkCourse).toBeDefined()
+    expect(aquaParkCourse?.label).toBe('アクアパーク品川')
+    expect(aquaParkCourse?.arrivalStationId).toBe('4230')
   })
 })
