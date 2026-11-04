@@ -1602,7 +1602,7 @@ export default function App() {
               <div className="exit-selector-header">
                 <span className="exit-selector-title">地上出口</span>
                 <span className="exit-selector-hint">
-                  （選んだ出口に応じてホームからの構内経路が切り替わります）
+                  （選んだ出口に応じてホームからの構内経路が切り替わります。※都営管轄の地上出口のみ掲載）
                 </span>
               </div>
               <div
