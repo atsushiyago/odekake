@@ -16,7 +16,7 @@
 .preview-pages{display:block}
 @media (min-width:1700px){main{max-width:none}.preview-pages{display:flex;align-items:flex-start;justify-content:center;gap:24px}.preview-pages .paper{flex:0 0 210mm;margin-left:0;margin-right:0}}
 @media print{.preview-pages{display:block}.preview-pages .paper{margin-left:0;margin-right:0}}
-.course-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px}.course-option{grid-column:auto;display:grid;gap:2px;text-align:left;border:2px solid #cbd5e1;border-radius:8px;background:#fff;color:#334155;padding:6px 10px;font:inherit;font-size:14px;line-height:1.2;cursor:pointer;transition:all .15s ease}.course-option:hover,.course-option:focus-visible{border-color:#94a3b8;background:#f8fafc}.course-option.is-selected{border-color:#135c38;background:#f0fdf4;color:#135c38;font-weight:800;box-shadow:0 0 0 1px #135c38}.course-option[aria-pressed="true"]{outline-offset:2px}.course-option-destination{font-size:14px;font-weight:800}.course-option-station{font-size:11px;font-weight:700;line-height:1.15;color:#64748b}.course-option.is-selected .course-option-station{color:#135c38}@media(max-width:850px){.course-options{grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:6px}.course-option{font-size:13px;padding:6px 6px}}
+.course-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px}.course-option{grid-column:auto;display:grid;gap:2px;text-align:left;border:2px solid #cbd5e1;border-radius:8px;background:#fff;color:#334155;padding:6px 10px;font:inherit;font-size:14px;line-height:1.2;cursor:pointer;transition:all .15s ease}.course-option:hover,.course-option:focus-visible{border-color:#94a3b8;background:#f8fafc}.course-option.is-selected{border-color:#d4482f;background:#fff8f5;color:#d4482f;font-weight:800;box-shadow:0 0 0 1px #d4482f}.course-option[aria-pressed="true"]{outline-offset:2px}.course-option-destination{font-size:14px;font-weight:800}.course-option-station{font-size:11px;font-weight:700;line-height:1.15;color:#64748b}.course-option.is-selected .course-option-station{color:#d4482f}@media(max-width:850px){.course-options{grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:6px}.course-option{font-size:13px;padding:6px 6px}}
 .course-picker{display:block;padding:8px 14px;margin-bottom:8px}.course-picker .course-selector{max-width:none;gap:4px}.course-selector-title{font-size:13px;font-weight:800;color:#1e293b}.course-picker .course-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));overflow:visible;flex:1;min-width:0;padding:2px 0;gap:6px}.course-picker .course-option{flex:initial;min-width:0;width:auto;height:100%;white-space:normal;overflow-wrap:anywhere}
 .elderly-route-note{display:grid;gap:2px;margin:12px 0 0;padding:9px 12px;border:3px solid #135c38;border-radius:10px;background:#eef7f2;font-size:18px;line-height:1.35}.arrival-train .departure-car-note{grid-column:2;margin:0}.elderly-route-note b{font-size:22px}.elderly-route-note span{font-weight:800}.elderly-route-note small{font-size:.8em}.home-equipment-note{display:grid;gap:2px;margin:8px 0;padding:8px 12px;border-left:6px solid #135c38;background:#f3f8f4;font-size:19px;line-height:1.35}.home-equipment-note b{font-weight:900}.home-equipment-note small{font-size:.8em}@media(max-width:850px){.elderly-route-note{font-size:clamp(10px,2.7vw,18px);padding:7px 9px}.elderly-route-note b{font-size:clamp(13px,3.5vw,22px)}.home-equipment-note{font-size:clamp(14px,3vw,19px)}}
 .arrival-train{grid-template-rows:repeat(4,auto);gap:2px 12px;padding:8px 12px;align-items:center}.arrival-train>b{grid-column:1;grid-row:1 / span 4;align-self:start;padding-top:2px}.arrival-train .train-departure-line,.arrival-train .train-boarding-line,.arrival-train .train-route-line,.arrival-train .train-arrival-line{grid-column:2;min-width:0;white-space:nowrap;line-height:1.2}.arrival-train .train-departure-line,.arrival-train .train-arrival-line{font-size:22px}.arrival-train .train-boarding-line{font-size:18px;color:#a7311f}.arrival-train .train-route-line{font-size:16px}.arrival-train .train-arrival-line{font-weight:800}@media(max-width:850px){.arrival-train{padding:7px;grid-template-columns:25% 1fr;gap:2px 7px}.arrival-train .train-departure-line,.arrival-train .train-arrival-line{font-size:clamp(13px,3.5vw,23px)}.arrival-train .train-boarding-line{font-size:clamp(10px,2.7vw,18px)}.arrival-train .train-route-line{font-size:clamp(9px,2.1vw,17px)}}
@@ -486,17 +486,17 @@
   padding: 6px 16px;
   font-size: 15px;
   font-weight: 800;
-  border: 2px solid #135c38;
+  border: 2px solid #d4482f;
   border-radius: 8px;
-  background: #135c38;
+  background: #d4482f;
   color: #ffffff;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(19, 92, 56, 0.2);
+  box-shadow: 0 1px 3px rgba(212, 72, 47, 0.25);
   transition: all 0.15s ease;
 }
 .paper-action-btn.print-btn:hover {
-  background: #0e4429;
-  border-color: #0e4429;
+  background: #b93821;
+  border-color: #b93821;
 }
 .paper-action-menu-trigger {
   display: inline-flex;
@@ -634,33 +634,19 @@
   border-radius: 999px;
   border: 1px solid #cbd5e1;
 }
-.operator-tab-oedo.is-selected {
-  border-color: #b6007a;
-  background: #fdf2f8;
-  color: #831843;
-  box-shadow: 0 0 0 1px #b6007a;
+.operator-tab.is-selected {
+  border-color: #d4482f;
+  background: #fff8f5;
+  color: #d4482f;
+  box-shadow: 0 0 0 1px #d4482f;
 }
-.operator-tab-oedo.is-selected .operator-tab-badge {
-  background: #b6007a;
+.operator-tab.is-selected .operator-tab-badge {
+  background: #d4482f;
   color: #ffffff;
 }
-.operator-tab-oedo.is-selected .operator-tab-count {
-  border-color: #f472b6;
-  color: #9d174d;
-}
-.operator-tab-jr.is-selected {
-  border-color: #135c38;
-  background: #f0fdf4;
-  color: #135c38;
-  box-shadow: 0 0 0 1px #135c38;
-}
-.operator-tab-jr.is-selected .operator-tab-badge {
-  background: #135c38;
-  color: #ffffff;
-}
-.operator-tab-jr.is-selected .operator-tab-count {
-  border-color: #86efac;
-  color: #135c38;
+.operator-tab.is-selected .operator-tab-count {
+  border-color: #fca5a5;
+  color: #d4482f;
 }
 @media (max-width: 700px) {
   .operator-tabs {
