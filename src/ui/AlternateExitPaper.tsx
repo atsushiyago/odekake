@@ -162,12 +162,14 @@ export function AlternateExitPaper({
                 <span className="memo-field-title">緊急連絡先（電話番号・家族など）</span>
                 <div className="memo-write-line" />
               </div>
-              <div className="memo-field-group">
+              <div className="memo-field-group memo-fill-area">
                 <span className="memo-field-title">持ち物・チェック</span>
                 <div className="memo-checklist">
                   <span className="memo-check-item">□ 切符・交通系IC</span>
                   <span className="memo-check-item">□ 携帯電話・財布</span>
                   <span className="memo-check-item">□ 保険証・診察券</span>
+                  <span className="memo-check-item memo-blank-check">□ </span>
+                  <span className="memo-check-item memo-blank-check">□ </span>
                 </div>
               </div>
             </div>

@@ -377,9 +377,11 @@
   border-radius: 4px 4px 0 0;
 }
 .memo-checklist {
+  flex: 1;
+  min-height: 110px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  justify-content: space-evenly;
   padding: 8px 10px;
   background: #fff;
   border: 1.5px solid #cbd5e1;
@@ -389,6 +391,14 @@
   font-size: 12px;
   font-weight: 700;
   color: #334155;
+  display: flex;
+  align-items: center;
+}
+.memo-blank-check {
+  color: #94a3b8;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 2px;
+  min-height: 18px;
 }
 .memo-fill-area {
   flex: 1;
