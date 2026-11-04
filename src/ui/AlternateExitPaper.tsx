@@ -90,42 +90,15 @@ function ExitSurroundingsMap({
           filter="url(#exit-pin-shadow)"
         />
         <circle cx={pinX} cy={pinY} r="5" fill="#fff" />
-
-        {/* Pin label callout badge */}
-        <g
-          className="exit-pin-callout"
-          transform={`translate(${pinX}, ${pinY - 26})`}
-          filter="url(#exit-pin-shadow)"
-        >
-          {/* Label background pill */}
-          <rect
-            x="-110"
-            y="-42"
-            width="220"
-            height="38"
-            rx="8"
-            fill="#d4482f"
-            stroke="#fff"
-            strokeWidth="2.5"
-          />
-          {/* Arrow pointing down to marker */}
-          <polygon
-            points="-8,-4 8,-4 0,4"
-            fill="#d4482f"
-          />
-          <text
-            x="0"
-            y="-17"
-            textAnchor="middle"
-            fill="#ffffff"
-            fontSize="18"
-            fontWeight="800"
-            fontFamily="sans-serif"
-          >
-            📍 ここに出ます（{exitLabel}）
-          </text>
-        </g>
       </svg>
+
+      {/* Auto-sized centered HTML callout badge above the pin */}
+      <div className="exit-pin-callout-badge" aria-hidden="true">
+        <span className="exit-pin-callout-icon">📍</span>
+        <span className="exit-pin-callout-label">
+          ここに出ます ({exitLabel})
+        </span>
+      </div>
 
       <small className="outdoor-map-attribution">
         © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>　／　地図：OpenStreetMap
