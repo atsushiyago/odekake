@@ -13,6 +13,10 @@ describe('stationExitOptions', () => {
       for (const group of groups) {
         expect(group.label.length).toBeGreaterThan(0)
         expect(group.nodeIds.length).toBeGreaterThan(0)
+        expect(typeof group.lat).toBe('number')
+        expect(typeof group.lon).toBe('number')
+        expect(group.lat).toBeGreaterThan(35)
+        expect(group.lon).toBeGreaterThan(139)
       }
     }
   })

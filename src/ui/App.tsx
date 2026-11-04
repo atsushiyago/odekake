@@ -1919,6 +1919,15 @@ export default function App() {
                     stationName={course.arrivalStationName}
                     exitLabel={itineraryGuide.activeExitLabel}
                     destinationName={course.destination.name}
+                    exitCoordinates={
+                      activeExitGroup?.lat !== undefined &&
+                      activeExitGroup?.lon !== undefined
+                        ? {
+                            lat: activeExitGroup.lat,
+                            lon: activeExitGroup.lon,
+                          }
+                        : undefined
+                    }
                   />
                 )}
               </PaperPreviewFrame>

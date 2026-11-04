@@ -5,6 +5,8 @@ export interface AvailableExitGroup {
   label: string
   rawName: string
   nodeIds: string[]
+  lat?: number
+  lon?: number
 }
 
 /**
@@ -46,7 +48,10 @@ export function getStationExitGroups(
       node.kind === 'entrance-exit' &&
       isGroundExitNode(node.levelIndex, node.id, preferredExitId),
   )
-  const groupMap = new Map<string, { rawName: string; nodeIds: string[] }>()
+  const groupMap = new Map<
+    string,
+    { rawName: string; nodeIds: string[]; lat?: number; lon?: number }
+  >()
 
   for (const node of exits) {
     const rawName = (node.name ?? '').trim() || node.id
@@ -56,8 +61,17 @@ export function getStationExitGroups(
       if (!existing.nodeIds.includes(node.id)) {
         existing.nodeIds.push(node.id)
       }
+      if (existing.lat === undefined && node.latitude) {
+        existing.lat = node.latitude
+        existing.lon = node.longitude
+      }
     } else {
-      groupMap.set(label, { rawName, nodeIds: [node.id] })
+      groupMap.set(label, {
+        rawName,
+        nodeIds: [node.id],
+        lat: node.latitude,
+        lon: node.longitude,
+      })
     }
   }
 
@@ -66,6 +80,8 @@ export function getStationExitGroups(
       label,
       rawName: info.rawName,
       nodeIds: info.nodeIds,
+      lat: info.lat,
+      lon: info.lon,
     }))
     .sort((a, b) => a.label.localeCompare(b.label, 'ja', { numeric: true }))
 }
