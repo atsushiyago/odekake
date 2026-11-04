@@ -556,7 +556,7 @@ function IndoorStationPaper({
       node: (
         <section className="arrival-train" aria-label="電車移動">
           <div className="train-leg-block train-departure-block">
-            <div className="train-station-heading train-departure-heading">
+            <div className={`train-station-heading train-departure-heading ${trainJourney.departure.stationName.length >= 7 ? 'train-heading-compact' : ''}`}>
               <span className="train-action-label">乗る</span>
               <strong className="train-station-name">{trainJourney.departure.stationName}</strong>
               <strong className="train-station-time">{trainJourney.departure.time}発</strong>
@@ -577,7 +577,7 @@ function IndoorStationPaper({
           </div>
           <span className="train-arrow" aria-hidden="true">→</span>
           <div className="train-leg-block train-arrival-block">
-            <div className="train-station-heading train-arrival-heading">
+            <div className={`train-station-heading train-arrival-heading ${trainJourney.arrival.stationName.length >= 7 ? 'train-heading-compact' : ''}`}>
               <span className="train-action-label">降りる</span>
               <strong className="train-station-name">{trainJourney.arrival.stationName}</strong>
               <strong className="train-station-time">{trainJourney.arrival.time}着</strong>

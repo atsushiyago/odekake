@@ -96,6 +96,10 @@
 .train-action-label{flex:0 0 auto}
 .train-station-name{flex:0 0 auto;min-width:0;font-size:28px;font-weight:900;line-height:1.1;white-space:nowrap}
 .train-station-time{flex:0 0 auto;min-width:0;font-size:28px;font-weight:900;line-height:1.1;white-space:nowrap}
+.train-heading-compact{flex-wrap:wrap;gap:2px 4px}
+.train-heading-compact .train-action-label{font-size:15px}
+.train-heading-compact .train-station-name{font-size:20px;letter-spacing:-0.03em}
+.train-heading-compact .train-station-time{font-size:20px}
 .train-departure-route{grid-column:1;grid-row:2;min-width:0}
 .train-departure-platform{grid-column:1;grid-row:3;min-width:0}
 .train-departure-car{grid-column:1;grid-row:4;min-width:0}
