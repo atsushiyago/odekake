@@ -121,3 +121,232 @@
   .arrival-train{border-color:#111;background:#fff}
   .train-platform-label{color:#111}
 }
+
+/* Dynamic exit selector UI */
+.exit-selector {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #cbd5e1;
+}
+.exit-selector-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.exit-selector-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1e293b;
+}
+.exit-selector-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+.exit-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.exit-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.exit-option:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+.exit-option.is-selected {
+  border-color: #d4482f;
+  background: #fff8f5;
+  color: #a7311f;
+  font-weight: 800;
+  box-shadow: 0 0 0 1px #d4482f;
+}
+.exit-badge-default {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Alternate Exit Back Paper Styles */
+.alternate-exit-paper {
+  box-sizing: border-box;
+}
+.alternate-exit-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.alternate-exit-header {
+  margin-bottom: 12px;
+}
+.alternate-exit-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.alternate-exit-content h1 {
+  font-size: 30px;
+  line-height: 1.25;
+  margin: 0;
+  color: #0f172a;
+}
+.alternate-exit-notice {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 2px solid #3b82f6;
+  border-radius: 10px;
+  background: #f0f7ff;
+}
+.notice-icon {
+  font-size: 20px;
+  color: #2563eb;
+  font-weight: 900;
+  line-height: 1;
+}
+.notice-body strong {
+  display: block;
+  font-size: 15px;
+  color: #1e3a8a;
+  margin-bottom: 4px;
+}
+.notice-body p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #1e293b;
+}
+.alternate-exit-memo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #64748b;
+  border-radius: 12px;
+  background: #fafbfc;
+  padding: 16px 18px;
+}
+.alternate-exit-memo h2 {
+  font-size: 22px;
+  margin: 0 0 12px;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.memo-summary-row {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid #e2e8f0;
+}
+.memo-summary-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.memo-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+}
+.memo-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.memo-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.memo-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.memo-field-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #334155;
+}
+.memo-write-line {
+  height: 34px;
+  border-bottom: 1.5px solid #94a3b8;
+  background: #fff;
+  border-radius: 4px 4px 0 0;
+}
+.memo-fill-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.memo-lined-box {
+  flex: 1;
+  min-height: 180px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 0 12px;
+}
+.memo-ruled-line {
+  border-bottom: 1px dashed #cbd5e1;
+  height: 0;
+  width: 100%;
+}
+.alternate-exit-footer {
+  margin-top: 14px;
+  text-align: right;
+  font-size: 11px;
+  color: #64748b;
+}
+
+@media print {
+  .exit-selector {
+    display: none !important;
+  }
+  .alternate-exit-memo {
+    border-color: #111;
+    background: #fff;
+  }
+  .memo-write-line,
+  .memo-lined-box {
+    border-color: #111;
+  }
+  .memo-ruled-line {
+    border-color: #999;
+  }
+  .alternate-exit-notice {
+    border-color: #111;
+    background: #fff;
+  }
+}
+

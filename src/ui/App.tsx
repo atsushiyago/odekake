@@ -77,6 +77,11 @@ import {
   adjacentCourseIndex,
   isTextEntryTarget,
 } from '../domain/courseNavigation';
+import { AlternateExitPaper } from './AlternateExitPaper';
+import {
+  getStationExitGroups,
+  isExitGroupMatchingPreferred,
+} from '../domain/stationExitOptions';
 
 function WalkingMap() {
   return (
@@ -1307,6 +1312,50 @@ export default function App() {
   const debugEnabled = new URLSearchParams(window.location.search).get('debug') === '1';
   const [selectedCourseId, setSelectedCourseId] = useState(defaultCourse.id);
   const course = outingCoursePresetById.get(selectedCourseId) ?? defaultCourse;
+
+  const arrivalDataset = useMemo(
+    () =>
+      loadedOedo2026IndoorDatasets.find(
+        (item) => item.station.id === course.arrivalStationId,
+      ),
+    [course.arrivalStationId],
+  );
+  const arrivalGraph = useMemo(
+    () => (arrivalDataset ? buildIndoorGraph(arrivalDataset.gtfs) : null),
+    [arrivalDataset],
+  );
+  const exitGroups = useMemo(
+    () => (arrivalGraph ? getStationExitGroups(arrivalGraph) : []),
+    [arrivalGraph],
+  );
+
+  const defaultExitGroup = useMemo(() => {
+    return (
+      exitGroups.find((g) =>
+        isExitGroupMatchingPreferred(g, course.preferredExitId),
+      ) ??
+      exitGroups[0] ??
+      null
+    );
+  }, [exitGroups, course.preferredExitId]);
+
+  const [selectedExitLabel, setSelectedExitLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSelectedExitLabel(defaultExitGroup?.label ?? null);
+  }, [course.id, defaultExitGroup?.label]);
+
+  const activeExitGroup = useMemo(() => {
+    return (
+      exitGroups.find((g) => g.label === selectedExitLabel) ?? defaultExitGroup
+    );
+  }, [exitGroups, selectedExitLabel, defaultExitGroup]);
+
+  const isDefaultExit = useMemo(() => {
+    if (!activeExitGroup) return true;
+    return isExitGroupMatchingPreferred(activeExitGroup, course.preferredExitId);
+  }, [activeExitGroup, course.preferredExitId]);
+
   const [query, setQuery] = useState<RailJourneyQuery>({
     originName: course.originStationName,
     destinationName: course.arrivalStationName,
@@ -1363,18 +1412,21 @@ export default function App() {
       searchResult.leg.from.stationId,
       course.departurePlatformAssignments,
     );
-    const graph = buildIndoorGraph(dataset.gtfs);
+    const graph = arrivalGraph ?? buildIndoorGraph(dataset.gtfs);
     const compressionContext = buildRegisteredStationMapCompressionContext(
       dataset.station.id,
       graph,
     );
+    const targetExitNodeIds = activeExitGroup
+      ? activeExitGroup.nodeIds
+      : Array.isArray(course.preferredExitId)
+        ? course.preferredExitId
+        : [course.preferredExitId];
     const elderlyScore = compressionContext
       ? findBestElderlyRoute(
           graph,
           arrival.connection.platformId,
-          Array.isArray(course.preferredExitId)
-            ? course.preferredExitId
-            : [course.preferredExitId],
+          targetExitNodeIds,
           compressionContext,
         )
       : null;
@@ -1394,7 +1446,7 @@ export default function App() {
           dataset.station,
           {
             platformId: arrival.connection.platformId,
-            exitNodeId: course.preferredExitId,
+            exitNodeId: targetExitNodeIds[0] ?? '',
           },
           'shortest',
           compressionContext,
@@ -1406,7 +1458,7 @@ export default function App() {
       ? buildHomeToGateGuideModel({
           guide: enrichedGuide, graph,
           platformId: arrival.connection.platformId,
-          exitNodeIds: Array.isArray(course.preferredExitId) ? course.preferredExitId : [course.preferredExitId],
+          exitNodeIds: targetExitNodeIds,
           selectedRoute: elderlyScore?.route,
           metadata: stationOfficialGuidanceByStationId[dataset.station.id],
           arrivalPlatformFloor: course.arrivalPlatformFloor,
@@ -1426,12 +1478,23 @@ export default function App() {
           stationGuideMetadata:
             stationOfficialGuidanceByStationId[dataset.station.id],
           paperModel: paperModel!,
+          isDefaultExit,
+          activeExitLabel:
+            activeExitGroup?.label ?? elderlyScore?.exitId ?? '出口',
         }
       : {
           ok: false as const,
           reason: '公式GTFS-Pathwaysからホーム共通区間を解決できませんでした。',
         };
-  }, [course, defaultCourse.id, query, searchResult]);
+  }, [
+    course,
+    defaultCourse.id,
+    query,
+    searchResult,
+    arrivalGraph,
+    activeExitGroup,
+    isDefaultExit,
+  ]);
   const selectCourse = (courseId: string) => {
     const next = outingCoursePresetById.get(courseId) ?? defaultCourse;
     setSelectedCourseId(next.id);
@@ -1472,9 +1535,10 @@ export default function App() {
     window.addEventListener('keydown', handleCourseKeyDown);
     return () => window.removeEventListener('keydown', handleCourseKeyDown);
   }, [course.id]);
-  currentPaginationRoute = itineraryGuide.ok
-    ? itineraryGuide.walkingRoute
-    : undefined;
+  currentPaginationRoute =
+    itineraryGuide.ok && itineraryGuide.isDefaultExit
+      ? itineraryGuide.walkingRoute
+      : undefined;
   return (
     <main>
       {debugEnabled && <IndoorPoc />}
@@ -1530,6 +1594,45 @@ export default function App() {
               </button>
             </div>
           </div>
+          {exitGroups.length > 0 && (
+            <div className="exit-selector">
+              <div className="exit-selector-header">
+                <span className="exit-selector-title">地上出口</span>
+                <span className="exit-selector-hint">
+                  （選んだ出口に応じてホームからの構内経路が切り替わります）
+                </span>
+              </div>
+              <div
+                className="exit-options"
+                role="radiogroup"
+                aria-label="地上出口の選択"
+              >
+                {exitGroups.map((group) => {
+                  const isGroupDefault = isExitGroupMatchingPreferred(
+                    group,
+                    course.preferredExitId,
+                  );
+                  const isSelected = group.label === activeExitGroup?.label;
+                  return (
+                    <button
+                      key={group.label}
+                      type="button"
+                      className={
+                        isSelected ? 'exit-option is-selected' : 'exit-option'
+                      }
+                      aria-pressed={isSelected}
+                      onClick={() => setSelectedExitLabel(group.label)}
+                    >
+                      <span>{group.label}</span>
+                      {isGroupDefault && (
+                        <span className="exit-badge-default">おすすめ</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {debugEnabled && (
             <>
               <h1>
@@ -1572,7 +1675,7 @@ export default function App() {
       )}
       <section className="print-area">
         <div className="preview-pages">
-          {itineraryGuide.ok && itineraryGuide.walkingRoute ? (
+          {itineraryGuide.ok ? (
             <>
               <PaperPreviewFrame label="A4表面">
                 {' '}
@@ -1583,7 +1686,15 @@ export default function App() {
                 />
               </PaperPreviewFrame>
               <PaperPreviewFrame label="A4裏面">
-                <OutdoorWalkingPaper route={itineraryGuide.walkingRoute} />
+                {itineraryGuide.isDefaultExit && itineraryGuide.walkingRoute ? (
+                  <OutdoorWalkingPaper route={itineraryGuide.walkingRoute} />
+                ) : (
+                  <AlternateExitPaper
+                    stationName={course.arrivalStationName}
+                    exitLabel={itineraryGuide.activeExitLabel}
+                    destinationName={course.destination.name}
+                  />
+                )}
               </PaperPreviewFrame>
             </>
           ) : (
