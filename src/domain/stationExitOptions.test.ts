@@ -79,6 +79,7 @@ describe('stationExitOptions', () => {
       graph,
       platformId,
       exitNodeIds: exit4Group.nodeIds,
+      preferredExitNodeIds: [course.preferredExitId!].flat(),
       selectedRoute: elderlyScore.route,
       metadata: stationOfficialGuidanceByStationId['428'],
       humanizeWalkDistance: true,
@@ -96,5 +97,7 @@ describe('stationExitOptions', () => {
       'エスカレーターで地上へ上がる',
       '4へ出る',
     ])
+    expect(model.carPositionLabel).toBe('8号車付近')
+    expect(model.carPositionHint).toBe('できれば8号車付近に乗る')
   })
 })

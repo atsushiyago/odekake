@@ -1,5 +1,5 @@
 import type { StationOfficialGuidance } from '../data/stationOfficialGuidance'
-import { findPlatformGateLevelConsensus, type IndoorGraph, type IndoorRoute, type IndoorRouteCompressionContext } from './indoorRouting'
+import { findPlatformGateLevelConsensus, platformOriginNodes, type IndoorGraph, type IndoorRoute, type IndoorRouteCompressionContext } from './indoorRouting'
 import { presentOfficialHomeGuidance } from './officialGuidancePresentation'
 import { fareGateIdentity } from './routeOrder'
 import { findSafeGateRejoin } from './safeRejoin'
@@ -38,6 +38,46 @@ function formatCompressedFloorDestination(label: string | undefined): string | u
   const basement = value.match(/^B(\d+)F$/i)
   if (basement) return `地下${basement[1]}階`
   return undefined
+}
+
+export function estimatePlatformCarPositionLabel(
+  graph: IndoorGraph,
+  platformId: string,
+  originId: string | undefined,
+): string | undefined {
+  if (!originId) return undefined
+  const origins = platformOriginNodes(graph, platformId)
+  if (origins.length < 2) return undefined
+  const originNode = graph.nodes.get(originId)
+  if (!originNode) return undefined
+
+  const lats = origins.map(o => o.latitude)
+  const lons = origins.map(o => o.longitude)
+  const dLat = Math.max(...lats) - Math.min(...lats)
+  const dLon = (Math.max(...lons) - Math.min(...lons)) * Math.cos((lats[0] * Math.PI) / 180)
+  const sorted = [...origins].sort((a, b) =>
+    dLat >= dLon ? a.latitude - b.latitude : a.longitude - b.longitude,
+  )
+  const first = sorted[0]
+  const last = sorted.at(-1)!
+  const totalSpan = Math.hypot(
+    last.latitude - first.latitude,
+    (last.longitude - first.longitude) * Math.cos((first.latitude * Math.PI) / 180),
+  )
+  if (totalSpan < 1e-5) return undefined
+
+  const distFromFirst = Math.hypot(
+    originNode.latitude - first.latitude,
+    (originNode.longitude - first.longitude) * Math.cos((first.latitude * Math.PI) / 180),
+  )
+  const t = Math.max(0, Math.min(1, distFromFirst / totalSpan))
+
+  const descendingStations = new Set(['402', '423'])
+  const carNumber = descendingStations.has(graph.stationId)
+    ? Math.round(8 - t * 7)
+    : Math.round(1 + t * 7)
+  const clamped = Math.max(1, Math.min(8, carNumber))
+  return `${clamped}号車付近`
 }
 
 function compressConsecutiveEquipmentSteps(
@@ -177,6 +217,7 @@ export function buildHomeToGateGuideModel(input: {
   graph: IndoorGraph
   platformId: string
   exitNodeIds: string[]
+  preferredExitNodeIds?: string[]
   selectedRoute?: IndoorRoute
   metadata?: StationOfficialGuidance
   arrivalPlatformFloor?: { label: string; levelIndex: number }
@@ -196,11 +237,31 @@ export function buildHomeToGateGuideModel(input: {
   )
   const gateIndex = presentation.steps.findIndex(step => step.facility === 'gate')
   const gate = presentation.steps[gateIndex]
+  const gateIdentity = gate?.evidence
+    ? fareGateIdentity({
+        movementType: 'fare-gate',
+        fromNodeId: gate.evidence.fromNodeId ?? '',
+        toNodeId: gate.evidence.toNodeId ?? '',
+      })
+    : undefined
+
+  const isPreferredExit =
+    !input.preferredExitNodeIds ||
+    input.preferredExitNodeIds.length === 0 ||
+    input.exitNodeIds.some(id => input.preferredExitNodeIds!.includes(id))
+
+  const preferredGateRejoin =
+    !isPreferredExit && input.preferredExitNodeIds
+      ? findSafeGateRejoin(graph, platformId, input.preferredExitNodeIds)
+      : undefined
+
+  const sameGateAsPreferredExit =
+    isPreferredExit ||
+    Boolean(preferredGateRejoin?.ok && gateIdentity === preferredGateRejoin.identity)
+
   // A selected guide or merged guide must contain this same boundary. A union
   // of alternative gate IDs or a matching level is not sufficient evidence.
-  const guideReachesRejoin = safeRejoin.ok && gate?.evidence && fareGateIdentity({
-    movementType: 'fare-gate', fromNodeId: gate.evidence.fromNodeId ?? '', toNodeId: gate.evidence.toNodeId ?? '',
-  }) === safeRejoin.identity && (gate.evidence.routeOrder ?? []).length > 0
+  const guideReachesRejoin = sameGateAsPreferredExit && safeRejoin.ok && gate?.evidence && gateIdentity === safeRejoin.identity && (gate.evidence.routeOrder ?? []).length > 0
     && gate.evidence.routeOrder!.every(source => source.semanticType === 'fare-gate'
       && source.traversals.length === 1
       && source.traversals[0].fromNodeId === safeRejoin.fromNodeId
@@ -230,19 +291,19 @@ export function buildHomeToGateGuideModel(input: {
     },
   } : undefined
 
-  // For alternate routes that pass through a different gate (safeRejoin.ok === false)
-  // and have multiple pre-gate vertical segments (e.g. Shinjuku exit 4),
+  // For alternate routes that pass through a different gate (!sameGateAsPreferredExit or !safeRejoin.ok)
+  // and have multiple pre-gate vertical segments (e.g. Shinjuku exit 4, Roppongi exit 5/6),
   // apply axis-aware and floor-aware compression across the route.
   let effectiveSteps: GuideStep[]
   if (homeStep) {
     effectiveSteps = [homeStep, ...detailSteps]
-  } else if (!safeRejoin.ok && gateIndex > 0) {
+  } else if ((!safeRejoin.ok || !sameGateAsPreferredExit) && gateIndex > 0) {
     const preGateSteps = presentation.steps.slice(0, gateIndex)
     const preGateVerticalCount = preGateSteps.filter(
       s => s.facility === 'escalator' || s.facility === 'stairs' || s.facility === 'elevator',
     ).length
 
-    if (preGateVerticalCount >= 2) {
+    if (preGateVerticalCount >= 2 || !sameGateAsPreferredExit) {
       effectiveSteps = compressConsecutiveEquipmentSteps(
         detailSteps,
         graph,
@@ -255,6 +316,24 @@ export function buildHomeToGateGuideModel(input: {
     effectiveSteps = detailSteps
   }
 
+  const shouldUseDynamicCarPosition =
+    Boolean(input.selectedRoute) &&
+    !isPreferredExit &&
+    !useHomeInstruction
+
+  const dynamicCarLabel = shouldUseDynamicCarPosition
+    ? estimatePlatformCarPositionLabel(
+        graph,
+        platformId,
+        input.selectedRoute?.nodes[0]?.id,
+      )
+    : undefined
+
+  const carPositionLabel = dynamicCarLabel ?? official.carPositionLabel
+  const carPositionHint = dynamicCarLabel
+    ? `できれば${dynamicCarLabel}に乗る`
+    : official.carPositionHint
+
   const guide = withStationGuidePresentation({ ...presentation, steps: effectiveSteps })
   let number = 0
   const sections = (guide.sections ?? []).map(section => ({ ...section, steps: section.steps.map(step => ({ step, number: ++number })) }))
@@ -263,8 +342,8 @@ export function buildHomeToGateGuideModel(input: {
   return {
     guide,
     sections,
-    carPositionLabel: official.carPositionLabel,
-    carPositionHint: official.carPositionHint,
+    carPositionLabel,
+    carPositionHint,
     arrivalFloorLabel,
     safeRejoin,
     hiddenHomeDetails,

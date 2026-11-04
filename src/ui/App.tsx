@@ -1490,11 +1490,17 @@ export default function App() {
     const enrichedGuide = stationGuide.ok
       ? withVerifiedPathwayEnrichment(stationGuide.guide, graph, buildVerifiedPathwayEnrichments(graph))
       : undefined;
+    const preferredExitNodeIds = Array.isArray(course.preferredExitId)
+      ? course.preferredExitId
+      : course.preferredExitId
+        ? [course.preferredExitId]
+        : undefined;
     const paperModel = enrichedGuide
       ? buildHomeToGateGuideModel({
           guide: enrichedGuide, graph,
           platformId: arrival.connection.platformId,
           exitNodeIds: targetExitNodeIds,
+          preferredExitNodeIds,
           selectedRoute: elderlyScore?.route,
           metadata: stationOfficialGuidanceByStationId[dataset.station.id],
           arrivalPlatformFloor: course.arrivalPlatformFloor,
