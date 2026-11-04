@@ -170,6 +170,8 @@ export function AlternateExitPaper({
                   <span className="memo-check-item">□ 保険証・診察券</span>
                   <span className="memo-check-item memo-blank-check">□ </span>
                   <span className="memo-check-item memo-blank-check">□ </span>
+                  <span className="memo-check-item memo-blank-check">□ </span>
+                  <span className="memo-check-item memo-blank-check">□ </span>
                 </div>
               </div>
             </div>
