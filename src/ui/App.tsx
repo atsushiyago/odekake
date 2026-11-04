@@ -1792,51 +1792,32 @@ export default function App() {
         <div>
           <div className="course-selector">
             <span className="course-selector-title">コース一覧</span>
-            <div className="course-picker-row">
-              <button
-                type="button"
-                className="course-scroll-button"
-                aria-label="前のコースを選択"
-                onClick={() => selectAdjacentCourse(-1)}
-              >
-                ‹
-              </button>
-              <div
-                className="course-options"
-                ref={courseScrollerRef}
-                role="group"
-                aria-label="おでかけコース"
-              >
-                {outingCoursePresets.map((item) => (
-                  <button
-                    key={item.id}
-                    data-course-id={item.id}
-                    type="button"
-                    className={
-                      item.id === course.id
-                        ? 'course-option is-selected'
-                        : 'course-option'
-                    }
-                    aria-pressed={item.id === course.id}
-                    onClick={() => selectCourse(item.id)}
-                  >
-                    <span className="course-option-destination">
-                      {item.label}
-                    </span>
-                    <small className="course-option-station">
-                      （{item.arrivalStationName}駅）
-                    </small>
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="course-scroll-button"
-                aria-label="次のコースを選択"
-                onClick={() => selectAdjacentCourse(1)}
-              >
-                ›
-              </button>
+            <div
+              className="course-options"
+              role="group"
+              aria-label="おでかけコース"
+            >
+              {outingCoursePresets.map((item) => (
+                <button
+                  key={item.id}
+                  data-course-id={item.id}
+                  type="button"
+                  className={
+                    item.id === course.id
+                      ? 'course-option is-selected'
+                      : 'course-option'
+                  }
+                  aria-pressed={item.id === course.id}
+                  onClick={() => selectCourse(item.id)}
+                >
+                  <span className="course-option-destination">
+                    {item.label}
+                  </span>
+                  <small className="course-option-station">
+                    （{item.arrivalStationName}駅）
+                  </small>
+                </button>
+              ))}
             </div>
           </div>
           {exitGroups.length > 0 && (
