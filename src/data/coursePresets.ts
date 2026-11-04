@@ -20,6 +20,8 @@ import {
   takanawaGatewayOfficialPlatformAssignments,
   takanawaGatewayToSengakujiWalkingRoute,
   tokyoOfficialDeparturePlatformAssignments,
+  tokyoOfficialPlatformAssignments,
+  tokyoToImperialPalaceOuterGardenWalkingRoute,
 } from './fixtures/jr-east-schedule'
 
 export interface OutingCoursePreset {
@@ -244,6 +246,34 @@ export const jrEastCoursePresets: OutingCoursePreset[] = [
     departurePlatformAssignments: shibuyaOfficialDeparturePlatformAssignments,
     arrivalPlatformAssignments: shinjukuJrOfficialPlatformAssignments,
     walkingRoute: shinjukuJrToShinjukuGyoenWalkingRoute,
+  },
+  {
+    id: 'shinagawa-tokyo-koukyo-gaien',
+    label: '皇居外苑',
+    originStationId: '4230',
+    originStationName: '品川',
+    arrivalStationId: '4224',
+    arrivalStationName: '東京',
+    destination: {
+      name: '皇居外苑（和田倉噴水公園）',
+      latitude: 35.682829,
+      longitude: 139.761614,
+      sourceUrl: 'https://fng.or.jp/koukyo/access/',
+    },
+    preferredExitId: '4224N4954',
+    arrivalPlatformFloor: {
+      label: '2階',
+      levelIndex: 2,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/1039.html',
+    },
+    gateFloor: {
+      label: '1階',
+      levelIndex: 1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/1039.html',
+    },
+    departurePlatformAssignments: shinagawaOfficialDeparturePlatformAssignments,
+    arrivalPlatformAssignments: tokyoOfficialPlatformAssignments,
+    walkingRoute: tokyoToImperialPalaceOuterGardenWalkingRoute,
   },
 ]
 

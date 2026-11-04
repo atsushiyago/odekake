@@ -133,6 +133,31 @@ export const jrEastYamanoteWeekdayTrips: ScheduledRailLeg[] = [
       retrievedAt: '2026-11-05',
     },
   },
+  {
+    tripId: '4210622G',
+    routeId: '42',
+    routeName: '山手線',
+    serviceDay: 'weekday',
+    directionId: '0',
+    headsign: '東京・上野方面',
+    from: {
+      stationId: '4230',
+      stationName: '品川',
+      departureTime: '07:02',
+      stopSequence: 2,
+    },
+    to: {
+      stationId: '4224',
+      stationName: '東京',
+      arrivalTime: '07:15',
+      stopSequence: 8,
+    },
+    source: {
+      url: 'https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip',
+      feedVersion: '20261025',
+      retrievedAt: '2026-11-05',
+    },
+  },
 ]
 
 export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
@@ -206,6 +231,21 @@ export const shinjukuJrOfficialPlatformAssignments: OfficialPlatformAssignment[]
       url: 'https://www.jreast.co.jp/estation/stations/866.html',
       checkedAt: '2026-11-05',
       description: 'JR東日本公式：新宿駅 15番線（山手線外回り・池袋・上野方面）ホーム',
+    },
+  },
+]
+
+export const tokyoOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
+  {
+    stationId: '4224',
+    platformId: '4224P4',
+    routeId: '42',
+    directionId: '0',
+    headsign: '東京・上野方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/1039.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：東京駅 4番線（山手線内回り・上野・池袋方面）ホーム',
     },
   },
 ]
@@ -472,6 +512,44 @@ export const shinjukuJrToShinjukuGyoenWalkingRoute: WalkingRoute = buildPublishe
     source: {
       provider: 'OpenStreetMap',
       endpoint: 'https://fng.or.jp/shinjuku/access/',
+      acquiredAt: '2026-11-05',
+    },
+  },
+})
+
+export const tokyoToImperialPalaceOuterGardenWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
+  id: 'tokyo-to-imperial-palace-outer-garden',
+  from: {
+    label: '東京駅 丸の内中央口',
+    latitude: 35.681585,
+    longitude: 139.766017,
+  },
+  to: {
+    label: '皇居外苑（和田倉噴水公園）',
+    latitude: 35.682829,
+    longitude: 139.761614,
+  },
+  officialMinutes: 5,
+  sourceUrl: 'https://fng.or.jp/koukyo/access/',
+  retrievedAt: '2026-11-05',
+  stationExitConnection: {
+    stationId: '4224',
+    exitNodeId: '4224N4954',
+    exitLabel: '丸の内中央口',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [139.766017, 35.681585],
+      [139.7645, 35.6819],
+      [139.7630, 35.6824],
+      [139.761614, 35.682829],
+    ],
+    distanceMeters: 420,
+    durationSeconds: 300,
+    source: {
+      provider: 'OpenStreetMap',
+      endpoint: 'https://fng.or.jp/koukyo/access/',
       acquiredAt: '2026-11-05',
     },
   },

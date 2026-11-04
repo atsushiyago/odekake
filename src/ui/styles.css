@@ -581,4 +581,98 @@
   }
 }
 
+/* Operator Selector Tabs (Toei Oedo Line vs JR East) */
+.operator-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.operator-tab {
+  grid-column: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #334155;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.operator-tab:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+.operator-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  background: #e2e8f0;
+  color: #475569;
+}
+.operator-tab-label {
+  font-size: 16px;
+  font-weight: 900;
+}
+.operator-tab-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+}
+.operator-tab-oedo.is-selected {
+  border-color: #b6007a;
+  background: #fdf2f8;
+  color: #831843;
+  box-shadow: 0 0 0 1px #b6007a;
+}
+.operator-tab-oedo.is-selected .operator-tab-badge {
+  background: #b6007a;
+  color: #ffffff;
+}
+.operator-tab-oedo.is-selected .operator-tab-count {
+  border-color: #f472b6;
+  color: #9d174d;
+}
+.operator-tab-jr.is-selected {
+  border-color: #135c38;
+  background: #f0fdf4;
+  color: #135c38;
+  box-shadow: 0 0 0 1px #135c38;
+}
+.operator-tab-jr.is-selected .operator-tab-badge {
+  background: #135c38;
+  color: #ffffff;
+}
+.operator-tab-jr.is-selected .operator-tab-count {
+  border-color: #86efac;
+  color: #135c38;
+}
+@media (max-width: 700px) {
+  .operator-tabs {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .operator-tab {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  .operator-tab-label {
+    font-size: 14px;
+  }
+}
 

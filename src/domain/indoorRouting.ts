@@ -195,16 +195,17 @@ export function isValidVerifiedIndoorRouteAnchor(anchor: VerifiedIndoorRouteAnch
 export function findIndoorRoute(graph: IndoorGraph, fromNodeId: string, toNodeId: string, preference: RoutePreference = 'shortest'): IndoorRoute | null {
   if (!routePreferenceSupport(preference).supported) return null
   if (!graph.nodes.has(fromNodeId) || !graph.nodes.has(toNodeId)) return null
-  const distances = new Map([[fromNodeId, 0]]), previous = new Map<string, IndoorEdge>(), pending = new Set(graph.nodes.keys())
-  while (pending.size) {
+  const distances = new Map([[fromNodeId, 0]]), previous = new Map<string, IndoorEdge>(), settled = new Set<string>(), frontier = new Set([fromNodeId])
+  while (frontier.size) {
     let current: string | undefined
-    for (const node of pending) if (distances.has(node) && (!current || distances.get(node)! < distances.get(current)!)) current = node
+    for (const node of frontier) if (!current || distances.get(node)! < distances.get(current)!) current = node
     if (!current || current === toNodeId) break
-    pending.delete(current)
+    frontier.delete(current)
+    settled.add(current)
     for (const edge of graph.adjacency.get(current) ?? []) {
-      if (!pending.has(edge.toNodeId)) continue
+      if (settled.has(edge.toNodeId)) continue
       const next = distances.get(current)! + cost(edge, preference)
-      if (next < (distances.get(edge.toNodeId) ?? Number.POSITIVE_INFINITY)) { distances.set(edge.toNodeId, next); previous.set(edge.toNodeId, edge) }
+      if (next < (distances.get(edge.toNodeId) ?? Number.POSITIVE_INFINITY)) { distances.set(edge.toNodeId, next); previous.set(edge.toNodeId, edge); frontier.add(edge.toNodeId) }
     }
   }
   if (!previous.has(toNodeId) && fromNodeId !== toNodeId) return null

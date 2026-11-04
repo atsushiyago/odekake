@@ -72,6 +72,8 @@ import {
 } from '../domain/outdoorMap';
 import {
   outingCoursePresetById,
+  oedoCoursePresets,
+  jrEastCoursePresets,
   allCoursePresets as outingCoursePresets,
   type OutingCoursePreset,
 } from '../data/coursePresets';
@@ -1321,6 +1323,16 @@ export default function App() {
   const defaultCourse = outingCoursePresets[0];
   const debugEnabled = new URLSearchParams(window.location.search).get('debug') === '1';
   const [selectedCourseId, setSelectedCourseId] = useState(defaultCourse.id);
+  const [selectedOperator, setSelectedOperator] = useState<'oedo' | 'jr-east'>('oedo');
+  const [lastCourseByOperator, setLastCourseByOperator] = useState<{
+    oedo: string;
+    'jr-east': string;
+  }>({
+    oedo: oedoCoursePresets[0].id,
+    'jr-east': jrEastCoursePresets[0].id,
+  });
+  const visibleCoursePresets =
+    selectedOperator === 'jr-east' ? jrEastCoursePresets : oedoCoursePresets;
   const course = outingCoursePresetById.get(selectedCourseId) ?? defaultCourse;
 
   const arrivalDataset = useMemo(
@@ -1742,6 +1754,10 @@ export default function App() {
 
   const selectCourse = (courseId: string) => {
     const next = outingCoursePresetById.get(courseId) ?? defaultCourse;
+    const isJr = jrEastCoursePresets.some((item) => item.id === next.id);
+    const operatorKey = isJr ? 'jr-east' : 'oedo';
+    setSelectedOperator(operatorKey);
+    setLastCourseByOperator((prev) => ({ ...prev, [operatorKey]: next.id }));
     setSelectedCourseId(next.id);
     setQuery((current) => ({
       ...current,
@@ -1758,17 +1774,24 @@ export default function App() {
         });
     });
   };
+  const selectOperator = (operator: 'oedo' | 'jr-east') => {
+    setSelectedOperator(operator);
+    const targetCourseId =
+      lastCourseByOperator[operator] ??
+      (operator === 'jr-east' ? jrEastCoursePresets[0].id : oedoCoursePresets[0].id);
+    selectCourse(targetCourseId);
+  };
   const selectAdjacentCourse = (direction: -1 | 1) => {
-    const currentIndex = outingCoursePresets.findIndex(
+    const currentIndex = visibleCoursePresets.findIndex(
       (item) => item.id === course.id,
     );
     const nextIndex = adjacentCourseIndex(
       currentIndex,
       direction,
-      outingCoursePresets.length,
+      visibleCoursePresets.length,
     );
     if (nextIndex < 0) return;
-    selectCourse(outingCoursePresets[nextIndex].id);
+    selectCourse(visibleCoursePresets[nextIndex].id);
   };
   useEffect(() => {
     const handleCourseKeyDown = (event: KeyboardEvent) => {
@@ -1790,13 +1813,49 @@ export default function App() {
       <section className="editor no-print course-picker">
         <div>
           <div className="course-selector">
+            <div
+              className="operator-tabs"
+              role="tablist"
+              aria-label="路線・事業者の選択"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selectedOperator === 'oedo'}
+                className={
+                  selectedOperator === 'oedo'
+                    ? 'operator-tab operator-tab-oedo is-selected'
+                    : 'operator-tab operator-tab-oedo'
+                }
+                onClick={() => selectOperator('oedo')}
+              >
+                <span className="operator-tab-badge">都営</span>
+                <span className="operator-tab-label">都営地下鉄大江戸線</span>
+                <small className="operator-tab-count">全{oedoCoursePresets.length}コース</small>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={selectedOperator === 'jr-east'}
+                className={
+                  selectedOperator === 'jr-east'
+                    ? 'operator-tab operator-tab-jr is-selected'
+                    : 'operator-tab operator-tab-jr'
+                }
+                onClick={() => selectOperator('jr-east')}
+              >
+                <span className="operator-tab-badge">JR</span>
+                <span className="operator-tab-label">JR東日本（山手線主要駅）</span>
+                <small className="operator-tab-count">全{jrEastCoursePresets.length}コース</small>
+              </button>
+            </div>
             <span className="course-selector-title">コース一覧</span>
             <div
               className="course-options"
               role="group"
               aria-label="おでかけコース"
             >
-              {outingCoursePresets.map((item) => (
+              {visibleCoursePresets.map((item) => (
                 <button
                   key={item.id}
                   data-course-id={item.id}
