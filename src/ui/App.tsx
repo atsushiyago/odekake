@@ -1751,10 +1751,6 @@ export default function App() {
                   aria-label="地上出口の選択"
                 >
                   {exitGroups.map((group) => {
-                    const isGroupDefault = isExitGroupMatchingPreferred(
-                      group,
-                      course.preferredExitId,
-                    );
                     const isSelected = group.label === activeExitGroup?.label;
                     return (
                       <button
@@ -1767,9 +1763,6 @@ export default function App() {
                         onClick={() => setSelectedExitLabel(group.label)}
                       >
                         <span>{group.label}</span>
-                        {isGroupDefault && (
-                          <span className="exit-badge-default">おすすめ</span>
-                        )}
                       </button>
                     );
                   })}
@@ -1912,24 +1905,20 @@ export default function App() {
                 />
               </PaperPreviewFrame>
               <PaperPreviewFrame label="A4裏面">
-                {itineraryGuide.isDefaultExit && itineraryGuide.walkingRoute ? (
-                  <OutdoorWalkingPaper route={itineraryGuide.walkingRoute} />
-                ) : (
-                  <AlternateExitPaper
-                    stationName={course.arrivalStationName}
-                    exitLabel={itineraryGuide.activeExitLabel}
-                    destinationName={course.destination.name}
-                    exitCoordinates={
-                      activeExitGroup?.lat !== undefined &&
-                      activeExitGroup?.lon !== undefined
-                        ? {
-                            lat: activeExitGroup.lat,
-                            lon: activeExitGroup.lon,
-                          }
-                        : undefined
-                    }
-                  />
-                )}
+                <AlternateExitPaper
+                  stationName={course.arrivalStationName}
+                  exitLabel={itineraryGuide.activeExitLabel}
+                  destinationName={course.destination.name}
+                  exitCoordinates={
+                    activeExitGroup?.lat !== undefined &&
+                    activeExitGroup?.lon !== undefined
+                      ? {
+                          lat: activeExitGroup.lat,
+                          lon: activeExitGroup.lon,
+                        }
+                      : undefined
+                  }
+                />
               </PaperPreviewFrame>
             </>
           ) : (

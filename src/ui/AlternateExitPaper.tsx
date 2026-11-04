@@ -144,12 +144,9 @@ export function AlternateExitPaper({
     <article className="paper walking-back-paper back-page alternate-exit-paper">
       <div className="alternate-exit-content">
         <header className="alternate-exit-header">
-          <div className="alternate-exit-title-row">
-            <h1>
-              {stationName}駅 {exitLabel} 周辺図
-            </h1>
-            <span className="alternate-exit-badge">出口自由選択</span>
-          </div>
+          <h1>
+            {stationName}駅 {exitLabel} 周辺図
+          </h1>
           <p className="alternate-exit-subtitle">
             地上に出たあとの周辺案内と、本日の予定・手書きメモ欄
           </p>
