@@ -1556,6 +1556,53 @@ export default function App() {
         visiblePapers.find((el) => el.classList.contains('back-page')) ??
         visiblePapers[1];
 
+      const exitLabel = itineraryGuide.ok
+        ? itineraryGuide.activeExitLabel
+        : '案内';
+
+      if (mode === 'spread' && frontPaper && backPaper) {
+        // Render front and back at exact 2x pixel ratio and stitch them cleanly side by side
+        const [frontDataUrl, backDataUrl] = await Promise.all([
+          toPng(frontPaper, { pixelRatio: 2, backgroundColor: '#ffffff' }),
+          toPng(backPaper, { pixelRatio: 2, backgroundColor: '#ffffff' }),
+        ]);
+
+        const loadImg = (url: string) =>
+          new Promise<HTMLImageElement>((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = url;
+          });
+
+        const [frontImg, backImg] = await Promise.all([
+          loadImg(frontDataUrl),
+          loadImg(backDataUrl),
+        ]);
+
+        const gap = 32; // Clean visual gutter between the two sheets
+        const canvas = document.createElement('canvas');
+        canvas.width = frontImg.width + backImg.width + gap;
+        canvas.height = Math.max(frontImg.height, backImg.height);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas 2D context unavailable');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frontImg, 0, 0);
+        ctx.drawImage(backImg, frontImg.width + gap, 0);
+
+        const dataUrl = canvas.toDataURL('image/png');
+        const filename = `迷わないおでかけ紙_${course.arrivalStationName}駅_${exitLabel}_見開き.png`;
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+
       let targetElement: HTMLElement | null = null;
       let suffix = '';
 
@@ -1572,9 +1619,6 @@ export default function App() {
 
       if (!targetElement) return;
 
-      const exitLabel = itineraryGuide.ok
-        ? itineraryGuide.activeExitLabel
-        : '案内';
       const filename = `迷わないおでかけ紙_${course.arrivalStationName}駅_${exitLabel}_${suffix}.png`;
 
       const dataUrl = await toPng(targetElement, {
@@ -1611,26 +1655,72 @@ export default function App() {
       const container = previewPagesRef.current;
       if (!container) return;
 
-      const targetElement = container;
-      if (!targetElement) return;
+      const visiblePapers = [
+        ...container.querySelectorAll<HTMLElement>('.paper'),
+      ].filter((el) => !el.closest('.pagination-measure'));
+
+      const frontPaper =
+        visiblePapers.find((el) => el.classList.contains('front-page')) ??
+        visiblePapers[0];
+      const backPaper =
+        visiblePapers.find((el) => el.classList.contains('back-page')) ??
+        visiblePapers[1];
 
       const exitLabel = itineraryGuide.ok
         ? itineraryGuide.activeExitLabel
         : '案内';
       const filename = `迷わないおでかけ紙_${course.arrivalStationName}駅_${exitLabel}.png`;
 
-      const blob = await toBlob(targetElement, {
-        pixelRatio: 2,
-        backgroundColor: '#ffffff',
-        filter: (domNode) => {
-          if (domNode instanceof HTMLElement) {
-            if (domNode.classList.contains('paper-overflow-warning'))
-              return false;
-            if (domNode.classList.contains('no-print')) return false;
-          }
-          return true;
-        },
-      });
+      let blob: Blob | null = null;
+      if (frontPaper && backPaper) {
+        const [frontDataUrl, backDataUrl] = await Promise.all([
+          toPng(frontPaper, { pixelRatio: 2, backgroundColor: '#ffffff' }),
+          toPng(backPaper, { pixelRatio: 2, backgroundColor: '#ffffff' }),
+        ]);
+
+        const loadImg = (url: string) =>
+          new Promise<HTMLImageElement>((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = url;
+          });
+
+        const [frontImg, backImg] = await Promise.all([
+          loadImg(frontDataUrl),
+          loadImg(backDataUrl),
+        ]);
+
+        const gap = 32;
+        const canvas = document.createElement('canvas');
+        canvas.width = frontImg.width + backImg.width + gap;
+        canvas.height = Math.max(frontImg.height, backImg.height);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas 2D context unavailable');
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frontImg, 0, 0);
+        ctx.drawImage(backImg, frontImg.width + gap, 0);
+
+        blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, 'image/png'),
+        );
+      } else {
+        blob = await toBlob(container, {
+          pixelRatio: 2,
+          backgroundColor: '#ffffff',
+          filter: (domNode) => {
+            if (domNode instanceof HTMLElement) {
+              if (domNode.classList.contains('paper-overflow-warning'))
+                return false;
+              if (domNode.classList.contains('no-print')) return false;
+            }
+            return true;
+          },
+        });
+      }
+
       if (!blob) return;
 
       const file = new File([blob], filename, { type: 'image/png' });
