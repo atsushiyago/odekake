@@ -469,22 +469,43 @@
   position: relative;
   display: inline-block;
 }
+.paper-action-btn.print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 16px;
+  font-size: 15px;
+  font-weight: 800;
+  border: 2px solid #135c38;
+  border-radius: 8px;
+  background: #135c38;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(19, 92, 56, 0.2);
+  transition: all 0.15s ease;
+}
+.paper-action-btn.print-btn:hover {
+  background: #0e4429;
+  border-color: #0e4429;
+}
 .paper-action-menu-trigger {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 13px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 700;
-  border: 2px solid #135c38;
+  border: 1.5px solid #cbd5e1;
   border-radius: 8px;
-  background: #135c38;
-  color: #fff;
+  background: #ffffff;
+  color: #475569;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .paper-action-menu-trigger:hover {
-  background: #0e4429;
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
 }
 .paper-action-menu-trigger:disabled {
   opacity: 0.5;
@@ -536,24 +557,6 @@
 }
 .paper-dropdown-item.share-item:hover {
   background: #f0f9ff;
-}
-.paper-action-btn.print-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 13px;
-  font-size: 14px;
-  font-weight: 700;
-  border: 2px solid #94a3b8;
-  border-radius: 8px;
-  background: #f1f5f9;
-  color: #1e293b;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.paper-action-btn.print-btn:hover {
-  background: #e2e8f0;
-  border-color: #64748b;
 }
 .exporting-indicator {
   font-size: 12px;

@@ -1783,6 +1783,13 @@ export default function App() {
 
                 {itineraryGuide.ok && (
                   <div className="paper-actions-bar no-print">
+                    <button
+                      type="button"
+                      className="paper-action-btn print-btn"
+                      onClick={() => window.print()}
+                    >
+                      🖨️ 印刷
+                    </button>
                     <div
                       className="paper-actions-menu-container"
                       ref={menuContainerRef}
@@ -1850,13 +1857,6 @@ export default function App() {
                         </div>
                       )}
                     </div>
-                    <button
-                      type="button"
-                      className="paper-action-btn print-btn"
-                      onClick={() => window.print()}
-                    >
-                      🖨️ 印刷
-                    </button>
                     {isExporting && (
                       <span className="exporting-indicator">画像生成中...</span>
                     )}
