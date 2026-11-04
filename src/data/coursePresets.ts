@@ -5,6 +5,12 @@ import { akabanebashiOfficialDeparturePlatformAssignments, akabanebashiOfficialP
 import { akabanebashiToTokyoTowerWalkingRoute as tokyoTowerWalkingRoute } from './fixtures/akabanebashi-to-tokyo-tower'
 import { azabuJubanExit7ToPatioJubanWalkingRoute, aoyamaItchomeExit1ToJinguGaienWalkingRoute, daimonB2ToKyuShibaRikyuWalkingRoute, higashiShinjukuA2ToBunkaCenterWalkingRoute, kokuritsuA2ToStadiumWalkingRoute, roppongiExit7ToNationalArtCenterWalkingRoute, shinjukuA1ToSouthernTowerWalkingRoute, shinjukuNishiguchiD3ToOmoideYokochoWalkingRoute, tochomaeA4ToTokyoMetropolitanGovernmentWalkingRoute, uenoOkachimachiA7ToAmeyokoWalkingRoute, yoyogiA2ToMeijiJinguYoyogiGateWalkingRoute } from './fixtures/additional-outdoor-routes'
 
+import {
+  shinagawaOfficialDeparturePlatformAssignments,
+  takanawaGatewayOfficialPlatformAssignments,
+  takanawaGatewayToSengakujiWalkingRoute,
+} from './fixtures/jr-east-schedule'
+
 export interface OutingCoursePreset {
   id: string; label: string
   originStationId: string; originStationName: string
@@ -85,4 +91,42 @@ export const outingCoursePresets: OutingCoursePreset[] = [
   },
 ]
 
-export const outingCoursePresetById = new Map(outingCoursePresets.map(course => [course.id, course]))
+export const oedoCoursePresets = outingCoursePresets
+
+export const jrEastCoursePresets: OutingCoursePreset[] = [
+  {
+    id: 'shinagawa-takanawa-gateway-sengakuji',
+    label: '泉岳寺',
+    originStationId: '4230',
+    originStationName: '品川',
+    arrivalStationId: '4229',
+    arrivalStationName: '高輪ゲートウェイ',
+    destination: {
+      name: '泉岳寺（赤穂義士墓所）',
+      latitude: 35.637804,
+      longitude: 139.736304,
+      sourceUrl: 'https://sengakuji.or.jp/access/',
+    },
+    preferredExitId: '4229N0756',
+    arrivalPlatformFloor: {
+      label: '1階',
+      levelIndex: 1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/959.html',
+    },
+    gateFloor: {
+      label: '2階',
+      levelIndex: 2,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/959.html',
+    },
+    departurePlatformAssignments: shinagawaOfficialDeparturePlatformAssignments,
+    arrivalPlatformAssignments: takanawaGatewayOfficialPlatformAssignments,
+    walkingRoute: takanawaGatewayToSengakujiWalkingRoute,
+  },
+]
+
+export const allCoursePresets: OutingCoursePreset[] = [
+  ...outingCoursePresets,
+  ...jrEastCoursePresets,
+]
+
+export const outingCoursePresetById = new Map(allCoursePresets.map(course => [course.id, course]))

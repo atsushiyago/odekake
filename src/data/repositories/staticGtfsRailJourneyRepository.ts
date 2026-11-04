@@ -1,15 +1,21 @@
 import type { RailJourneyQuery, RailJourneyRepository, RailJourneySearchResult } from '../../domain/railJourneySearch'
 import type { ScheduledRailLeg } from '../../domain/itineraryConnection'
 import { toeiOedoWeekdayTrips, toeiStaticGtfsValidity } from '../fixtures/toei-oedo-static-gtfs-schedule'
+import { jrEastYamanoteWeekdayTrips } from '../fixtures/jr-east-schedule'
 
 const isDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(new Date(`${value}T12:00:00`).valueOf())
 const isTime = (value: string) => /^\d{2}:\d{2}$/.test(value) && /^([01]\d|2[0-3]):[0-5]\d$/.test(value)
+
+const defaultSchedule: readonly ScheduledRailLeg[] = [
+  ...toeiOedoWeekdayTrips,
+  ...jrEastYamanoteWeekdayTrips,
+]
 
 /**
  * Local static-GTFS adapter. The browser never requests an external endpoint;
  * replacing it with a server-side ODPT/GTFS sync adapter preserves this interface.
  */
-export function createStaticGtfsRailJourneyRepository(schedule: readonly ScheduledRailLeg[] = toeiOedoWeekdayTrips): RailJourneyRepository {
+export function createStaticGtfsRailJourneyRepository(schedule: readonly ScheduledRailLeg[] = defaultSchedule): RailJourneyRepository {
   return {
     findDirectJourney(query: RailJourneyQuery): RailJourneySearchResult {
     if (!isDate(query.departureDate) || !isTime(query.departureTime)) return { ok: false, reason: 'invalid-date' }

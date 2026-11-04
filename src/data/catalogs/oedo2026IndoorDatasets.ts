@@ -57,3 +57,12 @@ export const loadedOedo2026IndoorDatasets: IndoorStationDataset[] = datasetRegis
 
 export const loadedOedo2026IndoorDatasetByKey = new Map(loadedOedo2026IndoorDatasets.map(dataset => [dataset.key, dataset]))
 export const oedo2026StationAvailability = oedo2026IndoorStations.map(station => ({ ...station, dataset: loadedOedo2026IndoorDatasetByKey.get(station.key) }))
+
+import { loadedJrEast2026IndoorDatasets } from './jrEast2026IndoorDatasets'
+
+export const allIndoorDatasets: IndoorStationDataset[] = [
+  ...loadedOedo2026IndoorDatasets,
+  ...loadedJrEast2026IndoorDatasets,
+]
+export const allIndoorDatasetByStationId = new Map(allIndoorDatasets.map(dataset => [dataset.station.id, dataset]))
+

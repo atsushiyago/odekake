@@ -73,10 +73,11 @@ export function estimatePlatformCarPositionLabel(
   const t = Math.max(0, Math.min(1, distFromFirst / totalSpan))
 
   const descendingStations = new Set(['402', '423'])
+  const maxCars = ['4229', '4205', '4208', '4212', '4224', '4230'].includes(graph.stationId) ? 11 : 8
   const carNumber = descendingStations.has(graph.stationId)
-    ? Math.round(8 - t * 7)
-    : Math.round(1 + t * 7)
-  const clamped = Math.max(1, Math.min(8, carNumber))
+    ? Math.round(maxCars - t * (maxCars - 1))
+    : Math.round(1 + t * (maxCars - 1))
+  const clamped = Math.max(1, Math.min(maxCars, carNumber))
   return `${clamped}号車付近`
 }
 

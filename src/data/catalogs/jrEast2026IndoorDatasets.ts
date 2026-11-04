@@ -1,0 +1,23 @@
+import takanawaGatewayExtraction from '../fixtures/jr2026-takanawa-gateway-gtfs-pathways.json'
+import type { IndoorStationDataset } from './oedo2026IndoorDatasets'
+import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../adapters/gtfsPathwaysAdapter'
+import type { StationRef } from '../../domain/types'
+
+const jrEast = (id: string, name: string, line: string = '山手線'): StationRef => ({
+  id,
+  name,
+  operator: '東日本旅客鉄道',
+  line,
+})
+
+export const loadedJrEast2026IndoorDatasets: IndoorStationDataset[] = [
+  {
+    key: 'takanawa-gateway',
+    station: jrEast('4229', '高輪ゲートウェイ', '山手線'),
+    gtfs: extractGtfsPathwaysStation(
+      takanawaGatewayExtraction as GtfsPathwaysFeed,
+      { id: '4229', name: '高輪ゲートウェイ' }
+    ),
+    reviewedAnchors: [],
+  },
+]

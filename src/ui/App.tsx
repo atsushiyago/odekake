@@ -17,6 +17,7 @@ import { akabanebashiStationMapFixture } from '../data/fixtures/akabanebashi-sta
 import {
   loadedOedo2026IndoorDatasetByKey,
   loadedOedo2026IndoorDatasets,
+  allIndoorDatasets,
   oedo2026StationAvailability,
   type IndoorStationDataset,
 } from '../data/catalogs/oedo2026IndoorDatasets';
@@ -71,7 +72,7 @@ import {
 } from '../domain/outdoorMap';
 import {
   outingCoursePresetById,
-  outingCoursePresets,
+  allCoursePresets as outingCoursePresets,
   type OutingCoursePreset,
 } from '../data/coursePresets';
 import {
@@ -1324,7 +1325,7 @@ export default function App() {
 
   const arrivalDataset = useMemo(
     () =>
-      loadedOedo2026IndoorDatasets.find(
+      allIndoorDatasets.find(
         (item) => item.station.id === course.arrivalStationId,
       ),
     [course.arrivalStationId],
@@ -1424,7 +1425,7 @@ export default function App() {
         reason: `列車 ${searchResult.leg.tripId} は ${searchResult.leg.from.stationName} ${searchResult.leg.from.departureTime}発 → ${searchResult.leg.to.stationName} ${searchResult.leg.to.arrivalTime}着（${searchResult.leg.headsign}行）として検索できました。ただし、公式ホーム・出口・徒歩routeが未登録のため、構内・徒歩案内は生成しません。`,
       };
     }
-    const dataset = loadedOedo2026IndoorDatasets.find(
+    const dataset = allIndoorDatasets.find(
       (item) => item.station.id === course.arrivalStationId,
     );
     if (!dataset)
