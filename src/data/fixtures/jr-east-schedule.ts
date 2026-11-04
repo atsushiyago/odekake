@@ -58,6 +58,31 @@ export const jrEastYamanoteWeekdayTrips: ScheduledRailLeg[] = [
       retrievedAt: '2026-11-05',
     },
   },
+  {
+    tripId: '4200601G',
+    routeId: '42',
+    routeName: '山手線',
+    serviceDay: 'weekday',
+    directionId: '0',
+    headsign: '池袋・上野方面',
+    from: {
+      stationId: '4208',
+      stationName: '新宿',
+      departureTime: '07:13',
+      stopSequence: 8,
+    },
+    to: {
+      stationId: '4212',
+      stationName: '池袋',
+      arrivalTime: '07:22',
+      stopSequence: 12,
+    },
+    source: {
+      url: 'https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip',
+      feedVersion: '20261025',
+      retrievedAt: '2026-11-05',
+    },
+  },
 ]
 
 export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
@@ -90,6 +115,21 @@ export const shibuyaOfficialPlatformAssignments: OfficialPlatformAssignment[] = 
   },
 ]
 
+export const ikebukuroOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
+  {
+    stationId: '4212',
+    platformId: '4212P7',
+    routeId: '42',
+    directionId: '0',
+    headsign: '池袋・上野方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/108.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：池袋駅 7番線（山手線外回り・田端・上野方面）ホーム',
+    },
+  },
+]
+
 export const shinagawaOfficialDeparturePlatformAssignments: OfficialDeparturePlatformAssignment[] = [
   {
     stationId: '4230',
@@ -117,7 +157,20 @@ export const shinjukuJrOfficialDeparturePlatformAssignments: OfficialDeparturePl
     source: {
       url: 'https://www.jreast.co.jp/estation/stations/866.html',
       checkedAt: '2026-11-05',
-      description: 'JR東日本公式：新宿駅 14番線（山手線外回り・渋谷・品川方面）ホーム',
+      description: 'JR東日本公式：新宿駅 14番線（山手線内回り・渋谷・品川方面）ホーム',
+    },
+  },
+  {
+    stationId: '4208',
+    platformId: '4208P15',
+    platformCode: '15',
+    routeId: '42',
+    directionId: '0',
+    headsign: '池袋・上野方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/866.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：新宿駅 15番線（山手線外回り・池袋・上野方面）ホーム',
     },
   },
 ]
@@ -193,6 +246,44 @@ export const shibuyaToHachikoWalkingRoute: WalkingRoute = buildPublishedOutdoorW
     source: {
       provider: 'OpenStreetMap',
       endpoint: 'https://www.shibuyabunka.com/hachiko/',
+      acquiredAt: '2026-11-05',
+    },
+  },
+})
+
+export const ikebukuroToTokyoMetropolitanTheatreWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
+  id: 'ikebukuro-to-tokyo-metropolitan-theatre',
+  from: {
+    label: '池袋駅 西口(中央)',
+    latitude: 35.730729,
+    longitude: 139.710037,
+  },
+  to: {
+    label: '東京芸術劇場（池袋西口公園）',
+    latitude: 35.729472,
+    longitude: 139.708261,
+  },
+  officialMinutes: 2,
+  sourceUrl: 'https://www.geigeki.jp/access/',
+  retrievedAt: '2026-11-05',
+  stationExitConnection: {
+    stationId: '4212',
+    exitNodeId: '4212N0956',
+    exitLabel: '西口(中央)',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [139.710037, 35.730729],
+      [139.7094, 35.7303],
+      [139.7089, 35.7299],
+      [139.708261, 35.729472],
+    ],
+    distanceMeters: 180,
+    durationSeconds: 120,
+    source: {
+      provider: 'OpenStreetMap',
+      endpoint: 'https://www.geigeki.jp/access/',
       acquiredAt: '2026-11-05',
     },
   },

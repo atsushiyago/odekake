@@ -6,6 +6,8 @@ import { akabanebashiToTokyoTowerWalkingRoute as tokyoTowerWalkingRoute } from '
 import { azabuJubanExit7ToPatioJubanWalkingRoute, aoyamaItchomeExit1ToJinguGaienWalkingRoute, daimonB2ToKyuShibaRikyuWalkingRoute, higashiShinjukuA2ToBunkaCenterWalkingRoute, kokuritsuA2ToStadiumWalkingRoute, roppongiExit7ToNationalArtCenterWalkingRoute, shinjukuA1ToSouthernTowerWalkingRoute, shinjukuNishiguchiD3ToOmoideYokochoWalkingRoute, tochomaeA4ToTokyoMetropolitanGovernmentWalkingRoute, uenoOkachimachiA7ToAmeyokoWalkingRoute, yoyogiA2ToMeijiJinguYoyogiGateWalkingRoute } from './fixtures/additional-outdoor-routes'
 
 import {
+  ikebukuroOfficialPlatformAssignments,
+  ikebukuroToTokyoMetropolitanTheatreWalkingRoute,
   shibuyaOfficialPlatformAssignments,
   shibuyaToHachikoWalkingRoute,
   shinagawaOfficialDeparturePlatformAssignments,
@@ -152,6 +154,34 @@ export const jrEastCoursePresets: OutingCoursePreset[] = [
     departurePlatformAssignments: shinjukuJrOfficialDeparturePlatformAssignments,
     arrivalPlatformAssignments: shibuyaOfficialPlatformAssignments,
     walkingRoute: shibuyaToHachikoWalkingRoute,
+  },
+  {
+    id: 'shinjuku-ikebukuro-geigeki',
+    label: '東京芸術劇場',
+    originStationId: '4208',
+    originStationName: '新宿',
+    arrivalStationId: '4212',
+    arrivalStationName: '池袋',
+    destination: {
+      name: '東京芸術劇場（池袋西口公園）',
+      latitude: 35.729472,
+      longitude: 139.708261,
+      sourceUrl: 'https://www.geigeki.jp/access/',
+    },
+    preferredExitId: '4212N0956',
+    arrivalPlatformFloor: {
+      label: '1階',
+      levelIndex: 1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/108.html',
+    },
+    gateFloor: {
+      label: '地下1階',
+      levelIndex: -1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/108.html',
+    },
+    departurePlatformAssignments: shinjukuJrOfficialDeparturePlatformAssignments,
+    arrivalPlatformAssignments: ikebukuroOfficialPlatformAssignments,
+    walkingRoute: ikebukuroToTokyoMetropolitanTheatreWalkingRoute,
   },
 ]
 

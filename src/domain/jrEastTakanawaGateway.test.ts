@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import takanawaExtraction from '../data/fixtures/jr2026-takanawa-gateway-gtfs-pathways.json'
 import shibuyaExtraction from '../data/fixtures/jr2026-shibuya-gtfs-pathways.json'
+import ikebukuroExtraction from '../data/fixtures/jr2026-ikebukuro-gtfs-pathways.json'
 import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../data/adapters/gtfsPathwaysAdapter'
 import { buildGtfsStationGuideFromRoute, buildIndoorGraph } from './indoorRouting'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
@@ -237,5 +238,82 @@ describe('JR East Shibuya Station', () => {
     expect(hachikoCourse).toBeDefined()
     expect(hachikoCourse?.label).toBe('ハチ公前広場')
     expect(hachikoCourse?.arrivalStationId).toBe('4205')
+  })
+})
+
+describe('JR East Ikebukuro Station', () => {
+  const station: StationRef = {
+    id: '4212',
+    name: '池袋',
+    operator: '東日本旅客鉄道',
+    line: '山手線',
+  }
+
+  const rawData = extractGtfsPathwaysStation(
+    ikebukuroExtraction as GtfsPathwaysFeed,
+    { id: '4212', name: '池袋' }
+  )
+
+  it('extracts exit groups and builds paper guide model for every exit of Ikebukuro', () => {
+    const graph = buildIndoorGraph(rawData)
+    const groups = getStationExitGroups(graph)
+    console.log('Ikebukuro exit groups:', groups.map(g => ({ rawName: g.rawName, label: g.label, nodeIds: g.nodeIds })))
+    expect(groups.length).toBe(6)
+
+    for (const group of groups) {
+      const elderlyScore = findBestElderlyRoute(graph, '4212P7', group.nodeIds)
+      expect(elderlyScore).not.toBeNull()
+      if (!elderlyScore) continue
+
+      const stationGuide = buildGtfsStationGuideFromRoute(
+        graph,
+        station,
+        { platformId: '4212P7', exitNodeId: elderlyScore.exitId },
+        elderlyScore.route,
+      )
+      expect(stationGuide.ok).toBe(true)
+      if (!stationGuide.ok) continue
+
+      const model = buildHomeToGateGuideModel({
+        guide: stationGuide.guide,
+        graph,
+        platformId: '4212P7',
+        exitNodeIds: group.nodeIds,
+        preferredExitNodeIds: ['4212N0956'],
+        selectedRoute: elderlyScore.route,
+        arrivalPlatformFloor: { label: '1階', levelIndex: 1 },
+        humanizeWalkDistance: true,
+        humanizeGateDirection: true,
+      })
+
+      console.log(
+        `Ikebukuro [${group.rawName}] (${elderlyScore.exitId}) Car: ${model.carPositionLabel}`,
+        model.sections.map(sec => ({ title: sec.title, steps: sec.steps.map(s => `${s.number}. ${s.step.instruction}`) }))
+      )
+      expect(model.guide.steps.length).toBeGreaterThan(0)
+      expect(model.carPositionLabel).toMatch(/\d+号車付近/)
+    }
+  })
+
+  it('finds direct Yamanote Line scheduled journey from Shinjuku to Ikebukuro and registers preset', () => {
+    const result = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: '新宿',
+      destinationName: '池袋',
+      departureDate: '2026-09-21',
+      departureTime: '07:00',
+    })
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(result.leg.tripId).toBe('4200601G')
+    expect(result.leg.from.departureTime).toBe('07:13')
+    expect(result.leg.to.arrivalTime).toBe('07:22')
+    expect(result.leg.routeName).toBe('山手線')
+
+    const geigekiCourse = outingCoursePresetById.get('shinjuku-ikebukuro-geigeki')
+    expect(geigekiCourse).toBeDefined()
+    expect(geigekiCourse?.label).toBe('東京芸術劇場')
+    expect(geigekiCourse?.arrivalStationId).toBe('4212')
   })
 })

@@ -1,0 +1,6218 @@
+{
+  "source": {
+    "name": "東京都交通局 鉄道関連情報（GTFS-Pathways）",
+    "url": "https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip",
+    "license": "CC BY 4.0",
+    "feedVersion": "20261025",
+    "retrievedAt": "2026-11-04"
+  },
+  "artifact": {
+    "sha256": null
+  },
+  "station": {
+    "id": "4212",
+    "name": "池袋"
+  },
+  "levels": [
+    {
+      "levelId": "3",
+      "levelIndex": "3"
+    },
+    {
+      "levelId": "2",
+      "levelIndex": "2"
+    },
+    {
+      "levelId": "1.5",
+      "levelIndex": "1.5"
+    },
+    {
+      "levelId": "1",
+      "levelIndex": "1"
+    },
+    {
+      "levelId": "-1",
+      "levelIndex": "-1"
+    },
+    {
+      "levelId": "-2",
+      "levelIndex": "-2"
+    },
+    {
+      "levelId": "-3",
+      "levelIndex": "-3"
+    },
+    {
+      "levelId": "-4",
+      "levelIndex": "-4"
+    },
+    {
+      "levelId": "-5",
+      "levelIndex": "-5"
+    }
+  ],
+  "stops": [
+    {
+      "stopId": "4212P1",
+      "stopName": "池袋",
+      "stopLat": "35.73020",
+      "stopLon": "139.71134",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "1"
+    },
+    {
+      "stopId": "4212P4",
+      "stopName": "池袋",
+      "stopLat": "35.73020",
+      "stopLon": "139.71134",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "4"
+    },
+    {
+      "stopId": "4212P2",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "2"
+    },
+    {
+      "stopId": "4212P3",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "3"
+    },
+    {
+      "stopId": "4212",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "1"
+    },
+    {
+      "stopId": "4212P5",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "5"
+    },
+    {
+      "stopId": "4212P6",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "6"
+    },
+    {
+      "stopId": "4212P7",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "7"
+    },
+    {
+      "stopId": "4212P8",
+      "stopName": "池袋",
+      "stopLat": "35.73028",
+      "stopLon": "139.71108",
+      "locationType": "0",
+      "parentStation": "4212",
+      "platformCode": "8"
+    },
+    {
+      "stopId": "4212N0946",
+      "stopLat": "35.730668",
+      "stopLon": "139.710019",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N0951",
+      "stopLat": "35.730689",
+      "stopLon": "139.710029",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N0956",
+      "stopName": "西口(中央)",
+      "stopLat": "35.730729",
+      "stopLon": "139.710037",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N0969",
+      "stopLat": "35.730749",
+      "stopLon": "139.710058",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1006",
+      "stopLat": "35.730678",
+      "stopLon": "139.710195",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1011",
+      "stopLat": "35.730662",
+      "stopLon": "139.710213",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1018",
+      "stopName": "メトロポリタン改札",
+      "stopLat": "35.728883",
+      "stopLon": "139.710236",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1019",
+      "stopLat": "35.730679",
+      "stopLon": "139.710238",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1025",
+      "stopLat": "35.728940",
+      "stopLon": "139.710267",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1026",
+      "stopLat": "35.728024",
+      "stopLon": "139.710270",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1027",
+      "stopLat": "35.729003",
+      "stopLon": "139.710274",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1031",
+      "stopLat": "35.730804",
+      "stopLon": "139.710296",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1040",
+      "stopLat": "35.729110",
+      "stopLon": "139.710323",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1043",
+      "stopLat": "35.730640",
+      "stopLon": "139.710332",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1044",
+      "stopLat": "35.730615",
+      "stopLon": "139.710332",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1046",
+      "stopLat": "35.730555",
+      "stopLon": "139.710340",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1047",
+      "stopLat": "35.728401",
+      "stopLon": "139.710349",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1048",
+      "stopLat": "35.728912",
+      "stopLon": "139.710351",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1049",
+      "stopLat": "35.730613",
+      "stopLon": "139.710370",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1050",
+      "stopLat": "35.729487",
+      "stopLon": "139.710373",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1052",
+      "stopLat": "35.728899",
+      "stopLon": "139.710390",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1054",
+      "stopLat": "35.730666",
+      "stopLon": "139.710398",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1057",
+      "stopLat": "35.728889",
+      "stopLon": "139.710420",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1058",
+      "stopLat": "35.728957",
+      "stopLon": "139.710420",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1061",
+      "stopLat": "35.730518",
+      "stopLon": "139.710445",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1063",
+      "stopLat": "35.728712",
+      "stopLon": "139.710473",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1064",
+      "stopLat": "35.729061",
+      "stopLon": "139.710475",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1065",
+      "stopLat": "35.730577",
+      "stopLon": "139.710476",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1066",
+      "stopLat": "35.729319",
+      "stopLon": "139.710479",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1067",
+      "stopLat": "35.729562",
+      "stopLon": "139.710481",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1070",
+      "stopLat": "35.728682",
+      "stopLon": "139.710497",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1071",
+      "stopLat": "35.730630",
+      "stopLon": "139.710503",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1072",
+      "stopLat": "35.729554",
+      "stopLon": "139.710505",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1075",
+      "stopLat": "35.729568",
+      "stopLon": "139.710512",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1077",
+      "stopLat": "35.728805",
+      "stopLon": "139.710523",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1078",
+      "stopName": "南改札",
+      "stopLat": "35.729430",
+      "stopLon": "139.710537",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1079",
+      "stopLat": "35.729541",
+      "stopLon": "139.710541",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1080",
+      "stopLat": "35.728848",
+      "stopLon": "139.710544",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1081",
+      "stopLat": "35.730717",
+      "stopLon": "139.710548",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1084",
+      "stopLat": "35.729476",
+      "stopLon": "139.710561",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1087",
+      "stopLat": "35.728896",
+      "stopLon": "139.710567",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1088",
+      "stopLat": "35.729675",
+      "stopLon": "139.710569",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1089",
+      "stopLat": "35.729754",
+      "stopLon": "139.710573",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1092",
+      "stopLat": "35.729750",
+      "stopLon": "139.710585",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1094",
+      "stopLat": "35.729764",
+      "stopLon": "139.710592",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1095",
+      "stopLat": "35.729410",
+      "stopLon": "139.710597",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1096",
+      "stopLat": "35.729729",
+      "stopLon": "139.710597",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1097",
+      "stopLat": "35.729745",
+      "stopLon": "139.710599",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1101",
+      "stopLat": "35.729759",
+      "stopLon": "139.710606",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1102",
+      "stopLat": "35.729405",
+      "stopLon": "139.710610",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1103",
+      "stopLat": "35.729738",
+      "stopLon": "139.710618",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1104",
+      "stopLat": "35.729421",
+      "stopLon": "139.710619",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1105",
+      "stopLat": "35.729000",
+      "stopLon": "139.710622",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1106",
+      "stopLat": "35.729596",
+      "stopLon": "139.710623",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1107",
+      "stopLat": "35.729764",
+      "stopLon": "139.710632",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1108",
+      "stopLat": "35.729397",
+      "stopLon": "139.710633",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1109",
+      "stopLat": "35.728634",
+      "stopLon": "139.710633",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1110",
+      "stopLat": "35.729022",
+      "stopLon": "139.710634",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1112",
+      "stopLat": "35.729730",
+      "stopLon": "139.710641",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1113",
+      "stopLat": "35.729855",
+      "stopLon": "139.710641",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1114",
+      "stopLat": "35.729414",
+      "stopLon": "139.710641",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1115",
+      "stopLat": "35.729634",
+      "stopLon": "139.710643",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1116",
+      "stopLat": "35.728655",
+      "stopLon": "139.710644",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1120",
+      "stopLat": "35.729850",
+      "stopLon": "139.710654",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1121",
+      "stopLat": "35.729867",
+      "stopLon": "139.710655",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1122",
+      "stopLat": "35.729258",
+      "stopLon": "139.710657",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1126",
+      "stopLat": "35.729387",
+      "stopLon": "139.710664",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1127",
+      "stopLat": "35.729513",
+      "stopLon": "139.710667",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1130",
+      "stopLat": "35.729941",
+      "stopLon": "139.710671",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1131",
+      "stopLat": "35.729701",
+      "stopLon": "139.710678",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1133",
+      "stopLat": "35.729871",
+      "stopLon": "139.710687",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1135",
+      "stopLat": "35.729934",
+      "stopLon": "139.710692",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1136",
+      "stopLat": "35.728744",
+      "stopLon": "139.710692",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1138",
+      "stopLat": "35.729521",
+      "stopLon": "139.710696",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1139",
+      "stopLat": "35.729948",
+      "stopLon": "139.710699",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1140",
+      "stopLat": "35.729623",
+      "stopLon": "139.710701",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1142",
+      "stopLat": "35.729904",
+      "stopLon": "139.710703",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1144",
+      "stopLat": "35.729762",
+      "stopLon": "139.710710",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1145",
+      "stopLat": "35.729565",
+      "stopLon": "139.710711",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1146",
+      "stopName": "南改札",
+      "stopLat": "35.729369",
+      "stopLon": "139.710714",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1147",
+      "stopLat": "35.730023",
+      "stopLon": "139.710714",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1149",
+      "stopLat": "35.728791",
+      "stopLon": "139.710717",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1150",
+      "stopLat": "35.729954",
+      "stopLon": "139.710721",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1152",
+      "stopLat": "35.729604",
+      "stopLon": "139.710731",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1154",
+      "stopLat": "35.729413",
+      "stopLon": "139.710737",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1155",
+      "stopLat": "35.729610",
+      "stopLon": "139.710739",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1156",
+      "stopLat": "35.729918",
+      "stopLon": "139.710739",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1157",
+      "stopLat": "35.728837",
+      "stopLon": "139.710742",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "2"
+    },
+    {
+      "stopId": "4212N1158",
+      "stopLat": "35.730013",
+      "stopLon": "139.710744",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1160",
+      "stopLat": "35.729623",
+      "stopLon": "139.710746",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1161",
+      "stopLat": "35.730022",
+      "stopLon": "139.710749",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1163",
+      "stopLat": "35.729717",
+      "stopLon": "139.710750",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1166",
+      "stopLat": "35.729328",
+      "stopLon": "139.710754",
+      "locationType": "4",
+      "parentStation": "4212P4",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1168",
+      "stopLat": "35.729647",
+      "stopLon": "139.710759",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1172",
+      "stopLat": "35.730236",
+      "stopLon": "139.710763",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1173",
+      "stopLat": "35.730405",
+      "stopLon": "139.710764",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1174",
+      "stopLat": "35.729322",
+      "stopLon": "139.710769",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1176",
+      "stopLat": "35.729669",
+      "stopLon": "139.710770",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1178",
+      "stopLat": "35.729880",
+      "stopLon": "139.710772",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1179",
+      "stopLat": "35.729597",
+      "stopLon": "139.710774",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1180",
+      "stopLat": "35.729334",
+      "stopLon": "139.710776",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1182",
+      "stopLat": "35.729707",
+      "stopLon": "139.710780",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1183",
+      "stopLat": "35.729999",
+      "stopLon": "139.710782",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1186",
+      "stopLat": "35.729722",
+      "stopLon": "139.710788",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1188",
+      "stopLat": "35.730462",
+      "stopLon": "139.710793",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1189",
+      "stopLat": "35.729312",
+      "stopLon": "139.710796",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1190",
+      "stopLat": "35.729928",
+      "stopLon": "139.710797",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1191",
+      "stopLat": "35.728941",
+      "stopLon": "139.710797",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1192",
+      "stopLat": "35.729534",
+      "stopLon": "139.710800",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1194",
+      "stopLat": "35.729730",
+      "stopLon": "139.710802",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1195",
+      "stopLat": "35.730129",
+      "stopLon": "139.710806",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1196",
+      "stopLat": "35.728958",
+      "stopLon": "139.710806",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1197",
+      "stopLat": "35.729697",
+      "stopLon": "139.710807",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1199",
+      "stopName": "中央改札1",
+      "stopLat": "35.730220",
+      "stopLon": "139.710809",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1201",
+      "stopLat": "35.729352",
+      "stopLon": "139.710818",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1202",
+      "stopLat": "35.729718",
+      "stopLon": "139.710818",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1203",
+      "stopLat": "35.730156",
+      "stopLon": "139.710820",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1204",
+      "stopLat": "35.729573",
+      "stopLon": "139.710820",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1206",
+      "stopLat": "35.730519",
+      "stopLon": "139.710823",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1207",
+      "stopLat": "35.729691",
+      "stopLon": "139.710823",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1208",
+      "stopLat": "35.729302",
+      "stopLon": "139.710824",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1209",
+      "stopLat": "35.729425",
+      "stopLon": "139.710824",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1213",
+      "stopLat": "35.730379",
+      "stopLon": "139.710838",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1215",
+      "stopLat": "35.729995",
+      "stopLon": "139.710841",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1216",
+      "stopLat": "35.729828",
+      "stopLon": "139.710846",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1218",
+      "stopLat": "35.730207",
+      "stopLon": "139.710847",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1220",
+      "stopLat": "35.729475",
+      "stopLon": "139.710851",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1222",
+      "stopLat": "35.729640",
+      "stopLon": "139.710855",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1224",
+      "stopLat": "35.730030",
+      "stopLon": "139.710860",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1226",
+      "stopLat": "35.729848",
+      "stopLon": "139.710863",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1227",
+      "stopLat": "35.729848",
+      "stopLon": "139.710864",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1229",
+      "stopLat": "35.729809",
+      "stopLon": "139.710867",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1230",
+      "stopLat": "35.730436",
+      "stopLon": "139.710867",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1232",
+      "stopLat": "35.730246",
+      "stopLon": "139.710868",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1233",
+      "stopLat": "35.729459",
+      "stopLon": "139.710874",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1235",
+      "stopLat": "35.729569",
+      "stopLon": "139.710881",
+      "locationType": "4",
+      "parentStation": "4212P4",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1236",
+      "stopLat": "35.729966",
+      "stopLon": "139.710881",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1238",
+      "stopLat": "35.729700",
+      "stopLon": "139.710887",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1239",
+      "stopLat": "35.729504",
+      "stopLon": "139.710888",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1240",
+      "stopLat": "35.729896",
+      "stopLon": "139.710889",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1241",
+      "stopLat": "35.730285",
+      "stopLon": "139.710890",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1244",
+      "stopLat": "35.730493",
+      "stopLon": "139.710897",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1246",
+      "stopLat": "35.729542",
+      "stopLon": "139.710908",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1250",
+      "stopLat": "35.730125",
+      "stopLon": "139.710909",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1252",
+      "stopLat": "35.730402",
+      "stopLon": "139.710914",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1253",
+      "stopLat": "35.729558",
+      "stopLon": "139.710915",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1256",
+      "stopLat": "35.729641",
+      "stopLon": "139.710918",
+      "locationType": "4",
+      "parentStation": "4212P4",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1257",
+      "stopLat": "35.729953",
+      "stopLon": "139.710919",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1261",
+      "stopLat": "35.729571",
+      "stopLon": "139.710922",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1263",
+      "stopLat": "35.729965",
+      "stopLon": "139.710925",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1266",
+      "stopLat": "35.729594",
+      "stopLon": "139.710935",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1267",
+      "stopLat": "35.730176",
+      "stopLon": "139.710936",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1268",
+      "stopLat": "35.729286",
+      "stopLon": "139.710939",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1270",
+      "stopLat": "35.730378",
+      "stopLon": "139.710939",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1272",
+      "stopLat": "35.729609",
+      "stopLon": "139.710943",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1273",
+      "stopLat": "35.730390",
+      "stopLon": "139.710946",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1275",
+      "stopLat": "35.729630",
+      "stopLon": "139.710947",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1276",
+      "stopLat": "35.729818",
+      "stopLon": "139.710949",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1278",
+      "stopLat": "35.729545",
+      "stopLon": "139.710952",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1279",
+      "stopLat": "35.729941",
+      "stopLon": "139.710955",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1280",
+      "stopLat": "35.730215",
+      "stopLon": "139.710957",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1283",
+      "stopLat": "35.729662",
+      "stopLon": "139.710964",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1284",
+      "stopLat": "35.729276",
+      "stopLon": "139.710968",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1288",
+      "stopLat": "35.729475",
+      "stopLon": "139.710972",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1289",
+      "stopLat": "35.729866",
+      "stopLon": "139.710974",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1290",
+      "stopLat": "35.729621",
+      "stopLon": "139.710974",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1291",
+      "stopLat": "35.729297",
+      "stopLon": "139.710979",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1292",
+      "stopLat": "35.730378",
+      "stopLon": "139.710981",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1294",
+      "stopLat": "35.730071",
+      "stopLon": "139.710982",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1295",
+      "stopLat": "35.729637",
+      "stopLon": "139.710983",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1296",
+      "stopName": "中央改札1",
+      "stopLat": "35.730268",
+      "stopLon": "139.710984",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1299",
+      "stopLat": "35.729616",
+      "stopLon": "139.710990",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1300",
+      "stopLat": "35.729513",
+      "stopLon": "139.710992",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1301",
+      "stopLat": "35.729266",
+      "stopLon": "139.710995",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1302",
+      "stopLat": "35.730095",
+      "stopLon": "139.710995",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1306",
+      "stopLat": "35.729589",
+      "stopLon": "139.711001",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1307",
+      "stopLat": "35.729288",
+      "stopLon": "139.711006",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1309",
+      "stopLat": "35.729261",
+      "stopLon": "139.711009",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1312",
+      "stopLat": "35.729559",
+      "stopLon": "139.711016",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1313",
+      "stopLat": "35.729768",
+      "stopLon": "139.711022",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1315",
+      "stopLat": "35.730146",
+      "stopLon": "139.711022",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1316",
+      "stopLat": "35.729942",
+      "stopLon": "139.711023",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1319",
+      "stopLat": "35.729458",
+      "stopLon": "139.711029",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1321",
+      "stopLat": "35.729728",
+      "stopLon": "139.711031",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1322",
+      "stopLat": "35.730555",
+      "stopLon": "139.711033",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1323",
+      "stopLat": "35.729404",
+      "stopLon": "139.711037",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1324",
+      "stopLat": "35.729968",
+      "stopLon": "139.711037",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1325",
+      "stopLat": "35.729451",
+      "stopLon": "139.711040",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1326",
+      "stopLat": "35.730375",
+      "stopLon": "139.711040",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1327",
+      "stopLat": "35.729786",
+      "stopLon": "139.711041",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1328",
+      "stopLat": "35.730185",
+      "stopLon": "139.711043",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1331",
+      "stopLat": "35.730589",
+      "stopLon": "139.711050",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1334",
+      "stopLat": "35.729379",
+      "stopLon": "139.711054",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1335",
+      "stopLat": "35.729901",
+      "stopLon": "139.711056",
+      "locationType": "4",
+      "parentStation": "4212P4",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1337",
+      "stopLat": "35.729445",
+      "stopLon": "139.711058",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1338",
+      "stopLat": "35.729489",
+      "stopLon": "139.711060",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1341",
+      "stopLat": "35.730228",
+      "stopLon": "139.711066",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1342",
+      "stopLat": "35.729834",
+      "stopLon": "139.711067",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1345",
+      "stopLat": "35.729444",
+      "stopLon": "139.711068",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1348",
+      "stopLat": "35.730710",
+      "stopLon": "139.711075",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1349",
+      "stopLat": "35.729462",
+      "stopLon": "139.711077",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1353",
+      "stopLat": "35.729535",
+      "stopLon": "139.711084",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1354",
+      "stopLat": "35.730350",
+      "stopLon": "139.711085",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1357",
+      "stopLat": "35.730063",
+      "stopLon": "139.711087",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1358",
+      "stopLat": "35.729485",
+      "stopLon": "139.711090",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1359",
+      "stopLat": "35.729889",
+      "stopLon": "139.711092",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1363",
+      "stopLat": "35.729905",
+      "stopLon": "139.711100",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1364",
+      "stopLat": "35.729507",
+      "stopLon": "139.711101",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1365",
+      "stopLat": "35.729529",
+      "stopLon": "139.711101",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1366",
+      "stopLat": "35.729433",
+      "stopLon": "139.711102",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1367",
+      "stopLat": "35.730686",
+      "stopLon": "139.711102",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1368",
+      "stopLat": "35.730699",
+      "stopLon": "139.711109",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1370",
+      "stopLat": "35.730115",
+      "stopLon": "139.711113",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1371",
+      "stopLat": "35.730323",
+      "stopLon": "139.711116",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1372",
+      "stopLat": "35.729566",
+      "stopLon": "139.711121",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1374",
+      "stopLat": "35.729545",
+      "stopLon": "139.711122",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1376",
+      "stopLat": "35.730336",
+      "stopLon": "139.711123",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1379",
+      "stopLat": "35.729877",
+      "stopLon": "139.711127",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1382",
+      "stopLat": "35.730154",
+      "stopLon": "139.711134",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1386",
+      "stopLat": "35.730687",
+      "stopLon": "139.711143",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1389",
+      "stopLat": "35.730847",
+      "stopLon": "139.711149",
+      "locationType": "4",
+      "parentStation": "4212P8",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1392",
+      "stopLat": "35.730000",
+      "stopLon": "139.711151",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1394",
+      "stopLat": "35.729565",
+      "stopLon": "139.711152",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1395",
+      "stopLat": "35.729698",
+      "stopLon": "139.711157",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1396",
+      "stopLat": "35.730325",
+      "stopLon": "139.711157",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1398",
+      "stopName": "中央改札1",
+      "stopLat": "35.730207",
+      "stopLon": "139.711161",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1403",
+      "stopLat": "35.729671",
+      "stopLon": "139.711175",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1405",
+      "stopLat": "35.730836",
+      "stopLon": "139.711180",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1406",
+      "stopLat": "35.730326",
+      "stopLon": "139.711181",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1409",
+      "stopLat": "35.729689",
+      "stopLon": "139.711184",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1410",
+      "stopLat": "35.730848",
+      "stopLon": "139.711186",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1411",
+      "stopLat": "35.731063",
+      "stopLon": "139.711194",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1416",
+      "stopLat": "35.729656",
+      "stopLon": "139.711201",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1420",
+      "stopLat": "35.729068",
+      "stopLon": "139.711204",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1421",
+      "stopLat": "35.730494",
+      "stopLon": "139.711208",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1423",
+      "stopLat": "35.729679",
+      "stopLon": "139.711213",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1425",
+      "stopLat": "35.730314",
+      "stopLon": "139.711215",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1426",
+      "stopLat": "35.730823",
+      "stopLon": "139.711215",
+      "locationType": "4",
+      "parentStation": "4212P7",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1432",
+      "stopLat": "35.730532",
+      "stopLon": "139.711227",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1433",
+      "stopLat": "35.729674",
+      "stopLon": "139.711228",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1435",
+      "stopName": "中央改札2",
+      "stopLat": "35.730424",
+      "stopLon": "139.711232",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1436",
+      "stopLat": "35.731144",
+      "stopLon": "139.711236",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1438",
+      "stopLat": "35.729774",
+      "stopLon": "139.711240",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1439",
+      "stopLat": "35.730955",
+      "stopLon": "139.711243",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1441",
+      "stopLat": "35.730658",
+      "stopLon": "139.711248",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1446",
+      "stopLat": "35.730978",
+      "stopLon": "139.711255",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1447",
+      "stopLat": "35.729808",
+      "stopLon": "139.711258",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1449",
+      "stopLat": "35.730476",
+      "stopLon": "139.711259",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1451",
+      "stopLat": "35.729179",
+      "stopLon": "139.711262",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1457",
+      "stopLat": "35.730315",
+      "stopLon": "139.711275",
+      "locationType": "4",
+      "parentStation": "4212P4",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1460",
+      "stopLat": "35.730628",
+      "stopLon": "139.711279",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1463",
+      "stopLat": "35.729944",
+      "stopLon": "139.711287",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1464",
+      "stopLat": "35.730644",
+      "stopLon": "139.711287",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1476",
+      "stopLat": "35.730301",
+      "stopLon": "139.711313",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1477",
+      "stopLat": "35.729915",
+      "stopLon": "139.711314",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1480",
+      "stopLat": "35.730312",
+      "stopLon": "139.711318",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1481",
+      "stopLat": "35.730632",
+      "stopLon": "139.711319",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1482",
+      "stopLat": "35.730793",
+      "stopLon": "139.711320",
+      "locationType": "4",
+      "parentStation": "4212P6",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1483",
+      "stopLat": "35.731024",
+      "stopLon": "139.711320",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1484",
+      "stopLat": "35.729931",
+      "stopLon": "139.711323",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1493",
+      "stopLat": "35.730290",
+      "stopLon": "139.711345",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1497",
+      "stopLat": "35.730780",
+      "stopLon": "139.711358",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1498",
+      "stopLat": "35.729919",
+      "stopLon": "139.711358",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1499",
+      "stopLat": "35.730791",
+      "stopLon": "139.711364",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1501",
+      "stopLat": "35.730406",
+      "stopLon": "139.711369",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1504",
+      "stopLat": "35.730039",
+      "stopLon": "139.711382",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1505",
+      "stopLat": "35.730433",
+      "stopLon": "139.711383",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1506",
+      "stopLat": "35.730433",
+      "stopLon": "139.711383",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1509",
+      "stopLat": "35.730768",
+      "stopLon": "139.711391",
+      "locationType": "4",
+      "parentStation": "4212P5",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1512",
+      "stopLat": "35.730459",
+      "stopLon": "139.711413",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1513",
+      "stopLat": "35.730176",
+      "stopLon": "139.711413",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1514",
+      "stopLat": "35.730982",
+      "stopLon": "139.711419",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1515",
+      "stopLat": "35.730896",
+      "stopLon": "139.711419",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1517",
+      "stopLat": "35.730917",
+      "stopLon": "139.711431",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1519",
+      "stopLat": "35.730234",
+      "stopLon": "139.711444",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1520",
+      "stopLat": "35.730164",
+      "stopLon": "139.711447",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1521",
+      "stopLat": "35.730164",
+      "stopLon": "139.711447",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1524",
+      "stopName": "北改札",
+      "stopLat": "35.730983",
+      "stopLon": "139.711465",
+      "locationType": "2",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1526",
+      "stopLat": "35.730292",
+      "stopLon": "139.711474",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1532",
+      "stopLat": "35.731052",
+      "stopLon": "139.711500",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1534",
+      "stopLat": "35.730282",
+      "stopLon": "139.711502",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1536",
+      "stopLat": "35.730372",
+      "stopLon": "139.711509",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1538",
+      "stopLat": "35.730493",
+      "stopLon": "139.711518",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1542",
+      "stopLat": "35.730716",
+      "stopLon": "139.711533",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1544",
+      "stopLat": "35.730729",
+      "stopLon": "139.711540",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1546",
+      "stopLat": "35.730356",
+      "stopLon": "139.711550",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1548",
+      "stopLat": "35.730481",
+      "stopLon": "139.711554",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1551",
+      "stopLat": "35.730368",
+      "stopLon": "139.711557",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1558",
+      "stopLat": "35.730343",
+      "stopLon": "139.711581",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1564",
+      "stopLat": "35.730834",
+      "stopLon": "139.711596",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1569",
+      "stopLat": "35.730856",
+      "stopLon": "139.711607",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1577",
+      "stopLat": "35.729952",
+      "stopLon": "139.711632",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1578",
+      "stopLat": "35.730244",
+      "stopLon": "139.711636",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1586",
+      "stopLat": "35.729942",
+      "stopLon": "139.711660",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1591",
+      "stopLat": "35.730022",
+      "stopLon": "139.711669",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1596",
+      "stopLat": "35.730635",
+      "stopLon": "139.711687",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1598",
+      "stopLat": "35.730647",
+      "stopLon": "139.711694",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1600",
+      "stopLat": "35.730075",
+      "stopLon": "139.711698",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1615",
+      "stopLat": "35.730754",
+      "stopLon": "139.711751",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1617",
+      "stopLat": "35.730055",
+      "stopLon": "139.711756",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1621",
+      "stopLat": "35.730798",
+      "stopLon": "139.711774",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1625",
+      "stopLat": "35.730120",
+      "stopLon": "139.711790",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1633",
+      "stopLat": "35.730946",
+      "stopLon": "139.711808",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1639",
+      "stopLat": "35.730179",
+      "stopLon": "139.711821",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1651",
+      "stopLat": "35.730957",
+      "stopLon": "139.711875",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1686",
+      "stopLat": "35.730863",
+      "stopLon": "139.711985",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1691",
+      "stopLat": "35.730855",
+      "stopLon": "139.712005",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1699",
+      "stopLat": "35.730889",
+      "stopLon": "139.712023",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1713",
+      "stopLat": "35.730858",
+      "stopLon": "139.712085",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1718",
+      "stopLat": "35.730858",
+      "stopLon": "139.712101",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1722",
+      "stopLat": "35.730747",
+      "stopLon": "139.712117",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1729",
+      "stopLat": "35.730810",
+      "stopLon": "139.712150",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1730",
+      "stopLat": "35.730821",
+      "stopLon": "139.712156",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1734",
+      "stopLat": "35.730857",
+      "stopLon": "139.712174",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1738",
+      "stopLat": "35.730792",
+      "stopLon": "139.712212",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1775",
+      "stopLat": "35.730726",
+      "stopLon": "139.712404",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N0972",
+      "stopLat": "35.730779",
+      "stopLon": "139.710073",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N0981",
+      "stopLat": "35.730866",
+      "stopLon": "139.710116",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "-1"
+    },
+    {
+      "stopId": "4212N1042",
+      "stopLat": "35.729123",
+      "stopLon": "139.710328",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1068",
+      "stopLat": "35.729073",
+      "stopLon": "139.710482",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1098",
+      "stopLat": "35.729034",
+      "stopLon": "139.710599",
+      "locationType": "3",
+      "parentStation": "4212",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1099",
+      "stopLat": "35.728646",
+      "stopLon": "139.710601",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1128",
+      "stopLat": "35.728621",
+      "stopLon": "139.710668",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1129",
+      "stopLat": "35.729009",
+      "stopLon": "139.710670",
+      "locationType": "4",
+      "parentStation": "4212P3",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1177",
+      "stopLat": "35.728970",
+      "stopLon": "139.710771",
+      "locationType": "4",
+      "parentStation": "4212P2",
+      "levelId": "1"
+    },
+    {
+      "stopId": "4212N1214",
+      "stopLat": "35.728945",
+      "stopLon": "139.710841",
+      "locationType": "4",
+      "parentStation": "4212P1",
+      "levelId": "1"
+    }
+  ],
+  "pathways": [
+    {
+      "pathwayId": "4212L00001",
+      "fromStopId": "4212N1149",
+      "toStopId": "4212N1136",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.7"
+    },
+    {
+      "pathwayId": "4212L00003",
+      "fromStopId": "4212N1087",
+      "toStopId": "4212N1080",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.7"
+    },
+    {
+      "pathwayId": "4212L00005",
+      "fromStopId": "4212N1149",
+      "toStopId": "4212N1080",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.9"
+    },
+    {
+      "pathwayId": "4212L00007",
+      "fromStopId": "4212N1018",
+      "toStopId": "4212N1025",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "6.9"
+    },
+    {
+      "pathwayId": "4212L00009",
+      "fromStopId": "4212N1025",
+      "toStopId": "4212N1027",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00011",
+      "fromStopId": "4212N1058",
+      "toStopId": "4212N1052",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00013",
+      "fromStopId": "4212N1048",
+      "toStopId": "4212N1025",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.2"
+    },
+    {
+      "pathwayId": "4212L00015",
+      "fromStopId": "4212N1080",
+      "toStopId": "4212N1057",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "12.1"
+    },
+    {
+      "pathwayId": "4212L00017",
+      "fromStopId": "4212N1080",
+      "toStopId": "4212N1077",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.2"
+    },
+    {
+      "pathwayId": "4212L00019",
+      "fromStopId": "4212N1157",
+      "toStopId": "4212N1149",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.6"
+    },
+    {
+      "pathwayId": "4212L00025",
+      "fromStopId": "4212N1052",
+      "toStopId": "4212N1048",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.8"
+    },
+    {
+      "pathwayId": "4212L00027",
+      "fromStopId": "4212N1057",
+      "toStopId": "4212N1052",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00029",
+      "fromStopId": "4212N1011",
+      "toStopId": "4212N1006",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.4"
+    },
+    {
+      "pathwayId": "4212L00031",
+      "fromStopId": "4212N1019",
+      "toStopId": "4212N1006",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.9"
+    },
+    {
+      "pathwayId": "4212L00033",
+      "fromStopId": "4212N1006",
+      "toStopId": "4212N0956",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "15.4"
+    },
+    {
+      "pathwayId": "4212L00125",
+      "fromStopId": "4212N1040",
+      "toStopId": "4212N1042",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00127",
+      "fromStopId": "4212N1072",
+      "toStopId": "4212N1079",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L00129",
+      "fromStopId": "4212N1075",
+      "toStopId": "4212N1072",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.7"
+    },
+    {
+      "pathwayId": "4212L00131",
+      "fromStopId": "4212N1103",
+      "toStopId": "4212N1112",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.3"
+    },
+    {
+      "pathwayId": "4212L00133",
+      "fromStopId": "4212N1101",
+      "toStopId": "4212N1097",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.7"
+    },
+    {
+      "pathwayId": "4212L00135",
+      "fromStopId": "4212N1094",
+      "toStopId": "4212N1092",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.7"
+    },
+    {
+      "pathwayId": "4212L00137",
+      "fromStopId": "4212N1107",
+      "toStopId": "4212N1103",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00139",
+      "fromStopId": "4212N1135",
+      "toStopId": "4212N1156",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00141",
+      "fromStopId": "4212N1139",
+      "toStopId": "4212N1135",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.7"
+    },
+    {
+      "pathwayId": "4212L00143",
+      "fromStopId": "4212N1158",
+      "toStopId": "4212N1183",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.8"
+    },
+    {
+      "pathwayId": "4212L00145",
+      "fromStopId": "4212N1161",
+      "toStopId": "4212N1158",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.1"
+    },
+    {
+      "pathwayId": "4212L00147",
+      "fromStopId": "4212N1273",
+      "toStopId": "4212N1292",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00149",
+      "fromStopId": "4212N1270",
+      "toStopId": "4212N1273",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00151",
+      "fromStopId": "4212N1368",
+      "toStopId": "4212N1386",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00153",
+      "fromStopId": "4212N1367",
+      "toStopId": "4212N1368",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00155",
+      "fromStopId": "4212N1405",
+      "toStopId": "4212N1426",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00157",
+      "fromStopId": "4212N1410",
+      "toStopId": "4212N1405",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.4"
+    },
+    {
+      "pathwayId": "4212L00159",
+      "fromStopId": "4212N1064",
+      "toStopId": "4212N1068",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00161",
+      "fromStopId": "4212N1544",
+      "toStopId": "4212N1542",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00163",
+      "fromStopId": "4212N1110",
+      "toStopId": "4212N1129",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L00165",
+      "fromStopId": "4212N1105",
+      "toStopId": "4212N1110",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.7"
+    },
+    {
+      "pathwayId": "4212L00167",
+      "fromStopId": "4212N1063",
+      "toStopId": "4212N1070",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.0"
+    },
+    {
+      "pathwayId": "4212L00169",
+      "fromStopId": "4212N1598",
+      "toStopId": "4212N1596",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00171",
+      "fromStopId": "4212N1109",
+      "toStopId": "4212N1128",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00173",
+      "fromStopId": "4212N1116",
+      "toStopId": "4212N1109",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.5"
+    },
+    {
+      "pathwayId": "4212L00175",
+      "fromStopId": "4212N1196",
+      "toStopId": "4212N1214",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00177",
+      "fromStopId": "4212N1191",
+      "toStopId": "4212N1196",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.1"
+    },
+    {
+      "pathwayId": "4212L00179",
+      "fromStopId": "4212N1301",
+      "toStopId": "4212N1309",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.4"
+    },
+    {
+      "pathwayId": "4212L00181",
+      "fromStopId": "4212N1291",
+      "toStopId": "4212N1284",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.5"
+    },
+    {
+      "pathwayId": "4212L00183",
+      "fromStopId": "4212N1307",
+      "toStopId": "4212N1301",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00185",
+      "fromStopId": "4212N1189",
+      "toStopId": "4212N1208",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L00187",
+      "fromStopId": "4212N1180",
+      "toStopId": "4212N1174",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00189",
+      "fromStopId": "4212N1201",
+      "toStopId": "4212N1189",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.9"
+    },
+    {
+      "pathwayId": "4212L00191",
+      "fromStopId": "4212N1108",
+      "toStopId": "4212N1126",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.0"
+    },
+    {
+      "pathwayId": "4212L00193",
+      "fromStopId": "4212N1114",
+      "toStopId": "4212N1108",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.0"
+    },
+    {
+      "pathwayId": "4212L00195",
+      "fromStopId": "4212N1104",
+      "toStopId": "4212N1102",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.0"
+    },
+    {
+      "pathwayId": "4212L00197",
+      "fromStopId": "4212N1345",
+      "toStopId": "4212N1366",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00199",
+      "fromStopId": "4212N1349",
+      "toStopId": "4212N1345",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.2"
+    },
+    {
+      "pathwayId": "4212L00201",
+      "fromStopId": "4212N1253",
+      "toStopId": "4212N1278",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L00203",
+      "fromStopId": "4212N1261",
+      "toStopId": "4212N1253",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00205",
+      "fromStopId": "4212N1155",
+      "toStopId": "4212N1179",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00207",
+      "fromStopId": "4212N1160",
+      "toStopId": "4212N1155",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00209",
+      "fromStopId": "4212N1197",
+      "toStopId": "4212N1207",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00211",
+      "fromStopId": "4212N1186",
+      "toStopId": "4212N1182",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.8"
+    },
+    {
+      "pathwayId": "4212L00213",
+      "fromStopId": "4212N1202",
+      "toStopId": "4212N1197",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.5"
+    },
+    {
+      "pathwayId": "4212L00215",
+      "fromStopId": "4212N1275",
+      "toStopId": "4212N1256",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00217",
+      "fromStopId": "4212N1295",
+      "toStopId": "4212N1290",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.0"
+    },
+    {
+      "pathwayId": "4212L00219",
+      "fromStopId": "4212N1283",
+      "toStopId": "4212N1275",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.9"
+    },
+    {
+      "pathwayId": "4212L00221",
+      "fromStopId": "4212N1423",
+      "toStopId": "4212N1433",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00223",
+      "fromStopId": "4212N1403",
+      "toStopId": "4212N1409",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.2"
+    },
+    {
+      "pathwayId": "4212L00225",
+      "fromStopId": "4212N1416",
+      "toStopId": "4212N1423",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L00227",
+      "fromStopId": "4212N1484",
+      "toStopId": "4212N1498",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00229",
+      "fromStopId": "4212N1477",
+      "toStopId": "4212N1484",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.0"
+    },
+    {
+      "pathwayId": "4212L00231",
+      "fromStopId": "4212N1359",
+      "toStopId": "4212N1379",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00233",
+      "fromStopId": "4212N1363",
+      "toStopId": "4212N1359",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.9"
+    },
+    {
+      "pathwayId": "4212L00235",
+      "fromStopId": "4212N1257",
+      "toStopId": "4212N1279",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00237",
+      "fromStopId": "4212N1263",
+      "toStopId": "4212N1257",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.4"
+    },
+    {
+      "pathwayId": "4212L00239",
+      "fromStopId": "4212N1376",
+      "toStopId": "4212N1396",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00241",
+      "fromStopId": "4212N1371",
+      "toStopId": "4212N1376",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00243",
+      "fromStopId": "4212N1476",
+      "toStopId": "4212N1493",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.1"
+    },
+    {
+      "pathwayId": "4212L00245",
+      "fromStopId": "4212N1480",
+      "toStopId": "4212N1476",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.3"
+    },
+    {
+      "pathwayId": "4212L00247",
+      "fromStopId": "4212N1546",
+      "toStopId": "4212N1558",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00249",
+      "fromStopId": "4212N1551",
+      "toStopId": "4212N1546",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00251",
+      "fromStopId": "4212N1464",
+      "toStopId": "4212N1481",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00253",
+      "fromStopId": "4212N1460",
+      "toStopId": "4212N1464",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.9"
+    },
+    {
+      "pathwayId": "4212L00255",
+      "fromStopId": "4212N1497",
+      "toStopId": "4212N1509",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00257",
+      "fromStopId": "4212N1499",
+      "toStopId": "4212N1497",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.3"
+    },
+    {
+      "pathwayId": "4212L00259",
+      "fromStopId": "4212N1482",
+      "toStopId": "4212N1497",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.7"
+    },
+    {
+      "pathwayId": "4212L00261",
+      "fromStopId": "4212N1441",
+      "toStopId": "4212N1464",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.9"
+    },
+    {
+      "pathwayId": "4212L00263",
+      "fromStopId": "4212N1536",
+      "toStopId": "4212N1546",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.1"
+    },
+    {
+      "pathwayId": "4212L00265",
+      "fromStopId": "4212N1457",
+      "toStopId": "4212N1476",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.8"
+    },
+    {
+      "pathwayId": "4212L00267",
+      "fromStopId": "4212N1354",
+      "toStopId": "4212N1376",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.8"
+    },
+    {
+      "pathwayId": "4212L00269",
+      "fromStopId": "4212N1236",
+      "toStopId": "4212N1257",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.7"
+    },
+    {
+      "pathwayId": "4212L00271",
+      "fromStopId": "4212N1335",
+      "toStopId": "4212N1359",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00273",
+      "fromStopId": "4212N1463",
+      "toStopId": "4212N1484",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L00275",
+      "fromStopId": "4212N1395",
+      "toStopId": "4212N1409",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00277",
+      "fromStopId": "4212N1409",
+      "toStopId": "4212N1423",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00279",
+      "fromStopId": "4212N1299",
+      "toStopId": "4212N1290",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.6"
+    },
+    {
+      "pathwayId": "4212L00281",
+      "fromStopId": "4212N1290",
+      "toStopId": "4212N1275",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00283",
+      "fromStopId": "4212N1163",
+      "toStopId": "4212N1182",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00285",
+      "fromStopId": "4212N1182",
+      "toStopId": "4212N1197",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.7"
+    },
+    {
+      "pathwayId": "4212L00287",
+      "fromStopId": "4212N1140",
+      "toStopId": "4212N1155",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.7"
+    },
+    {
+      "pathwayId": "4212L00289",
+      "fromStopId": "4212N1235",
+      "toStopId": "4212N1253",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00291",
+      "fromStopId": "4212N1319",
+      "toStopId": "4212N1345",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.9"
+    },
+    {
+      "pathwayId": "4212L00293",
+      "fromStopId": "4212N1095",
+      "toStopId": "4212N1102",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.3"
+    },
+    {
+      "pathwayId": "4212L00295",
+      "fromStopId": "4212N1102",
+      "toStopId": "4212N1108",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.3"
+    },
+    {
+      "pathwayId": "4212L00297",
+      "fromStopId": "4212N1166",
+      "toStopId": "4212N1174",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.5"
+    },
+    {
+      "pathwayId": "4212L00299",
+      "fromStopId": "4212N1174",
+      "toStopId": "4212N1189",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.7"
+    },
+    {
+      "pathwayId": "4212L00301",
+      "fromStopId": "4212N1268",
+      "toStopId": "4212N1284",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00303",
+      "fromStopId": "4212N1284",
+      "toStopId": "4212N1301",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.7"
+    },
+    {
+      "pathwayId": "4212L00305",
+      "fromStopId": "4212N1177",
+      "toStopId": "4212N1196",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00307",
+      "fromStopId": "4212N1099",
+      "toStopId": "4212N1109",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00309",
+      "fromStopId": "4212N1389",
+      "toStopId": "4212N1405",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.1"
+    },
+    {
+      "pathwayId": "4212L00311",
+      "fromStopId": "4212N1348",
+      "toStopId": "4212N1368",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00313",
+      "fromStopId": "4212N1252",
+      "toStopId": "4212N1273",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00315",
+      "fromStopId": "4212N1147",
+      "toStopId": "4212N1158",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00317",
+      "fromStopId": "4212N1130",
+      "toStopId": "4212N1135",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.1"
+    },
+    {
+      "pathwayId": "4212L00319",
+      "fromStopId": "4212N1089",
+      "toStopId": "4212N1092",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.2"
+    },
+    {
+      "pathwayId": "4212L00321",
+      "fromStopId": "4212N1092",
+      "toStopId": "4212N1097",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.4"
+    },
+    {
+      "pathwayId": "4212L00323",
+      "fromStopId": "4212N1097",
+      "toStopId": "4212N1103",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.9"
+    },
+    {
+      "pathwayId": "4212L00325",
+      "fromStopId": "4212N1067",
+      "toStopId": "4212N1072",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.3"
+    },
+    {
+      "pathwayId": "4212L00327",
+      "fromStopId": "4212N1389",
+      "toStopId": "4212N1483",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "25.1"
+    },
+    {
+      "pathwayId": "4212L00329",
+      "fromStopId": "4212N1482",
+      "toStopId": "4212N1514",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.9"
+    },
+    {
+      "pathwayId": "4212L00331",
+      "fromStopId": "4212N1070",
+      "toStopId": "4212N1047",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "34.0"
+    },
+    {
+      "pathwayId": "4212L00333",
+      "fromStopId": "4212N1128",
+      "toStopId": "4212N1026",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "75.6"
+    },
+    {
+      "pathwayId": "4212L00335",
+      "fromStopId": "4212N1026",
+      "toStopId": "4212N1099",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "75.4"
+    },
+    {
+      "pathwayId": "4212L00337",
+      "fromStopId": "4212N1099",
+      "toStopId": "4212N1177",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "39.2"
+    },
+    {
+      "pathwayId": "4212L00339",
+      "fromStopId": "4212N1177",
+      "toStopId": "4212N1268",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "38.3"
+    },
+    {
+      "pathwayId": "4212L00341",
+      "fromStopId": "4212N1268",
+      "toStopId": "4212N1319",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "20.8"
+    },
+    {
+      "pathwayId": "4212L00343",
+      "fromStopId": "4212N1319",
+      "toStopId": "4212N1395",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.1"
+    },
+    {
+      "pathwayId": "4212L00345",
+      "fromStopId": "4212N1395",
+      "toStopId": "4212N1463",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.8"
+    },
+    {
+      "pathwayId": "4212L00347",
+      "fromStopId": "4212N1463",
+      "toStopId": "4212N1536",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "51.7"
+    },
+    {
+      "pathwayId": "4212L00349",
+      "fromStopId": "4212N1536",
+      "toStopId": "4212N1596",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "33.4"
+    },
+    {
+      "pathwayId": "4212L00351",
+      "fromStopId": "4212N1596",
+      "toStopId": "4212N1558",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "33.9"
+    },
+    {
+      "pathwayId": "4212L00353",
+      "fromStopId": "4212N1558",
+      "toStopId": "4212N1498",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "51.3"
+    },
+    {
+      "pathwayId": "4212L00355",
+      "fromStopId": "4212N1498",
+      "toStopId": "4212N1433",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.7"
+    },
+    {
+      "pathwayId": "4212L00357",
+      "fromStopId": "4212N1433",
+      "toStopId": "4212N1366",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.2"
+    },
+    {
+      "pathwayId": "4212L00359",
+      "fromStopId": "4212N1366",
+      "toStopId": "4212N1309",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "20.9"
+    },
+    {
+      "pathwayId": "4212L00361",
+      "fromStopId": "4212N1309",
+      "toStopId": "4212N1214",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "38.3"
+    },
+    {
+      "pathwayId": "4212L00363",
+      "fromStopId": "4212N1214",
+      "toStopId": "4212N1128",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "39.3"
+    },
+    {
+      "pathwayId": "4212L00365",
+      "fromStopId": "4212N1098",
+      "toStopId": "4212N1166",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "35.6"
+    },
+    {
+      "pathwayId": "4212L00367",
+      "fromStopId": "4212N1166",
+      "toStopId": "4212N1235",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.2"
+    },
+    {
+      "pathwayId": "4212L00369",
+      "fromStopId": "4212N1235",
+      "toStopId": "4212N1256",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.7"
+    },
+    {
+      "pathwayId": "4212L00371",
+      "fromStopId": "4212N1256",
+      "toStopId": "4212N1335",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "31.5"
+    },
+    {
+      "pathwayId": "4212L00373",
+      "fromStopId": "4212N1335",
+      "toStopId": "4212N1457",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.2"
+    },
+    {
+      "pathwayId": "4212L00375",
+      "fromStopId": "4212N1457",
+      "toStopId": "4212N1542",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.4"
+    },
+    {
+      "pathwayId": "4212L00377",
+      "fromStopId": "4212N1542",
+      "toStopId": "4212N1493",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.4"
+    },
+    {
+      "pathwayId": "4212L00379",
+      "fromStopId": "4212N1493",
+      "toStopId": "4212N1379",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.0"
+    },
+    {
+      "pathwayId": "4212L00381",
+      "fromStopId": "4212N1379",
+      "toStopId": "4212N1299",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "31.6"
+    },
+    {
+      "pathwayId": "4212L00383",
+      "fromStopId": "4212N1299",
+      "toStopId": "4212N1278",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.6"
+    },
+    {
+      "pathwayId": "4212L00385",
+      "fromStopId": "4212N1278",
+      "toStopId": "4212N1208",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "29.4"
+    },
+    {
+      "pathwayId": "4212L00387",
+      "fromStopId": "4212N1208",
+      "toStopId": "4212N1129",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "35.5"
+    },
+    {
+      "pathwayId": "4212L00389",
+      "fromStopId": "4212N1129",
+      "toStopId": "4212N1070",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "39.6"
+    },
+    {
+      "pathwayId": "4212L00391",
+      "fromStopId": "4212N1514",
+      "toStopId": "4212N1509",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "24.0"
+    },
+    {
+      "pathwayId": "4212L00393",
+      "fromStopId": "4212N1509",
+      "toStopId": "4212N1481",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.5"
+    },
+    {
+      "pathwayId": "4212L00395",
+      "fromStopId": "4212N1481",
+      "toStopId": "4212N1396",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "37.2"
+    },
+    {
+      "pathwayId": "4212L00397",
+      "fromStopId": "4212N1396",
+      "toStopId": "4212N1279",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "46.5"
+    },
+    {
+      "pathwayId": "4212L00399",
+      "fromStopId": "4212N1279",
+      "toStopId": "4212N1207",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "30.3"
+    },
+    {
+      "pathwayId": "4212L00401",
+      "fromStopId": "4212N1207",
+      "toStopId": "4212N1179",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "11.4"
+    },
+    {
+      "pathwayId": "4212L00403",
+      "fromStopId": "4212N1179",
+      "toStopId": "4212N1126",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "25.4"
+    },
+    {
+      "pathwayId": "4212L00405",
+      "fromStopId": "4212N1126",
+      "toStopId": "4212N1068",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "38.6"
+    },
+    {
+      "pathwayId": "4212L00407",
+      "fromStopId": "4212N1068",
+      "toStopId": "4212N1095",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "38.9"
+    },
+    {
+      "pathwayId": "4212L00409",
+      "fromStopId": "4212N1095",
+      "toStopId": "4212N1140",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "25.5"
+    },
+    {
+      "pathwayId": "4212L00411",
+      "fromStopId": "4212N1140",
+      "toStopId": "4212N1163",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "11.4"
+    },
+    {
+      "pathwayId": "4212L00413",
+      "fromStopId": "4212N1163",
+      "toStopId": "4212N1236",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "30.1"
+    },
+    {
+      "pathwayId": "4212L00415",
+      "fromStopId": "4212N1236",
+      "toStopId": "4212N1354",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "46.6"
+    },
+    {
+      "pathwayId": "4212L00417",
+      "fromStopId": "4212N1354",
+      "toStopId": "4212N1441",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "37.3"
+    },
+    {
+      "pathwayId": "4212L00419",
+      "fromStopId": "4212N1441",
+      "toStopId": "4212N1482",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.4"
+    },
+    {
+      "pathwayId": "4212L00421",
+      "fromStopId": "4212N1483",
+      "toStopId": "4212N1426",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "24.3"
+    },
+    {
+      "pathwayId": "4212L00423",
+      "fromStopId": "4212N1426",
+      "toStopId": "4212N1386",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.5"
+    },
+    {
+      "pathwayId": "4212L00425",
+      "fromStopId": "4212N1386",
+      "toStopId": "4212N1292",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "37.4"
+    },
+    {
+      "pathwayId": "4212L00427",
+      "fromStopId": "4212N1292",
+      "toStopId": "4212N1183",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "45.9"
+    },
+    {
+      "pathwayId": "4212L00429",
+      "fromStopId": "4212N1183",
+      "toStopId": "4212N1156",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.8"
+    },
+    {
+      "pathwayId": "4212L00431",
+      "fromStopId": "4212N1156",
+      "toStopId": "4212N1112",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.7"
+    },
+    {
+      "pathwayId": "4212L00433",
+      "fromStopId": "4212N1112",
+      "toStopId": "4212N1079",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.9"
+    },
+    {
+      "pathwayId": "4212L00435",
+      "fromStopId": "4212N1079",
+      "toStopId": "4212N1042",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.4"
+    },
+    {
+      "pathwayId": "4212L00437",
+      "fromStopId": "4212N1042",
+      "toStopId": "4212N1067",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "50.8"
+    },
+    {
+      "pathwayId": "4212L00439",
+      "fromStopId": "4212N1067",
+      "toStopId": "4212N1089",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.9"
+    },
+    {
+      "pathwayId": "4212L00441",
+      "fromStopId": "4212N1089",
+      "toStopId": "4212N1130",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.6"
+    },
+    {
+      "pathwayId": "4212L00443",
+      "fromStopId": "4212N1130",
+      "toStopId": "4212N1147",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.9"
+    },
+    {
+      "pathwayId": "4212L00445",
+      "fromStopId": "4212N1147",
+      "toStopId": "4212N1252",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "45.9"
+    },
+    {
+      "pathwayId": "4212L00447",
+      "fromStopId": "4212N1252",
+      "toStopId": "4212N1348",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "37.3"
+    },
+    {
+      "pathwayId": "4212L00449",
+      "fromStopId": "4212N1348",
+      "toStopId": "4212N1389",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.7"
+    },
+    {
+      "pathwayId": "4212L00451",
+      "fromStopId": "4212N1098",
+      "toStopId": "4212N1110",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00559",
+      "fromStopId": "4212N0946",
+      "toStopId": "4212N1046",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "31.6"
+    },
+    {
+      "pathwayId": "4212L00561",
+      "fromStopId": "4212N1046",
+      "toStopId": "4212N1061",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.4"
+    },
+    {
+      "pathwayId": "4212L00563",
+      "fromStopId": "4212N1061",
+      "toStopId": "4212N1173",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "31.5"
+    },
+    {
+      "pathwayId": "4212L00565",
+      "fromStopId": "4212N0972",
+      "toStopId": "4212N0981",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.4"
+    },
+    {
+      "pathwayId": "4212L00567",
+      "fromStopId": "4212N1513",
+      "toStopId": "4212N1520",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00569",
+      "fromStopId": "4212N1520",
+      "toStopId": "4212N1600",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "24.8"
+    },
+    {
+      "pathwayId": "4212L00571",
+      "fromStopId": "4212N0969",
+      "toStopId": "4212N0972",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L00576",
+      "fromStopId": "4212N1591",
+      "toStopId": "4212N1577",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00578",
+      "fromStopId": "4212N1586",
+      "toStopId": "4212N1451",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "92.3"
+    },
+    {
+      "pathwayId": "4212L00580",
+      "fromStopId": "4212N1521",
+      "toStopId": "4212N1520",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "0.0"
+    },
+    {
+      "pathwayId": "4212L00584",
+      "fromStopId": "4212N1639",
+      "toStopId": "4212N1625",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.1"
+    },
+    {
+      "pathwayId": "4212L00586",
+      "fromStopId": "4212N1436",
+      "toStopId": "4212N1411",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.8"
+    },
+    {
+      "pathwayId": "4212L00588",
+      "fromStopId": "4212N1411",
+      "toStopId": "4212N1244",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "68.9"
+    },
+    {
+      "pathwayId": "4212L00590",
+      "fromStopId": "4212N1244",
+      "toStopId": "4212N1230",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.9"
+    },
+    {
+      "pathwayId": "4212L00592",
+      "fromStopId": "4212N1213",
+      "toStopId": "4212N1172",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.3"
+    },
+    {
+      "pathwayId": "4212L00594",
+      "fromStopId": "4212N1296",
+      "toStopId": "4212N1326",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L00596",
+      "fromStopId": "4212N1398",
+      "toStopId": "4212N1425",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L00598",
+      "fromStopId": "4212N1729",
+      "toStopId": "4212N1722",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.6"
+    },
+    {
+      "pathwayId": "4212L00600",
+      "fromStopId": "4212N1722",
+      "toStopId": "4212N1639",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "68.7"
+    },
+    {
+      "pathwayId": "4212L00602",
+      "fromStopId": "4212N1081",
+      "toStopId": "4212N1031",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "24.8"
+    },
+    {
+      "pathwayId": "4212L00608",
+      "fromStopId": "4212N1071",
+      "toStopId": "4212N1081",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.5"
+    },
+    {
+      "pathwayId": "4212L00610",
+      "fromStopId": "4212N1172",
+      "toStopId": "4212N1050",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "90.5"
+    },
+    {
+      "pathwayId": "4212L00614",
+      "fromStopId": "4212N1713",
+      "toStopId": "4212N1730",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.6"
+    },
+    {
+      "pathwayId": "4212L00616",
+      "fromStopId": "4212N1722",
+      "toStopId": "4212N1775",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "26.1"
+    },
+    {
+      "pathwayId": "4212L00618",
+      "fromStopId": "4212N1775",
+      "toStopId": "4212N1734",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "25.4"
+    },
+    {
+      "pathwayId": "4212L00620",
+      "fromStopId": "4212N1734",
+      "toStopId": "4212N1730",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.3"
+    },
+    {
+      "pathwayId": "4212L00622",
+      "fromStopId": "4212N1718",
+      "toStopId": "4212N1713",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.4"
+    },
+    {
+      "pathwayId": "4212L00624",
+      "fromStopId": "4212N1699",
+      "toStopId": "4212N1713",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.6"
+    },
+    {
+      "pathwayId": "4212L00626",
+      "fromStopId": "4212N1154",
+      "toStopId": "4212N1146",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "5.3"
+    },
+    {
+      "pathwayId": "4212L00628",
+      "fromStopId": "4212N1084",
+      "toStopId": "4212N1078",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "5.6"
+    },
+    {
+      "pathwayId": "4212L00630",
+      "fromStopId": "4212N1050",
+      "toStopId": "4212N1078",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.1"
+    },
+    {
+      "pathwayId": "4212L00632",
+      "fromStopId": "4212N1078",
+      "toStopId": "4212N1146",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.4"
+    },
+    {
+      "pathwayId": "4212L00634",
+      "fromStopId": "4212N1420",
+      "toStopId": "4212N1122",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "53.8"
+    },
+    {
+      "pathwayId": "4212L00636",
+      "fromStopId": "4212N1122",
+      "toStopId": "4212N1066",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.5"
+    },
+    {
+      "pathwayId": "4212L00640",
+      "fromStopId": "4212N1146",
+      "toStopId": "4212N1122",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "13.4"
+    },
+    {
+      "pathwayId": "4212L00647",
+      "fromStopId": "4212N1146",
+      "toStopId": "4212N1451",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "53.9"
+    },
+    {
+      "pathwayId": "4212L00649",
+      "fromStopId": "4212N1078",
+      "toStopId": "4212N1066",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "13.4"
+    },
+    {
+      "pathwayId": "4212L00653",
+      "fromStopId": "4212N1713",
+      "toStopId": "4212N1691",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.2"
+    },
+    {
+      "pathwayId": "4212L00661",
+      "fromStopId": "4212N1738",
+      "toStopId": "4212N1729",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.0"
+    },
+    {
+      "pathwayId": "4212L00663",
+      "fromStopId": "4212N1730",
+      "toStopId": "4212N1729",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.3"
+    },
+    {
+      "pathwayId": "4212L00665",
+      "fromStopId": "4212N1730",
+      "toStopId": "4212N1738",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.0"
+    },
+    {
+      "pathwayId": "4212L00667",
+      "fromStopId": "4212N1734",
+      "toStopId": "4212N1718",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.6"
+    },
+    {
+      "pathwayId": "4212L00675",
+      "fromStopId": "4212N1206",
+      "toStopId": "4212N1188",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.9"
+    },
+    {
+      "pathwayId": "4212L00677",
+      "fromStopId": "4212N1625",
+      "toStopId": "4212N1617",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.9"
+    },
+    {
+      "pathwayId": "4212L00681",
+      "fromStopId": "4212N1519",
+      "toStopId": "4212N1513",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00683",
+      "fromStopId": "4212N1521",
+      "toStopId": "4212N1504",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "15.1"
+    },
+    {
+      "pathwayId": "4212L00685",
+      "fromStopId": "4212N1504",
+      "toStopId": "4212N1577",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "24.6"
+    },
+    {
+      "pathwayId": "4212L00687",
+      "fromStopId": "4212N1451",
+      "toStopId": "4212N1420",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "13.4"
+    },
+    {
+      "pathwayId": "4212L00693",
+      "fromStopId": "4212N1043",
+      "toStopId": "4212N1049",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00695",
+      "fromStopId": "4212N0951",
+      "toStopId": "4212N0946",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.5"
+    },
+    {
+      "pathwayId": "4212L00696",
+      "fromStopId": "4212N1065",
+      "toStopId": "4212N1071",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.4"
+    },
+    {
+      "pathwayId": "4212L00701",
+      "fromStopId": "4212N1031",
+      "toStopId": "4212N0981",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.7"
+    },
+    {
+      "pathwayId": "4212L00703",
+      "fromStopId": "4212N1044",
+      "toStopId": "4212N1049",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00705",
+      "fromStopId": "4212N1049",
+      "toStopId": "4212N1065",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.4"
+    },
+    {
+      "pathwayId": "4212L00707",
+      "fromStopId": "4212N1049",
+      "toStopId": "4212N1046",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00709",
+      "fromStopId": "4212N1049",
+      "toStopId": "4212N1054",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.4"
+    },
+    {
+      "pathwayId": "4212L00711",
+      "fromStopId": "4212N1532",
+      "toStopId": "4212N1633",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "30.3"
+    },
+    {
+      "pathwayId": "4212L00713",
+      "fromStopId": "4212N1651",
+      "toStopId": "4212N1633",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.2"
+    },
+    {
+      "pathwayId": "4212L00715",
+      "fromStopId": "4212N1633",
+      "toStopId": "4212N1686",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "18.5"
+    },
+    {
+      "pathwayId": "4212L00722",
+      "fromStopId": "4212N1199",
+      "toStopId": "4212N1172",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.5"
+    },
+    {
+      "pathwayId": "4212L00726",
+      "fromStopId": "4212N1691",
+      "toStopId": "4212N1729",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "14.0"
+    },
+    {
+      "pathwayId": "4212L00728",
+      "fromStopId": "4212N1639",
+      "toStopId": "4212N1578",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "18.2"
+    },
+    {
+      "pathwayId": "4212L00730",
+      "fromStopId": "4212N1435",
+      "toStopId": "4212N1406",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "11.8"
+    },
+    {
+      "pathwayId": "4212L00732",
+      "fromStopId": "4212N1061",
+      "toStopId": "4212N1065",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.1"
+    },
+    {
+      "pathwayId": "4212L00734",
+      "fromStopId": "4212N0972",
+      "toStopId": "4212N1054",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "32.0"
+    },
+    {
+      "pathwayId": "4212L00736",
+      "fromStopId": "4212N1054",
+      "toStopId": "4212N1071",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.3"
+    },
+    {
+      "pathwayId": "4212L00738",
+      "fromStopId": "4212N1071",
+      "toStopId": "4212N1206",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "31.5"
+    },
+    {
+      "pathwayId": "4212L00740",
+      "fromStopId": "4212N1686",
+      "toStopId": "4212N1691",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "2.0"
+    },
+    {
+      "pathwayId": "4212L00744",
+      "fromStopId": "4212N1651",
+      "toStopId": "4212N1699",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "15.4"
+    },
+    {
+      "pathwayId": "4212L00746",
+      "fromStopId": "4212N1425",
+      "toStopId": "4212N1519",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "22.6"
+    },
+    {
+      "pathwayId": "4212L00748",
+      "fromStopId": "4212N1188",
+      "toStopId": "4212N1230",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.3"
+    },
+    {
+      "pathwayId": "4212L00750",
+      "fromStopId": "4212N1230",
+      "toStopId": "4212N1213",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.9"
+    },
+    {
+      "pathwayId": "4212L00752",
+      "fromStopId": "4212N1230",
+      "toStopId": "4212N1326",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.1"
+    },
+    {
+      "pathwayId": "4212L00754",
+      "fromStopId": "4212N1326",
+      "toStopId": "4212N1406",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "13.9"
+    },
+    {
+      "pathwayId": "4212L00756",
+      "fromStopId": "4212N1406",
+      "toStopId": "4212N1425",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.4"
+    },
+    {
+      "pathwayId": "4212L00758",
+      "fromStopId": "4212N1526",
+      "toStopId": "4212N1519",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00760",
+      "fromStopId": "4212N1524",
+      "toStopId": "4212N1532",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.3"
+    },
+    {
+      "pathwayId": "4212L00762",
+      "fromStopId": "4212N1436",
+      "toStopId": "4212N1532",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "26.0"
+    },
+    {
+      "pathwayId": "4212L00765",
+      "fromStopId": "4212N1188",
+      "toStopId": "4212N1173",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.9"
+    },
+    {
+      "pathwayId": "4212L00767",
+      "fromStopId": "4212N1578",
+      "toStopId": "4212N1534",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "12.8"
+    },
+    {
+      "pathwayId": "4212L00771",
+      "fromStopId": "4212N1534",
+      "toStopId": "4212N1526",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L00777",
+      "fromStopId": "4212N0951",
+      "toStopId": "4212N0969",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.2"
+    },
+    {
+      "pathwayId": "4212L00780",
+      "fromStopId": "4212N1577",
+      "toStopId": "4212N1586",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L00788",
+      "fromStopId": "4212N1600",
+      "toStopId": "4212N1591",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.5"
+    },
+    {
+      "pathwayId": "4212L00790",
+      "fromStopId": "4212N1600",
+      "toStopId": "4212N1617",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.7"
+    },
+    {
+      "pathwayId": "4212L00792",
+      "fromStopId": "4212N1144",
+      "toStopId": "4212N1178",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "14.3"
+    },
+    {
+      "pathwayId": "4212L00794",
+      "fromStopId": "4212N1131",
+      "toStopId": "4212N1144",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.4"
+    },
+    {
+      "pathwayId": "4212L00796",
+      "fromStopId": "4212N1115",
+      "toStopId": "4212N1131",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.1"
+    },
+    {
+      "pathwayId": "4212L00798",
+      "fromStopId": "4212N1106",
+      "toStopId": "4212N1115",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00800",
+      "fromStopId": "4212N1084",
+      "toStopId": "4212N1106",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "14.5"
+    },
+    {
+      "pathwayId": "4212L00802",
+      "fromStopId": "4212N1238",
+      "toStopId": "4212N1276",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "14.3"
+    },
+    {
+      "pathwayId": "4212L00804",
+      "fromStopId": "4212N1222",
+      "toStopId": "4212N1238",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.3"
+    },
+    {
+      "pathwayId": "4212L00806",
+      "fromStopId": "4212N1204",
+      "toStopId": "4212N1222",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.1"
+    },
+    {
+      "pathwayId": "4212L00808",
+      "fromStopId": "4212N1192",
+      "toStopId": "4212N1204",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00810",
+      "fromStopId": "4212N1154",
+      "toStopId": "4212N1192",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "14.6"
+    },
+    {
+      "pathwayId": "4212L00812",
+      "fromStopId": "4212N1222",
+      "toStopId": "4212N1272",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.7"
+    },
+    {
+      "pathwayId": "4212L00814",
+      "fromStopId": "4212N1176",
+      "toStopId": "4212N1222",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.3"
+    },
+    {
+      "pathwayId": "4212L00816",
+      "fromStopId": "4212N1131",
+      "toStopId": "4212N1176",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00818",
+      "fromStopId": "4212N1096",
+      "toStopId": "4212N1131",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.0"
+    },
+    {
+      "pathwayId": "4212L00820",
+      "fromStopId": "4212N1289",
+      "toStopId": "4212N1342",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00822",
+      "fromStopId": "4212N1240",
+      "toStopId": "4212N1289",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.4"
+    },
+    {
+      "pathwayId": "4212L00824",
+      "fromStopId": "4212N1190",
+      "toStopId": "4212N1240",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00826",
+      "fromStopId": "4212N1150",
+      "toStopId": "4212N1190",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.5"
+    },
+    {
+      "pathwayId": "4212L00828",
+      "fromStopId": "4212N1168",
+      "toStopId": "4212N1176",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00830",
+      "fromStopId": "4212N1192",
+      "toStopId": "4212N1145",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.8"
+    },
+    {
+      "pathwayId": "4212L00832",
+      "fromStopId": "4212N1239",
+      "toStopId": "4212N1192",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.6"
+    },
+    {
+      "pathwayId": "4212L00834",
+      "fromStopId": "4212N1288",
+      "toStopId": "4212N1239",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.3"
+    },
+    {
+      "pathwayId": "4212L00836",
+      "fromStopId": "4212N1325",
+      "toStopId": "4212N1288",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.7"
+    },
+    {
+      "pathwayId": "4212L00838",
+      "fromStopId": "4212N1337",
+      "toStopId": "4212N1325",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.8"
+    },
+    {
+      "pathwayId": "4212L00840",
+      "fromStopId": "4212N1312",
+      "toStopId": "4212N1353",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.7"
+    },
+    {
+      "pathwayId": "4212L00842",
+      "fromStopId": "4212N1325",
+      "toStopId": "4212N1338",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00844",
+      "fromStopId": "4212N1216",
+      "toStopId": "4212N1226",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.7"
+    },
+    {
+      "pathwayId": "4212L00846",
+      "fromStopId": "4212N1227",
+      "toStopId": "4212N1178",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00848",
+      "fromStopId": "4212N1226",
+      "toStopId": "4212N1276",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00850",
+      "fromStopId": "4212N1312",
+      "toStopId": "4212N1300",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.6"
+    },
+    {
+      "pathwayId": "4212L00852",
+      "fromStopId": "4212N1250",
+      "toStopId": "4212N1224",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "11.5"
+    },
+    {
+      "pathwayId": "4212L00854",
+      "fromStopId": "4212N1267",
+      "toStopId": "4212N1250",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.2"
+    },
+    {
+      "pathwayId": "4212L00856",
+      "fromStopId": "4212N1280",
+      "toStopId": "4212N1267",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00858",
+      "fromStopId": "4212N1296",
+      "toStopId": "4212N1280",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "6.4"
+    },
+    {
+      "pathwayId": "4212L00860",
+      "fromStopId": "4212N1357",
+      "toStopId": "4212N1324",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "11.5"
+    },
+    {
+      "pathwayId": "4212L00862",
+      "fromStopId": "4212N1370",
+      "toStopId": "4212N1357",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.2"
+    },
+    {
+      "pathwayId": "4212L00864",
+      "fromStopId": "4212N1382",
+      "toStopId": "4212N1370",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00866",
+      "fromStopId": "4212N1398",
+      "toStopId": "4212N1382",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "6.4"
+    },
+    {
+      "pathwayId": "4212L00868",
+      "fromStopId": "4212N1246",
+      "toStopId": "4212N1300",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.3"
+    },
+    {
+      "pathwayId": "4212L00870",
+      "fromStopId": "4212N1204",
+      "toStopId": "4212N1246",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.7"
+    },
+    {
+      "pathwayId": "4212L00872",
+      "fromStopId": "4212N1152",
+      "toStopId": "4212N1204",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.8"
+    },
+    {
+      "pathwayId": "4212L00874",
+      "fromStopId": "4212N1115",
+      "toStopId": "4212N1152",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.6"
+    },
+    {
+      "pathwayId": "4212L00876",
+      "fromStopId": "4212N1267",
+      "toStopId": "4212N1315",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00878",
+      "fromStopId": "4212N1218",
+      "toStopId": "4212N1267",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.8"
+    },
+    {
+      "pathwayId": "4212L00880",
+      "fromStopId": "4212N1199",
+      "toStopId": "4212N1218",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "3.7"
+    },
+    {
+      "pathwayId": "4212L00882",
+      "fromStopId": "4212N1195",
+      "toStopId": "4212N1203",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00884",
+      "fromStopId": "4212N1241",
+      "toStopId": "4212N1232",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.8"
+    },
+    {
+      "pathwayId": "4212L00886",
+      "fromStopId": "4212N1315",
+      "toStopId": "4212N1302",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.2"
+    },
+    {
+      "pathwayId": "4212L00888",
+      "fromStopId": "4212N1328",
+      "toStopId": "4212N1315",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00890",
+      "fromStopId": "4212N1341",
+      "toStopId": "4212N1328",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.2"
+    },
+    {
+      "pathwayId": "4212L00892",
+      "fromStopId": "4212N1302",
+      "toStopId": "4212N1250",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00894",
+      "fromStopId": "4212N1357",
+      "toStopId": "4212N1302",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00896",
+      "fromStopId": "4212N1392",
+      "toStopId": "4212N1357",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00898",
+      "fromStopId": "4212N1144",
+      "toStopId": "4212N1194",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00900",
+      "fromStopId": "4212N1280",
+      "toStopId": "4212N1328",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00902",
+      "fromStopId": "4212N1232",
+      "toStopId": "4212N1280",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.8"
+    },
+    {
+      "pathwayId": "4212L00904",
+      "fromStopId": "4212N1421",
+      "toStopId": "4212N1449",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.0"
+    },
+    {
+      "pathwayId": "4212L00906",
+      "fromStopId": "4212N1322",
+      "toStopId": "4212N1421",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.2"
+    },
+    {
+      "pathwayId": "4212L00908",
+      "fromStopId": "4212N1505",
+      "toStopId": "4212N1506",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "0.0"
+    },
+    {
+      "pathwayId": "4212L00910",
+      "fromStopId": "4212N1569",
+      "toStopId": "4212N1517",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.3"
+    },
+    {
+      "pathwayId": "4212L00912",
+      "fromStopId": "4212N1621",
+      "toStopId": "4212N1569",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "16.4"
+    },
+    {
+      "pathwayId": "4212L00914",
+      "fromStopId": "4212N1517",
+      "toStopId": "4212N1524",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "8.0"
+    },
+    {
+      "pathwayId": "4212L00916",
+      "fromStopId": "4212N1564",
+      "toStopId": "4212N1569",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00918",
+      "fromStopId": "4212N1515",
+      "toStopId": "4212N1517",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00920",
+      "fromStopId": "4212N1446",
+      "toStopId": "4212N1439",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L00922",
+      "fromStopId": "4212N1517",
+      "toStopId": "4212N1446",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.3"
+    },
+    {
+      "pathwayId": "4212L00924",
+      "fromStopId": "4212N1615",
+      "toStopId": "4212N1621",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.3"
+    },
+    {
+      "pathwayId": "4212L00926",
+      "fromStopId": "4212N1435",
+      "toStopId": "4212N1449",
+      "pathwayMode": "6",
+      "isBidirectional": "1",
+      "length": "6.3"
+    },
+    {
+      "pathwayId": "4212L00928",
+      "fromStopId": "4212N1432",
+      "toStopId": "4212N1421",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00930",
+      "fromStopId": "4212N1501",
+      "toStopId": "4212N1506",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.3"
+    },
+    {
+      "pathwayId": "4212L00932",
+      "fromStopId": "4212N1538",
+      "toStopId": "4212N1548",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00934",
+      "fromStopId": "4212N1512",
+      "toStopId": "4212N1538",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "10.2"
+    },
+    {
+      "pathwayId": "4212L00936",
+      "fromStopId": "4212N1506",
+      "toStopId": "4212N1512",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.0"
+    },
+    {
+      "pathwayId": "4212L00938",
+      "fromStopId": "4212N1449",
+      "toStopId": "4212N1505",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "12.2"
+    },
+    {
+      "pathwayId": "4212L00940",
+      "fromStopId": "4212N1331",
+      "toStopId": "4212N1322",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.1"
+    },
+    {
+      "pathwayId": "4212L00942",
+      "fromStopId": "4212N1328",
+      "toStopId": "4212N1382",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.9"
+    },
+    {
+      "pathwayId": "4212L00944",
+      "fromStopId": "4212N1227",
+      "toStopId": "4212N1240",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.8"
+    },
+    {
+      "pathwayId": "4212L00946",
+      "fromStopId": "4212N1194",
+      "toStopId": "4212N1238",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.4"
+    },
+    {
+      "pathwayId": "4212L00948",
+      "fromStopId": "4212N1224",
+      "toStopId": "4212N1324",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.4"
+    },
+    {
+      "pathwayId": "4212L00950",
+      "fromStopId": "4212N1250",
+      "toStopId": "4212N1203",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.8"
+    },
+    {
+      "pathwayId": "4212L00952",
+      "fromStopId": "4212N1302",
+      "toStopId": "4212N1294",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L00954",
+      "fromStopId": "4212N1232",
+      "toStopId": "4212N1218",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00956",
+      "fromStopId": "4212N1203",
+      "toStopId": "4212N1218",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.2"
+    },
+    {
+      "pathwayId": "4212L00958",
+      "fromStopId": "4212N1315",
+      "toStopId": "4212N1370",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.9"
+    },
+    {
+      "pathwayId": "4212L00960",
+      "fromStopId": "4212N1145",
+      "toStopId": "4212N1152",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L00962",
+      "fromStopId": "4212N1127",
+      "toStopId": "4212N1145",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.0"
+    },
+    {
+      "pathwayId": "4212L00964",
+      "fromStopId": "4212N1239",
+      "toStopId": "4212N1246",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00966",
+      "fromStopId": "4212N1300",
+      "toStopId": "4212N1338",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.7"
+    },
+    {
+      "pathwayId": "4212L00968",
+      "fromStopId": "4212N1133",
+      "toStopId": "4212N1142",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.9"
+    },
+    {
+      "pathwayId": "4212L00970",
+      "fromStopId": "4212N1121",
+      "toStopId": "4212N1142",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.0"
+    },
+    {
+      "pathwayId": "4212L00972",
+      "fromStopId": "4212N1121",
+      "toStopId": "4212N1120",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.9"
+    },
+    {
+      "pathwayId": "4212L00974",
+      "fromStopId": "4212N1113",
+      "toStopId": "4212N1121",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.8"
+    },
+    {
+      "pathwayId": "4212L00976",
+      "fromStopId": "4212N1316",
+      "toStopId": "4212N1289",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.6"
+    },
+    {
+      "pathwayId": "4212L00978",
+      "fromStopId": "4212N1324",
+      "toStopId": "4212N1316",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.2"
+    },
+    {
+      "pathwayId": "4212L00980",
+      "fromStopId": "4212N1215",
+      "toStopId": "4212N1190",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.5"
+    },
+    {
+      "pathwayId": "4212L00982",
+      "fromStopId": "4212N1224",
+      "toStopId": "4212N1215",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.3"
+    },
+    {
+      "pathwayId": "4212L00984",
+      "fromStopId": "4212N1300",
+      "toStopId": "4212N1288",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.6"
+    },
+    {
+      "pathwayId": "4212L00986",
+      "fromStopId": "4212N1374",
+      "toStopId": "4212N1372",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.3"
+    },
+    {
+      "pathwayId": "4212L00988",
+      "fromStopId": "4212N1394",
+      "toStopId": "4212N1374",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.5"
+    },
+    {
+      "pathwayId": "4212L00990",
+      "fromStopId": "4212N1327",
+      "toStopId": "4212N1342",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.8"
+    },
+    {
+      "pathwayId": "4212L00992",
+      "fromStopId": "4212N1321",
+      "toStopId": "4212N1327",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.5"
+    },
+    {
+      "pathwayId": "4212L00994",
+      "fromStopId": "4212N1327",
+      "toStopId": "4212N1313",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L00996",
+      "fromStopId": "4212N1276",
+      "toStopId": "4212N1327",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "9.1"
+    },
+    {
+      "pathwayId": "4212L00998",
+      "fromStopId": "4212N1178",
+      "toStopId": "4212N1142",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.8"
+    },
+    {
+      "pathwayId": "4212L01000",
+      "fromStopId": "4212N1229",
+      "toStopId": "4212N1226",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.4"
+    },
+    {
+      "pathwayId": "4212L01002",
+      "fromStopId": "4212N1226",
+      "toStopId": "4212N1227",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "0.1"
+    },
+    {
+      "pathwayId": "4212L01004",
+      "fromStopId": "4212N1338",
+      "toStopId": "4212N1353",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.6"
+    },
+    {
+      "pathwayId": "4212L01006",
+      "fromStopId": "4212N1323",
+      "toStopId": "4212N1337",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.9"
+    },
+    {
+      "pathwayId": "4212L01008",
+      "fromStopId": "4212N1239",
+      "toStopId": "4212N1233",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.2"
+    },
+    {
+      "pathwayId": "4212L01010",
+      "fromStopId": "4212N1220",
+      "toStopId": "4212N1239",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.7"
+    },
+    {
+      "pathwayId": "4212L01012",
+      "fromStopId": "4212N1209",
+      "toStopId": "4212N1220",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.1"
+    },
+    {
+      "pathwayId": "4212L01014",
+      "fromStopId": "4212N1364",
+      "toStopId": "4212N1358",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L01016",
+      "fromStopId": "4212N1365",
+      "toStopId": "4212N1364",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.4"
+    },
+    {
+      "pathwayId": "4212L01018",
+      "fromStopId": "4212N1374",
+      "toStopId": "4212N1365",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "2.6"
+    },
+    {
+      "pathwayId": "4212L01020",
+      "fromStopId": "4212N1353",
+      "toStopId": "4212N1365",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.7"
+    },
+    {
+      "pathwayId": "4212L01022",
+      "fromStopId": "4212N1306",
+      "toStopId": "4212N1312",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "3.6"
+    },
+    {
+      "pathwayId": "4212L01024",
+      "fromStopId": "4212N1266",
+      "toStopId": "4212N1272",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "1.8"
+    },
+    {
+      "pathwayId": "4212L01026",
+      "fromStopId": "4212N1145",
+      "toStopId": "4212N1106",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "8.7"
+    },
+    {
+      "pathwayId": "4212L01028",
+      "fromStopId": "4212N1176",
+      "toStopId": "4212N1194",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.4"
+    },
+    {
+      "pathwayId": "4212L01030",
+      "fromStopId": "4212N1438",
+      "toStopId": "4212N1447",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "4.1"
+    },
+    {
+      "pathwayId": "4212L01032",
+      "fromStopId": "4212N1342",
+      "toStopId": "4212N1438",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "17.0"
+    },
+    {
+      "pathwayId": "4212L01034",
+      "fromStopId": "4212N1272",
+      "toStopId": "4212N1306",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.7"
+    },
+    {
+      "pathwayId": "4212L01036",
+      "fromStopId": "4212N1088",
+      "toStopId": "4212N1096",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "6.5"
+    },
+    {
+      "pathwayId": "4212L01038",
+      "fromStopId": "4212N1276",
+      "toStopId": "4212N1289",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.8"
+    },
+    {
+      "pathwayId": "4212L01040",
+      "fromStopId": "4212N1178",
+      "toStopId": "4212N1190",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.8"
+    },
+    {
+      "pathwayId": "4212L01042",
+      "fromStopId": "4212N1138",
+      "toStopId": "4212N1145",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "5.1"
+    },
+    {
+      "pathwayId": "4212L01044",
+      "fromStopId": "4212N1334",
+      "toStopId": "4212N1337",
+      "pathwayMode": "1",
+      "isBidirectional": "1",
+      "length": "7.4"
+    },
+    {
+      "pathwayId": "4212L01046",
+      "fromStopId": "4212N1040",
+      "toStopId": "4212N1027",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.7"
+    },
+    {
+      "pathwayId": "4212L01048",
+      "fromStopId": "4212N1064",
+      "toStopId": "4212N1058",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.6"
+    },
+    {
+      "pathwayId": "4212L01050",
+      "fromStopId": "4212N1105",
+      "toStopId": "4212N1087",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.6"
+    },
+    {
+      "pathwayId": "4212L01052",
+      "fromStopId": "4212N1191",
+      "toStopId": "4212N1157",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.6"
+    },
+    {
+      "pathwayId": "4212L01054",
+      "fromStopId": "4212N1116",
+      "toStopId": "4212N1136",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "10.8"
+    },
+    {
+      "pathwayId": "4212L01056",
+      "fromStopId": "4212N1063",
+      "toStopId": "4212N1077",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.3"
+    },
+    {
+      "pathwayId": "4212L01058",
+      "fromStopId": "4212N1088",
+      "toStopId": "4212N1075",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "13.0"
+    },
+    {
+      "pathwayId": "4212L01060",
+      "fromStopId": "4212N1138",
+      "toStopId": "4212N1114",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01062",
+      "fromStopId": "4212N1233",
+      "toStopId": "4212N1201",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01064",
+      "fromStopId": "4212N1323",
+      "toStopId": "4212N1291",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "13.0"
+    },
+    {
+      "pathwayId": "4212L01066",
+      "fromStopId": "4212N1372",
+      "toStopId": "4212N1403",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.7"
+    },
+    {
+      "pathwayId": "4212L01068",
+      "fromStopId": "4212N1313",
+      "toStopId": "4212N1283",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01070",
+      "fromStopId": "4212N1216",
+      "toStopId": "4212N1186",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01072",
+      "fromStopId": "4212N1133",
+      "toStopId": "4212N1107",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01074",
+      "fromStopId": "4212N1120",
+      "toStopId": "4212N1101",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.0"
+    },
+    {
+      "pathwayId": "4212L01075",
+      "fromStopId": "4212N1094",
+      "toStopId": "4212N1113",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.1"
+    },
+    {
+      "pathwayId": "4212L01076",
+      "fromStopId": "4212N1195",
+      "toStopId": "4212N1161",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "13.0"
+    },
+    {
+      "pathwayId": "4212L01078",
+      "fromStopId": "4212N1294",
+      "toStopId": "4212N1263",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01080",
+      "fromStopId": "4212N1392",
+      "toStopId": "4212N1363",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.5"
+    },
+    {
+      "pathwayId": "4212L01082",
+      "fromStopId": "4212N1447",
+      "toStopId": "4212N1477",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.9"
+    },
+    {
+      "pathwayId": "4212L01084",
+      "fromStopId": "4212N1331",
+      "toStopId": "4212N1367",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.8"
+    },
+    {
+      "pathwayId": "4212L01086",
+      "fromStopId": "4212N1432",
+      "toStopId": "4212N1460",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.7"
+    },
+    {
+      "pathwayId": "4212L01088",
+      "fromStopId": "4212N1548",
+      "toStopId": "4212N1551",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.6"
+    },
+    {
+      "pathwayId": "4212L01090",
+      "fromStopId": "4212N1615",
+      "toStopId": "4212N1598",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "13.0"
+    },
+    {
+      "pathwayId": "4212L01092",
+      "fromStopId": "4212N1564",
+      "toStopId": "4212N1544",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.7"
+    },
+    {
+      "pathwayId": "4212L01094",
+      "fromStopId": "4212N1515",
+      "toStopId": "4212N1499",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.7"
+    },
+    {
+      "pathwayId": "4212L01096",
+      "fromStopId": "4212N1439",
+      "toStopId": "4212N1410",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "13.0"
+    },
+    {
+      "pathwayId": "4212L01098",
+      "fromStopId": "4212N1168",
+      "toStopId": "4212N1160",
+      "pathwayMode": "5",
+      "isBidirectional": "1",
+      "length": "2.9"
+    },
+    {
+      "pathwayId": "4212L01100",
+      "fromStopId": "4212N1266",
+      "toStopId": "4212N1261",
+      "pathwayMode": "5",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L01102",
+      "fromStopId": "4212N1358",
+      "toStopId": "4212N1349",
+      "pathwayMode": "5",
+      "isBidirectional": "1",
+      "length": "2.8"
+    },
+    {
+      "pathwayId": "4212L01104",
+      "fromStopId": "4212N1150",
+      "toStopId": "4212N1139",
+      "pathwayMode": "5",
+      "isBidirectional": "1",
+      "length": "2.1"
+    },
+    {
+      "pathwayId": "4212L01106",
+      "fromStopId": "4212N1044",
+      "toStopId": "4212N1011",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "12.0"
+    },
+    {
+      "pathwayId": "4212L01108",
+      "fromStopId": "4212N1501",
+      "toStopId": "4212N1480",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.4"
+    },
+    {
+      "pathwayId": "4212L01110",
+      "fromStopId": "4212N1341",
+      "toStopId": "4212N1371",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.5"
+    },
+    {
+      "pathwayId": "4212L01112",
+      "fromStopId": "4212N1241",
+      "toStopId": "4212N1270",
+      "pathwayMode": "2",
+      "isBidirectional": "1",
+      "length": "11.3"
+    },
+    {
+      "pathwayId": "4212L01117",
+      "fromStopId": "4212N1307",
+      "toStopId": "4212N1334",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.0"
+    },
+    {
+      "pathwayId": "4212L01118",
+      "fromStopId": "4212N1180",
+      "toStopId": "4212N1209",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.0"
+    },
+    {
+      "pathwayId": "4212L01119",
+      "fromStopId": "4212N1104",
+      "toStopId": "4212N1127",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.1"
+    },
+    {
+      "pathwayId": "4212L01120",
+      "fromStopId": "4212N1416",
+      "toStopId": "4212N1394",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.1"
+    },
+    {
+      "pathwayId": "4212L01121",
+      "fromStopId": "4212N1295",
+      "toStopId": "4212N1321",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.0"
+    },
+    {
+      "pathwayId": "4212L01122",
+      "fromStopId": "4212N1202",
+      "toStopId": "4212N1229",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "11.1"
+    },
+    {
+      "pathwayId": "4212L01123",
+      "fromStopId": "4212N1019",
+      "toStopId": "4212N1043",
+      "pathwayMode": "4",
+      "isBidirectional": "1",
+      "length": "9.5"
+    }
+  ]
+}

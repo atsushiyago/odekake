@@ -33,20 +33,25 @@ export function isGroundExitNode(
   return false
 }
 
+const jrEastStationIds = new Set(['4229', '4205', '4208', '4212', '4224', '4230'])
+
 /**
  * Extracts and groups all surface entrance-exit nodes in a station graph by their formatted exit label.
  * Multiple nodes sharing the same exit name (e.g. separate stairs vs elevator nodes for the same exit)
  * are consolidated into a single group.
- * Underground connection boundaries (level < 0 without course verification) are filtered out.
+ * Underground connection boundaries (level < 0 without course verification) are filtered out for subway lines,
+ * while JR East station ticket gate boundaries (excluding internal Shinkansen transfer gates) are preserved.
  */
 export function getStationExitGroups(
   graph: IndoorGraph,
   preferredExitId?: string | string[],
 ): AvailableExitGroup[] {
+  const isJrEastStation = jrEastStationIds.has(graph.stationId)
   const exits = [...graph.nodes.values()].filter(
     (node) =>
       node.kind === 'entrance-exit' &&
-      isGroundExitNode(node.levelIndex, node.id, preferredExitId),
+      !(node.name ?? '').includes('乗換改札') &&
+      (isJrEastStation || isGroundExitNode(node.levelIndex, node.id, preferredExitId)),
   )
   const groupMap = new Map<
     string,
