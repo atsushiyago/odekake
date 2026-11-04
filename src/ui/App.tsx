@@ -530,11 +530,13 @@ function IndoorStationPaper({
   connection,
   departurePlatform,
   backRoute,
+  backContent,
 }: {
   paperModel: HomeToGateGuideModel;
   connection?: ArrivalPlatformConnection;
   departurePlatform?: OfficialDeparturePlatformAssignment;
   backRoute?: WalkingRoute;
+  backContent?: ReactNode;
 }) {
   const { guide: presentation, sections, arrivalFloorLabel: corroboratedFloor, carPositionLabel } = paperModel;
   const trainJourney = connection
@@ -617,20 +619,25 @@ function IndoorStationPaper({
     pageBlocks: PaginationBlock[],
     extra?: WalkingRoute,
     back = false,
-  ) => (
-    <article className="paper arrival-station-paper front-page">
-      <div className="arrival-sections">
-        {pageBlocks.map((block) => (
-          <div key={block.id}>{block.node}</div>
-        ))}
-      </div>
-      {extra && (
-        <section className="pagination-outdoor">
-          <OutdoorWalkingContent route={extra} />
-        </section>
-      )}
-    </article>
-  );
+  ) => {
+    if (back && backContent) {
+      return backContent;
+    }
+    return (
+      <article className="paper arrival-station-paper front-page">
+        <div className="arrival-sections">
+          {pageBlocks.map((block) => (
+            <div key={block.id}>{block.node}</div>
+          ))}
+        </div>
+        {extra && (
+          <section className="pagination-outdoor">
+            <OutdoorWalkingContent route={extra} />
+          </section>
+        )}
+      </article>
+    );
+  };
   return (
     <PaginatedPaper
       blocks={blocks}
@@ -1895,16 +1902,11 @@ export default function App() {
       <section className="print-area">
         <div className="preview-pages" ref={previewPagesRef}>
           {itineraryGuide.ok ? (
-            <>
-              <PaperPreviewFrame label="A4表面">
-                {' '}
-                <IndoorStationPaper
-                  paperModel={itineraryGuide.paperModel}
-                  connection={itineraryGuide.connection}
-                  departurePlatform={itineraryGuide.departurePlatform}
-                />
-              </PaperPreviewFrame>
-              <PaperPreviewFrame label="A4裏面">
+            <IndoorStationPaper
+              paperModel={itineraryGuide.paperModel}
+              connection={itineraryGuide.connection}
+              departurePlatform={itineraryGuide.departurePlatform}
+              backContent={
                 <AlternateExitPaper
                   stationName={course.arrivalStationName}
                   exitLabel={itineraryGuide.activeExitLabel}
@@ -1919,8 +1921,8 @@ export default function App() {
                       : undefined
                   }
                 />
-              </PaperPreviewFrame>
-            </>
+              }
+            />
           ) : (
             <>
               <PaperPreviewFrame label="A4表面">
