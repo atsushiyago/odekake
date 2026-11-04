@@ -1813,7 +1813,7 @@ export default function App() {
                     {item.label}
                   </span>
                   <small className="course-option-station">
-                    （{item.arrivalStationName}駅）
+                    （{item.arrivalStationId === '4208' ? 'JR新宿' : item.arrivalStationName}駅）
                   </small>
                 </button>
               ))}
@@ -1824,7 +1824,11 @@ export default function App() {
               <div className="exit-selector-header">
                 <span className="exit-selector-title">地上出口</span>
                 <span className="exit-selector-hint">
-                  （選んだ出口に応じてホームからの構内経路が切り替わります。※都営管轄の地上出口のみ掲載）
+                  （選んだ出口に応じてホームからの構内経路が切り替わります。
+                  {arrivalDataset?.station.operator === '東日本旅客鉄道'
+                    ? '※JR東日本管轄の改札・出口のみ掲載'
+                    : '※都営管轄の地上出口のみ掲載'}
+                  ）
                 </span>
               </div>
               <div className="exit-row">

@@ -108,6 +108,31 @@ export const jrEastYamanoteWeekdayTrips: ScheduledRailLeg[] = [
       retrievedAt: '2026-11-05',
     },
   },
+  {
+    tripId: '4200601G',
+    routeId: '42',
+    routeName: '山手線',
+    serviceDay: 'weekday',
+    directionId: '0',
+    headsign: '新宿・池袋方面',
+    from: {
+      stationId: '4205',
+      stationName: '渋谷',
+      departureTime: '07:06',
+      stopSequence: 5,
+    },
+    to: {
+      stationId: '4208',
+      stationName: '新宿',
+      arrivalTime: '07:13',
+      stopSequence: 8,
+    },
+    source: {
+      url: 'https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip',
+      feedVersion: '20261025',
+      retrievedAt: '2026-11-05',
+    },
+  },
 ]
 
 export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
@@ -166,6 +191,37 @@ export const shinagawaOfficialPlatformAssignments: OfficialPlatformAssignment[] 
       url: 'https://www.jreast.co.jp/estation/stations/788.html',
       checkedAt: '2026-11-05',
       description: 'JR東日本公式：品川駅 3番線（山手線外回り・渋谷・新宿方面）ホーム',
+    },
+  },
+]
+
+export const shinjukuJrOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
+  {
+    stationId: '4208',
+    platformId: '4208P15',
+    routeId: '42',
+    directionId: '0',
+    headsign: '新宿・池袋方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/866.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：新宿駅 15番線（山手線外回り・池袋・上野方面）ホーム',
+    },
+  },
+]
+
+export const shibuyaOfficialDeparturePlatformAssignments: OfficialDeparturePlatformAssignment[] = [
+  {
+    stationId: '4205',
+    platformId: '4205P1',
+    platformCode: '1',
+    routeId: '42',
+    directionId: '0',
+    headsign: '新宿・池袋方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/808.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：渋谷駅 1番線（山手線外回り・新宿・池袋方面）ホーム',
     },
   },
 ]
@@ -378,6 +434,44 @@ export const shinagawaToAquaParkWalkingRoute: WalkingRoute = buildPublishedOutdo
     source: {
       provider: 'OpenStreetMap',
       endpoint: 'https://www.aqua-park.jp/aqua/access/',
+      acquiredAt: '2026-11-05',
+    },
+  },
+})
+
+export const shinjukuJrToShinjukuGyoenWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
+  id: 'shinjuku-jr-to-shinjuku-gyoen',
+  from: {
+    label: '新宿駅 東南改札',
+    latitude: 35.689703,
+    longitude: 139.701309,
+  },
+  to: {
+    label: '新宿御苑（新宿門）',
+    latitude: 35.688163,
+    longitude: 139.710051,
+  },
+  officialMinutes: 10,
+  sourceUrl: 'https://fng.or.jp/shinjuku/access/',
+  retrievedAt: '2026-11-05',
+  stationExitConnection: {
+    stationId: '4208',
+    exitNodeId: '4208N4960',
+    exitLabel: '東南改札',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [139.701309, 35.689703],
+      [139.7035, 35.6893],
+      [139.7065, 35.6888],
+      [139.710051, 35.688163],
+    ],
+    distanceMeters: 750,
+    durationSeconds: 600,
+    source: {
+      provider: 'OpenStreetMap',
+      endpoint: 'https://fng.or.jp/shinjuku/access/',
       acquiredAt: '2026-11-05',
     },
   },

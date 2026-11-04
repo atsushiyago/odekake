@@ -3,6 +3,7 @@ import takanawaExtraction from '../data/fixtures/jr2026-takanawa-gateway-gtfs-pa
 import shibuyaExtraction from '../data/fixtures/jr2026-shibuya-gtfs-pathways.json'
 import ikebukuroExtraction from '../data/fixtures/jr2026-ikebukuro-gtfs-pathways.json'
 import shinagawaExtraction from '../data/fixtures/jr2026-shinagawa-gtfs-pathways.json'
+import shinjukuExtraction from '../data/fixtures/jr2026-shinjuku-gtfs-pathways.json'
 import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../data/adapters/gtfsPathwaysAdapter'
 import { buildGtfsStationGuideFromRoute, buildIndoorGraph } from './indoorRouting'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
@@ -393,5 +394,90 @@ describe('JR East Shinagawa Station', () => {
     expect(aquaParkCourse).toBeDefined()
     expect(aquaParkCourse?.label).toBe('アクアパーク品川')
     expect(aquaParkCourse?.arrivalStationId).toBe('4230')
+  })
+})
+
+describe('JR East Shinjuku Station', () => {
+  const station: StationRef = {
+    id: '4208',
+    name: '新宿',
+    operator: '東日本旅客鉄道',
+    line: '山手線',
+  }
+
+  const rawData = extractGtfsPathwaysStation(
+    shinjukuExtraction as GtfsPathwaysFeed,
+    { id: '4208', name: '新宿' }
+  )
+
+  it('extracts exit groups and builds paper guide model for every exit of JR Shinjuku', () => {
+    const graph = buildIndoorGraph(rawData)
+    const groups = getStationExitGroups(graph)
+    console.log('JR Shinjuku exit groups:', groups.map(g => ({ rawName: g.rawName, label: g.label, nodeIds: g.nodeIds })))
+    expect(groups.length).toBe(10)
+
+    for (const group of groups) {
+      const elderlyScore = findBestElderlyRoute(graph, '4208P15', group.nodeIds)
+      expect(elderlyScore).not.toBeNull()
+      if (!elderlyScore) continue
+
+      const stationGuide = buildGtfsStationGuideFromRoute(
+        graph,
+        station,
+        { platformId: '4208P15', exitNodeId: elderlyScore.exitId },
+        elderlyScore.route,
+      )
+      expect(stationGuide.ok).toBe(true)
+      if (!stationGuide.ok) continue
+
+      const model = buildHomeToGateGuideModel({
+        guide: stationGuide.guide,
+        graph,
+        platformId: '4208P15',
+        exitNodeIds: group.nodeIds,
+        preferredExitNodeIds: ['4208N4960', '4208N4987'],
+        selectedRoute: elderlyScore.route,
+        arrivalPlatformFloor: { label: '1階', levelIndex: 1 },
+        humanizeWalkDistance: true,
+        humanizeGateDirection: true,
+      })
+
+      console.log(
+        `JR Shinjuku [${group.rawName}] (${elderlyScore.exitId}) Car: ${model.carPositionLabel}`,
+        model.sections.map(sec => ({ title: sec.title, steps: sec.steps.map(s => `${s.number}. ${s.step.instruction}`) }))
+      )
+      expect(model.guide.steps.length).toBeGreaterThan(0)
+      expect(model.carPositionLabel).toMatch(/\d+号車付近/)
+    }
+  })
+
+  it('finds direct Yamanote Line scheduled journey from Shibuya to JR Shinjuku without colliding with Toei Shinjuku', () => {
+    const jrResult = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: '渋谷',
+      destinationName: '新宿',
+      departureDate: '2026-09-21',
+      departureTime: '07:00',
+    })
+    expect(jrResult.ok).toBe(true)
+    if (!jrResult.ok) return
+    expect(jrResult.leg.tripId).toBe('4200601G')
+    expect(jrResult.leg.from.departureTime).toBe('07:06')
+    expect(jrResult.leg.to.arrivalTime).toBe('07:13')
+    expect(jrResult.leg.to.stationId).toBe('4208')
+
+    const toeiResult = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: '代々木',
+      destinationName: '新宿',
+      departureDate: '2026-09-21',
+      departureTime: '07:00',
+    })
+    expect(toeiResult.ok).toBe(true)
+    if (!toeiResult.ok) return
+    expect(toeiResult.leg.to.stationId).toBe('428')
+
+    const gyoenCourse = outingCoursePresetById.get('shibuya-shinjuku-gyoen')
+    expect(gyoenCourse).toBeDefined()
+    expect(gyoenCourse?.label).toBe('新宿御苑')
+    expect(gyoenCourse?.arrivalStationId).toBe('4208')
   })
 })
