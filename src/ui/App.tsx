@@ -1323,7 +1323,7 @@ export default function App() {
   const defaultCourse = outingCoursePresets[0];
   const debugEnabled = new URLSearchParams(window.location.search).get('debug') === '1';
   const [selectedCourseId, setSelectedCourseId] = useState(defaultCourse.id);
-  const [selectedOperator, setSelectedOperator] = useState<'oedo' | 'jr-east'>('oedo');
+  const [selectedOperator, setSelectedOperator] = useState<'oedo' | 'jr-east' | null>(null);
   const [lastCourseByOperator, setLastCourseByOperator] = useState<{
     oedo: string;
     'jr-east': string;
@@ -1812,72 +1812,99 @@ export default function App() {
       {debugEnabled && <IndoorPoc />}
       <section className="editor no-print course-picker">
         <div>
-          <div className="course-selector">
-            <div
-              className="operator-tabs"
-              role="tablist"
-              aria-label="路線・事業者の選択"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedOperator === 'oedo'}
-                className={
-                  selectedOperator === 'oedo'
-                    ? 'operator-tab operator-tab-oedo is-selected'
-                    : 'operator-tab operator-tab-oedo'
-                }
-                onClick={() => selectOperator('oedo')}
-              >
-                <span className="operator-tab-badge">都営</span>
-                <span className="operator-tab-label">都営地下鉄大江戸線</span>
-                <small className="operator-tab-count">全{oedoCoursePresets.length}コース</small>
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedOperator === 'jr-east'}
-                className={
-                  selectedOperator === 'jr-east'
-                    ? 'operator-tab operator-tab-jr is-selected'
-                    : 'operator-tab operator-tab-jr'
-                }
-                onClick={() => selectOperator('jr-east')}
-              >
-                <span className="operator-tab-badge">JR</span>
-                <span className="operator-tab-label">JR東日本（山手線主要駅）</span>
-                <small className="operator-tab-count">全{jrEastCoursePresets.length}コース</small>
-              </button>
-            </div>
-            <span className="course-selector-title">コース一覧</span>
-            <div
-              className="course-options"
-              role="group"
-              aria-label="おでかけコース"
-            >
-              {visibleCoursePresets.map((item) => (
+          {selectedOperator === null ? (
+            <div className="operator-select-portal">
+              <div className="operator-portal-heading">
+                <span className="operator-portal-badge">路線を選ぶ</span>
+                <h2 className="operator-portal-title">おでかけする路線を選んでください</h2>
+                <p className="operator-portal-sub">駅の改札から地上出口までの迷わないA4ガイドを作成します</p>
+              </div>
+              <div className="operator-portal-cards">
                 <button
-                  key={item.id}
-                  data-course-id={item.id}
                   type="button"
-                  className={
-                    item.id === course.id
-                      ? 'course-option is-selected'
-                      : 'course-option'
-                  }
-                  aria-pressed={item.id === course.id}
-                  onClick={() => selectCourse(item.id)}
+                  className="operator-portal-card"
+                  onClick={() => selectOperator('oedo')}
                 >
-                  <span className="course-option-destination">
-                    {item.label}
-                  </span>
-                  <small className="course-option-station">
-                    （{item.arrivalStationId === '4208' ? 'JR新宿' : item.arrivalStationName}駅）
-                  </small>
+                  <div className="operator-portal-card-header">
+                    <span className="operator-portal-card-badge">都営地下鉄</span>
+                    <span className="operator-portal-card-count">全12コース</span>
+                  </div>
+                  <div className="operator-portal-card-name">大江戸線</div>
+                  <div className="operator-portal-card-desc">
+                    東京タワー・国立競技場・六本木・麻布十番・新宿など
+                  </div>
+                  <div className="operator-portal-card-action">コース一覧を開く →</div>
                 </button>
-              ))}
+
+                <button
+                  type="button"
+                  className="operator-portal-card"
+                  onClick={() => selectOperator('jr-east')}
+                >
+                  <div className="operator-portal-card-header">
+                    <span className="operator-portal-card-badge">JR東日本</span>
+                    <span className="operator-portal-card-count">全6駅</span>
+                  </div>
+                  <div className="operator-portal-card-name">山手線 主要駅</div>
+                  <div className="operator-portal-card-desc">
+                    渋谷・新宿・東京・池袋・品川・高輪ゲートウェイ
+                  </div>
+                  <div className="operator-portal-card-action">コース一覧を開く →</div>
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="course-selector">
+              <div className="operator-selected-header">
+                <div className="operator-selected-info">
+                  <span className="operator-selected-badge">
+                    {selectedOperator === 'jr-east' ? 'JR東日本' : '都営地下鉄'}
+                  </span>
+                  <span className="operator-selected-name">
+                    {selectedOperator === 'jr-east' ? '山手線主要駅' : '大江戸線'}
+                  </span>
+                  <small className="operator-selected-count">
+                    （全{visibleCoursePresets.length}コース）
+                  </small>
+                </div>
+                <button
+                  type="button"
+                  className="operator-change-btn"
+                  onClick={() => setSelectedOperator(null)}
+                >
+                  ↩ 路線を選び直す
+                </button>
+              </div>
+              <span className="course-selector-title">コース一覧</span>
+              <div
+                className="course-options"
+                role="group"
+                aria-label="おでかけコース"
+              >
+                {visibleCoursePresets.map((item) => (
+                  <button
+                    key={item.id}
+                    data-course-id={item.id}
+                    type="button"
+                    className={
+                      item.id === course.id
+                        ? 'course-option is-selected'
+                        : 'course-option'
+                    }
+                    aria-pressed={item.id === course.id}
+                    onClick={() => selectCourse(item.id)}
+                  >
+                    <span className="course-option-destination">
+                      {item.label}
+                    </span>
+                    <small className="course-option-station">
+                      （{item.arrivalStationId === '4208' ? 'JR新宿' : item.arrivalStationName}駅）
+                    </small>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {exitGroups.length > 0 && (
             <div className="exit-selector">
               <div className="exit-selector-header">

@@ -581,84 +581,176 @@
   }
 }
 
-/* Operator Selector Tabs (Toei Oedo Line vs JR East) */
-.operator-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 6px;
+/* Plan B: Portal & Operator Selector Flow */
+.operator-select-portal {
+  padding: 8px 4px 12px;
 }
-.operator-tab {
-  grid-column: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 16px;
-  border: 2px solid #cbd5e1;
-  border-radius: 10px;
-  background: #f8fafc;
-  color: #334155;
-  font: inherit;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.15s ease;
+.operator-portal-heading {
+  margin-bottom: 12px;
 }
-.operator-tab:hover {
-  border-color: #94a3b8;
-  background: #f1f5f9;
-}
-.operator-tab-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3px 9px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  background: #e2e8f0;
-  color: #475569;
-}
-.operator-tab-label {
-  font-size: 16px;
-  font-weight: 900;
-}
-.operator-tab-count {
-  font-size: 12px;
-  font-weight: 700;
-  color: #64748b;
-  background: #fff;
+.operator-portal-badge {
+  display: inline-block;
   padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid #cbd5e1;
-}
-.operator-tab.is-selected {
-  border-color: #d4482f;
   background: #fff8f5;
   color: #d4482f;
-  box-shadow: 0 0 0 1px #d4482f;
+  border: 1px solid #d4482f;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
 }
-.operator-tab.is-selected .operator-tab-badge {
+.operator-portal-title {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+}
+.operator-portal-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
+}
+.operator-portal-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.operator-portal-card {
+  grid-column: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+.operator-portal-card:hover {
+  border-color: #d4482f;
+  background: #fffdfc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 72, 47, 0.12);
+}
+.operator-portal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.operator-portal-card-badge {
+  font-size: 12px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+}
+.operator-portal-card:hover .operator-portal-card-badge {
   background: #d4482f;
   color: #ffffff;
 }
-.operator-tab.is-selected .operator-tab-count {
-  border-color: #fca5a5;
+.operator-portal-card-count {
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.operator-portal-card-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+.operator-portal-card-desc {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  flex: 1;
+}
+.operator-portal-card-action {
+  font-size: 14px;
+  font-weight: 800;
   color: #d4482f;
 }
+
+/* Expanded Header with "Change Operator" button */
+.operator-selected-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  background: #fff8f5;
+  border: 1.5px solid #d4482f;
+  border-radius: 8px;
+}
+.operator-selected-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.operator-selected-badge {
+  font-size: 11px;
+  font-weight: 900;
+  background: #d4482f;
+  color: #ffffff;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.operator-selected-name {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+.operator-selected-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+}
+.operator-change-btn {
+  grid-column: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  background: #ffffff;
+  color: #d4482f;
+  border: 1.5px solid #d4482f;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.operator-change-btn:hover {
+  background: #d4482f;
+  color: #ffffff;
+}
+
 @media (max-width: 700px) {
-  .operator-tabs {
+  .operator-portal-cards {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 10px;
   }
-  .operator-tab {
-    padding: 8px 12px;
-    font-size: 14px;
+  .operator-portal-card {
+    padding: 14px 16px;
   }
-  .operator-tab-label {
-    font-size: 14px;
+  .operator-portal-card-name {
+    font-size: 19px;
   }
 }
+
 
