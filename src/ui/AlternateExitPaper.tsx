@@ -94,7 +94,6 @@ function ExitSurroundingsMap({
 
       {/* Auto-sized centered HTML callout badge above the pin */}
       <div className="exit-pin-callout-badge" aria-hidden="true">
-        <span className="exit-pin-callout-icon">📍</span>
         <span className="exit-pin-callout-label">
           ここに出ます ({exitLabel})
         </span>

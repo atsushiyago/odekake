@@ -272,7 +272,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   padding: 6px 16px;
   background: #d4482f;
   color: #ffffff;
@@ -294,10 +293,6 @@
   border-width: 8px 8px 0 8px;
   border-style: solid;
   border-color: #d4482f transparent transparent transparent;
-}
-.exit-pin-callout-icon {
-  font-size: 15px;
-  line-height: 1;
 }
 .exit-pin-callout-label {
   letter-spacing: 0.02em;
