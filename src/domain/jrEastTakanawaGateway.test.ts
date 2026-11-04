@@ -7,7 +7,7 @@ import { withStationGuidePresentation, withWalkDistanceInstructions } from './st
 import { staticGtfsRailJourneyRepository } from '../data/repositories/staticGtfsRailJourneyRepository'
 import { allCoursePresets, outingCoursePresetById } from '../data/coursePresets'
 import { allIndoorDatasets } from '../data/catalogs/oedo2026IndoorDatasets'
-import { estimatePlatformCarPositionLabel } from './homeToGateGuide'
+import { estimatePlatformCarPositionLabel, buildHomeToGateGuideModel } from './homeToGateGuide'
 import { getStationExitGroups } from './stationExitOptions'
 import type { StationRef } from './types'
 
@@ -129,5 +129,39 @@ describe('JR East Takanawa Gateway Station', () => {
     const exitNames = groups.map(g => g.rawName)
     expect(exitNames).toContain('南改札')
     expect(exitNames).toContain('北改札')
+  })
+
+  it('produces consistent vertical movement instructions for both North Gate and South Gate in paper model', () => {
+    const graph = buildIndoorGraph(rawData)
+    for (const exitId of ['4229N0756', '4229N0640']) {
+      const elderlyScore = findBestElderlyRoute(graph, '4229P1', [exitId])
+      expect(elderlyScore).not.toBeNull()
+      if (!elderlyScore) continue
+
+      const stationGuide = buildGtfsStationGuideFromRoute(
+        graph,
+        station,
+        { platformId: '4229P1', exitNodeId: elderlyScore.exitId },
+        elderlyScore.route,
+      )
+      expect(stationGuide.ok).toBe(true)
+      if (!stationGuide.ok) continue
+
+      const model = buildHomeToGateGuideModel({
+        guide: stationGuide.guide,
+        graph,
+        platformId: '4229P1',
+        exitNodeIds: [exitId],
+        preferredExitNodeIds: ['4229N0756'],
+        selectedRoute: elderlyScore.route,
+        arrivalPlatformFloor: { label: '1階', levelIndex: 1 },
+        humanizeWalkDistance: true,
+        humanizeGateDirection: true,
+      })
+
+      console.log(`Exit ${exitId} steps:`, model.guide.steps.map(s => s.instruction), 'Car:', model.carPositionLabel)
+      expect(model.guide.steps.some(s => s.facility === 'elevator' || s.facility === 'escalator' || s.facility === 'stairs')).toBe(true)
+      expect(model.carPositionLabel).toMatch(/\d+号車付近/)
+    }
   })
 })

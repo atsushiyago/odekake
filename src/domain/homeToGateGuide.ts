@@ -298,13 +298,13 @@ export function buildHomeToGateGuideModel(input: {
   let effectiveSteps: GuideStep[]
   if (homeStep) {
     effectiveSteps = [homeStep, ...detailSteps]
-  } else if ((!safeRejoin.ok || !sameGateAsPreferredExit) && gateIndex > 0) {
+  } else if ((!safeRejoin.ok || !sameGateAsPreferredExit || !metadata) && gateIndex > 0) {
     const preGateSteps = presentation.steps.slice(0, gateIndex)
     const preGateVerticalCount = preGateSteps.filter(
       s => s.facility === 'escalator' || s.facility === 'stairs' || s.facility === 'elevator',
     ).length
 
-    if (preGateVerticalCount >= 2 || !sameGateAsPreferredExit) {
+    if (preGateVerticalCount >= 2 || !sameGateAsPreferredExit || !metadata) {
       effectiveSteps = compressConsecutiveEquipmentSteps(
         detailSteps,
         graph,
@@ -319,7 +319,7 @@ export function buildHomeToGateGuideModel(input: {
 
   const shouldUseDynamicCarPosition =
     Boolean(input.selectedRoute) &&
-    !isPreferredExit &&
+    (!isPreferredExit || !official.carPositionLabel) &&
     !useHomeInstruction
 
   const dynamicCarLabel = shouldUseDynamicCarPosition

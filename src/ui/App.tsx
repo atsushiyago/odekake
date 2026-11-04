@@ -1459,14 +1459,12 @@ export default function App() {
       : Array.isArray(course.preferredExitId)
         ? course.preferredExitId
         : [course.preferredExitId];
-    const elderlyScore = compressionContext
-      ? findBestElderlyRoute(
-          graph,
-          arrival.connection.platformId,
-          targetExitNodeIds,
-          compressionContext,
-        )
-      : null;
+    const elderlyScore = findBestElderlyRoute(
+      graph,
+      arrival.connection.platformId,
+      targetExitNodeIds,
+      compressionContext,
+    );
     const stationGuide = elderlyScore
       ? buildGtfsStationGuideFromRoute(
           graph,
