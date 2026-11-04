@@ -1369,9 +1369,23 @@ export default function App() {
   });
   const courseScrollerRef = useRef<HTMLDivElement>(null);
   const previewPagesRef = useRef<HTMLDivElement>(null);
-  const frontFrameRef = useRef<HTMLDivElement>(null);
-  const backFrameRef = useRef<HTMLDivElement>(null);
+  const menuContainerRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        menuContainerRef.current &&
+        !menuContainerRef.current.contains(e.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('pointerdown', handleOutsideClick);
+    return () => window.removeEventListener('pointerdown', handleOutsideClick);
+  }, [isMenuOpen]);
 
   const canShare =
     typeof navigator !== 'undefined' &&
@@ -1518,15 +1532,25 @@ export default function App() {
       const container = previewPagesRef.current;
       if (!container) return;
 
-      const papers = container.querySelectorAll<HTMLElement>('.paper');
+      const visiblePapers = [
+        ...container.querySelectorAll<HTMLElement>('.paper'),
+      ].filter((el) => !el.closest('.pagination-measure'));
+
+      const frontPaper =
+        visiblePapers.find((el) => el.classList.contains('front-page')) ??
+        visiblePapers[0];
+      const backPaper =
+        visiblePapers.find((el) => el.classList.contains('back-page')) ??
+        visiblePapers[1];
+
       let targetElement: HTMLElement | null = null;
       let suffix = '';
 
       if (mode === 'front') {
-        targetElement = papers[0] ?? null;
+        targetElement = frontPaper ?? null;
         suffix = '表面';
       } else if (mode === 'back') {
-        targetElement = papers[1] ?? null;
+        targetElement = backPaper ?? null;
         suffix = '裏面';
       } else {
         targetElement = container;
@@ -1574,8 +1598,7 @@ export default function App() {
       const container = previewPagesRef.current;
       if (!container) return;
 
-      const papers = container.querySelectorAll<HTMLElement>('.paper');
-      const targetElement = container ?? papers[0];
+      const targetElement = container;
       if (!targetElement) return;
 
       const exitLabel = itineraryGuide.ok
@@ -1586,6 +1609,14 @@ export default function App() {
       const blob = await toBlob(targetElement, {
         pixelRatio: 2,
         backgroundColor: '#ffffff',
+        filter: (domNode) => {
+          if (domNode instanceof HTMLElement) {
+            if (domNode.classList.contains('paper-overflow-warning'))
+              return false;
+            if (domNode.classList.contains('no-print')) return false;
+          }
+          return true;
+        },
       });
       if (!blob) return;
 
@@ -1787,59 +1818,78 @@ export default function App() {
       <section className="print-area">
         {itineraryGuide.ok && (
           <div className="paper-actions-bar no-print">
-            <div className="paper-actions-group">
-              <span className="paper-actions-label">画像保存:</span>
+            <div className="paper-actions-menu-container" ref={menuContainerRef}>
               <button
                 type="button"
-                className="paper-action-btn primary"
-                onClick={() => handleSaveImage('spread')}
+                className="paper-action-menu-trigger"
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+                aria-expanded={isMenuOpen}
                 disabled={isExporting}
-                title="表面と裏面を並べた画像を保存します"
               >
-                💾 見開き画像を保存
+                <span>💾 画像を保存</span>
+                <span className="dropdown-caret">{isMenuOpen ? '▴' : '▾'}</span>
               </button>
-              <button
-                type="button"
-                className="paper-action-btn"
-                onClick={() => handleSaveImage('front')}
-                disabled={isExporting}
-                title="表面のみを縦長画像として保存します"
-              >
-                表面のみ
-              </button>
-              <button
-                type="button"
-                className="paper-action-btn"
-                onClick={() => handleSaveImage('back')}
-                disabled={isExporting}
-                title="裏面のみを縦長画像として保存します"
-              >
-                裏面のみ
-              </button>
-              {canShare && (
-                <button
-                  type="button"
-                  className="paper-action-btn share-btn"
-                  onClick={handleShare}
-                  disabled={isExporting}
-                  title="スマホのLINEやSNS等へ直接送信します"
-                >
-                  📱 LINE・SNSで送る
-                </button>
+              {isMenuOpen && (
+                <div className="paper-actions-dropdown" role="menu">
+                  <button
+                    type="button"
+                    className="paper-dropdown-item"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSaveImage('spread');
+                    }}
+                    disabled={isExporting}
+                  >
+                    🖼️ 見開き画像を保存
+                  </button>
+                  <button
+                    type="button"
+                    className="paper-dropdown-item"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSaveImage('front');
+                    }}
+                    disabled={isExporting}
+                  >
+                    📄 表面のみ保存
+                  </button>
+                  <button
+                    type="button"
+                    className="paper-dropdown-item"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSaveImage('back');
+                    }}
+                    disabled={isExporting}
+                  >
+                    📄 裏面のみ保存
+                  </button>
+                  {canShare && (
+                    <button
+                      type="button"
+                      className="paper-dropdown-item share-item"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        handleShare();
+                      }}
+                      disabled={isExporting}
+                    >
+                      📱 LINE・SNSで送る
+                    </button>
+                  )}
+                </div>
               )}
             </div>
-            <div className="paper-actions-group">
-              <button
-                type="button"
-                className="paper-action-btn print-btn"
-                onClick={() => window.print()}
-              >
-                🖨️ 印刷する
-              </button>
-              {isExporting && (
-                <span className="exporting-indicator">画像生成中...</span>
-              )}
-            </div>
+            <button
+              type="button"
+              className="paper-action-btn print-btn"
+              onClick={() => window.print()}
+            >
+              🖨️ 印刷
+            </button>
+            {isExporting && (
+              <span className="exporting-indicator">画像生成中...</span>
+            )}
           </div>
         )}
         <div className="preview-pages" ref={previewPagesRef}>
