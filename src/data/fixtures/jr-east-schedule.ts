@@ -33,6 +33,31 @@ export const jrEastYamanoteWeekdayTrips: ScheduledRailLeg[] = [
       retrievedAt: '2026-11-05',
     },
   },
+  {
+    tripId: '4210668G',
+    routeId: '42',
+    routeName: '山手線',
+    serviceDay: 'weekday',
+    directionId: '1',
+    headsign: '渋谷・品川方面',
+    from: {
+      stationId: '4208',
+      stationName: '新宿',
+      departureTime: '07:01',
+      stopSequence: 5,
+    },
+    to: {
+      stationId: '4205',
+      stationName: '渋谷',
+      arrivalTime: '07:08',
+      stopSequence: 8,
+    },
+    source: {
+      url: 'https://api.odpt.org/api/v4/files/JR-East/data/JR-East-Train-GTFS-Pathway.zip',
+      feedVersion: '20261025',
+      retrievedAt: '2026-11-05',
+    },
+  },
 ]
 
 export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
@@ -50,6 +75,21 @@ export const takanawaGatewayOfficialPlatformAssignments: OfficialPlatformAssignm
   },
 ]
 
+export const shibuyaOfficialPlatformAssignments: OfficialPlatformAssignment[] = [
+  {
+    stationId: '4205',
+    platformId: '4205P2',
+    routeId: '42',
+    directionId: '1',
+    headsign: '渋谷・品川方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/808.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：渋谷駅 2番線（山手線外回り・品川・東京方面）ホーム',
+    },
+  },
+]
+
 export const shinagawaOfficialDeparturePlatformAssignments: OfficialDeparturePlatformAssignment[] = [
   {
     stationId: '4230',
@@ -62,6 +102,22 @@ export const shinagawaOfficialDeparturePlatformAssignments: OfficialDeparturePla
       url: 'https://www.jreast.co.jp/estation/stations/788.html',
       checkedAt: '2026-11-05',
       description: 'JR東日本公式：品川駅 1番線（山手線内回り・東京・上野方面）ホーム',
+    },
+  },
+]
+
+export const shinjukuJrOfficialDeparturePlatformAssignments: OfficialDeparturePlatformAssignment[] = [
+  {
+    stationId: '4208',
+    platformId: '4208P14',
+    platformCode: '14',
+    routeId: '42',
+    directionId: '1',
+    headsign: '渋谷・品川方面',
+    source: {
+      url: 'https://www.jreast.co.jp/estation/stations/866.html',
+      checkedAt: '2026-11-05',
+      description: 'JR東日本公式：新宿駅 14番線（山手線外回り・渋谷・品川方面）ホーム',
     },
   },
 ]
@@ -100,6 +156,43 @@ export const takanawaGatewayToSengakujiWalkingRoute: WalkingRoute = buildPublish
     source: {
       provider: 'OpenStreetMap',
       endpoint: 'https://sengakuji.or.jp/access/',
+      acquiredAt: '2026-11-05',
+    },
+  },
+})
+
+export const shibuyaToHachikoWalkingRoute: WalkingRoute = buildPublishedOutdoorWalkingRoute({
+  id: 'shibuya-to-hachiko',
+  from: {
+    label: '渋谷駅 ハチ公口',
+    latitude: 35.659133,
+    longitude: 139.700988,
+  },
+  to: {
+    label: 'ハチ公前広場（忠犬ハチ公像）',
+    latitude: 35.659058,
+    longitude: 139.70063,
+  },
+  officialMinutes: 1,
+  sourceUrl: 'https://www.shibuyabunka.com/hachiko/',
+  retrievedAt: '2026-11-05',
+  stationExitConnection: {
+    stationId: '4205',
+    exitNodeId: '4205N1534',
+    exitLabel: 'ハチ公口',
+  },
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+      [139.700988, 35.659133],
+      [139.7008, 35.6591],
+      [139.70063, 35.659058],
+    ],
+    distanceMeters: 40,
+    durationSeconds: 60,
+    source: {
+      provider: 'OpenStreetMap',
+      endpoint: 'https://www.shibuyabunka.com/hachiko/',
       acquiredAt: '2026-11-05',
     },
   },

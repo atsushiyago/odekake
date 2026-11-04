@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import takanawaExtraction from '../data/fixtures/jr2026-takanawa-gateway-gtfs-pathways.json'
+import shibuyaExtraction from '../data/fixtures/jr2026-shibuya-gtfs-pathways.json'
 import { extractGtfsPathwaysStation, type GtfsPathwaysFeed } from '../data/adapters/gtfsPathwaysAdapter'
 import { buildGtfsStationGuideFromRoute, buildIndoorGraph } from './indoorRouting'
 import { findBestElderlyRoute } from './elderlyRouteScoring'
@@ -163,5 +164,78 @@ describe('JR East Takanawa Gateway Station', () => {
       expect(model.guide.steps.some(s => s.facility === 'elevator' || s.facility === 'escalator' || s.facility === 'stairs')).toBe(true)
       expect(model.carPositionLabel).toMatch(/\d+号車付近/)
     }
+  })
+})
+
+describe('JR East Shibuya Station', () => {
+  const station: StationRef = {
+    id: '4205',
+    name: '渋谷',
+    operator: '東日本旅客鉄道',
+    line: '山手線',
+  }
+
+  const rawData = extractGtfsPathwaysStation(
+    shibuyaExtraction as GtfsPathwaysFeed,
+    { id: '4205', name: '渋谷' }
+  )
+
+  it('extracts exit groups and builds paper guide model for every exit of Shibuya', () => {
+    const graph = buildIndoorGraph(rawData)
+    const groups = getStationExitGroups(graph)
+    console.log('Shibuya exit groups:', groups.map(g => ({ rawName: g.rawName, label: g.label, nodeIds: g.nodeIds })))
+    expect(groups.length).toBeGreaterThanOrEqual(5)
+
+    for (const group of groups) {
+      const elderlyScore = findBestElderlyRoute(graph, '4205P2', group.nodeIds)
+      expect(elderlyScore).not.toBeNull()
+      if (!elderlyScore) continue
+
+      const stationGuide = buildGtfsStationGuideFromRoute(
+        graph,
+        station,
+        { platformId: '4205P2', exitNodeId: elderlyScore.exitId },
+        elderlyScore.route,
+      )
+      expect(stationGuide.ok).toBe(true)
+      if (!stationGuide.ok) continue
+
+      const model = buildHomeToGateGuideModel({
+        guide: stationGuide.guide,
+        graph,
+        platformId: '4205P2',
+        exitNodeIds: group.nodeIds,
+        preferredExitNodeIds: ['4205N1534'],
+        selectedRoute: elderlyScore.route,
+        arrivalPlatformFloor: { label: '2階', levelIndex: 2 },
+        humanizeWalkDistance: true,
+        humanizeGateDirection: true,
+      })
+
+      expect(model.guide.steps.length).toBeGreaterThan(0)
+      expect(model.carPositionLabel).toMatch(/\d+号車付近/)
+    }
+  })
+
+  it('finds direct Yamanote Line scheduled journey from Shinjuku to Shibuya and registers preset', () => {
+    const result = staticGtfsRailJourneyRepository.findDirectJourney({
+      originName: '新宿',
+      destinationName: '渋谷',
+      departureDate: '2026-09-21',
+      departureTime: '07:00',
+    })
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+
+    expect(result.leg.tripId).toBe('4210668G')
+    expect(result.leg.from.departureTime).toBe('07:01')
+    expect(result.leg.to.arrivalTime).toBe('07:08')
+    expect(result.leg.routeName).toBe('山手線')
+
+    const hachikoCourse = outingCoursePresetById.get('shinjuku-shibuya-hachiko')
+    expect(hachikoCourse).toBeDefined()
+    expect(hachikoCourse?.label).toBe('ハチ公前広場')
+    expect(hachikoCourse?.arrivalStationId).toBe('4205')
   })
 })

@@ -6,7 +6,10 @@ import { akabanebashiToTokyoTowerWalkingRoute as tokyoTowerWalkingRoute } from '
 import { azabuJubanExit7ToPatioJubanWalkingRoute, aoyamaItchomeExit1ToJinguGaienWalkingRoute, daimonB2ToKyuShibaRikyuWalkingRoute, higashiShinjukuA2ToBunkaCenterWalkingRoute, kokuritsuA2ToStadiumWalkingRoute, roppongiExit7ToNationalArtCenterWalkingRoute, shinjukuA1ToSouthernTowerWalkingRoute, shinjukuNishiguchiD3ToOmoideYokochoWalkingRoute, tochomaeA4ToTokyoMetropolitanGovernmentWalkingRoute, uenoOkachimachiA7ToAmeyokoWalkingRoute, yoyogiA2ToMeijiJinguYoyogiGateWalkingRoute } from './fixtures/additional-outdoor-routes'
 
 import {
+  shibuyaOfficialPlatformAssignments,
+  shibuyaToHachikoWalkingRoute,
   shinagawaOfficialDeparturePlatformAssignments,
+  shinjukuJrOfficialDeparturePlatformAssignments,
   takanawaGatewayOfficialPlatformAssignments,
   takanawaGatewayToSengakujiWalkingRoute,
 } from './fixtures/jr-east-schedule'
@@ -121,6 +124,34 @@ export const jrEastCoursePresets: OutingCoursePreset[] = [
     departurePlatformAssignments: shinagawaOfficialDeparturePlatformAssignments,
     arrivalPlatformAssignments: takanawaGatewayOfficialPlatformAssignments,
     walkingRoute: takanawaGatewayToSengakujiWalkingRoute,
+  },
+  {
+    id: 'shinjuku-shibuya-hachiko',
+    label: 'ハチ公前広場',
+    originStationId: '4208',
+    originStationName: '新宿',
+    arrivalStationId: '4205',
+    arrivalStationName: '渋谷',
+    destination: {
+      name: 'ハチ公前広場（忠犬ハチ公像）',
+      latitude: 35.659058,
+      longitude: 139.70063,
+      sourceUrl: 'https://www.shibuyabunka.com/hachiko/',
+    },
+    preferredExitId: '4205N1534',
+    arrivalPlatformFloor: {
+      label: '2階',
+      levelIndex: 2,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/808.html',
+    },
+    gateFloor: {
+      label: '1階',
+      levelIndex: 1,
+      sourceUrl: 'https://www.jreast.co.jp/estation/stations/808.html',
+    },
+    departurePlatformAssignments: shinjukuJrOfficialDeparturePlatformAssignments,
+    arrivalPlatformAssignments: shibuyaOfficialPlatformAssignments,
+    walkingRoute: shibuyaToHachikoWalkingRoute,
   },
 ]
 
