@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { toPng, toBlob } from 'html-to-image';
 import type {
   PrintableGuide,
   StationGuide,
@@ -254,6 +255,7 @@ function OutdoorRouteMap({
                 src={OSM_TILE_URL.replace('{z}', String(zoom))
                   .replace('{x}', String(x))
                   .replace('{y}', String(y))}
+                crossOrigin="anonymous"
                 alt=""
                 style={{
                   left: x * 256 - centerX + OUTDOOR_MAP_VIEW.width / 2,
@@ -1366,6 +1368,16 @@ export default function App() {
     departureTime: '07:00',
   });
   const courseScrollerRef = useRef<HTMLDivElement>(null);
+  const previewPagesRef = useRef<HTMLDivElement>(null);
+  const frontFrameRef = useRef<HTMLDivElement>(null);
+  const backFrameRef = useRef<HTMLDivElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const canShare =
+    typeof navigator !== 'undefined' &&
+    typeof navigator.share === 'function' &&
+    typeof navigator.canShare === 'function';
+
   const searchResult = useMemo(
     () => staticGtfsRailJourneyRepository.findDirectJourney(query),
     [query],
@@ -1498,6 +1510,103 @@ export default function App() {
     activeExitGroup,
     isDefaultExit,
   ]);
+
+  const handleSaveImage = async (mode: 'front' | 'back' | 'spread') => {
+    if (isExporting) return;
+    try {
+      setIsExporting(true);
+      const container = previewPagesRef.current;
+      if (!container) return;
+
+      const papers = container.querySelectorAll<HTMLElement>('.paper');
+      let targetElement: HTMLElement | null = null;
+      let suffix = '';
+
+      if (mode === 'front') {
+        targetElement = papers[0] ?? null;
+        suffix = '表面';
+      } else if (mode === 'back') {
+        targetElement = papers[1] ?? null;
+        suffix = '裏面';
+      } else {
+        targetElement = container;
+        suffix = '見開き';
+      }
+
+      if (!targetElement) return;
+
+      const exitLabel = itineraryGuide.ok
+        ? itineraryGuide.activeExitLabel
+        : '案内';
+      const filename = `迷わないおでかけ紙_${course.arrivalStationName}駅_${exitLabel}_${suffix}.png`;
+
+      const dataUrl = await toPng(targetElement, {
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        filter: (domNode) => {
+          if (domNode instanceof HTMLElement) {
+            if (domNode.classList.contains('paper-overflow-warning'))
+              return false;
+            if (domNode.classList.contains('no-print')) return false;
+          }
+          return true;
+        },
+      });
+
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('画像保存エラー:', err);
+      alert('画像の保存に失敗しました。');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (isExporting) return;
+    try {
+      setIsExporting(true);
+      const container = previewPagesRef.current;
+      if (!container) return;
+
+      const papers = container.querySelectorAll<HTMLElement>('.paper');
+      const targetElement = container ?? papers[0];
+      if (!targetElement) return;
+
+      const exitLabel = itineraryGuide.ok
+        ? itineraryGuide.activeExitLabel
+        : '案内';
+      const filename = `迷わないおでかけ紙_${course.arrivalStationName}駅_${exitLabel}.png`;
+
+      const blob = await toBlob(targetElement, {
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+      });
+      if (!blob) return;
+
+      const file = new File([blob], filename, { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `迷わないおでかけ紙（${course.label}）`,
+          text: `${course.arrivalStationName}駅 ${exitLabel}へのご案内です。`,
+        });
+      }
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        console.error('共有エラー:', err);
+      }
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const selectCourse = (courseId: string) => {
     const next = outingCoursePresetById.get(courseId) ?? defaultCourse;
     setSelectedCourseId(next.id);
@@ -1676,7 +1785,64 @@ export default function App() {
         </details>
       )}
       <section className="print-area">
-        <div className="preview-pages">
+        {itineraryGuide.ok && (
+          <div className="paper-actions-bar no-print">
+            <div className="paper-actions-group">
+              <span className="paper-actions-label">画像保存:</span>
+              <button
+                type="button"
+                className="paper-action-btn primary"
+                onClick={() => handleSaveImage('spread')}
+                disabled={isExporting}
+                title="表面と裏面を並べた画像を保存します"
+              >
+                💾 見開き画像を保存
+              </button>
+              <button
+                type="button"
+                className="paper-action-btn"
+                onClick={() => handleSaveImage('front')}
+                disabled={isExporting}
+                title="表面のみを縦長画像として保存します"
+              >
+                表面のみ
+              </button>
+              <button
+                type="button"
+                className="paper-action-btn"
+                onClick={() => handleSaveImage('back')}
+                disabled={isExporting}
+                title="裏面のみを縦長画像として保存します"
+              >
+                裏面のみ
+              </button>
+              {canShare && (
+                <button
+                  type="button"
+                  className="paper-action-btn share-btn"
+                  onClick={handleShare}
+                  disabled={isExporting}
+                  title="スマホのLINEやSNS等へ直接送信します"
+                >
+                  📱 LINE・SNSで送る
+                </button>
+              )}
+            </div>
+            <div className="paper-actions-group">
+              <button
+                type="button"
+                className="paper-action-btn print-btn"
+                onClick={() => window.print()}
+              >
+                🖨️ 印刷する
+              </button>
+              {isExporting && (
+                <span className="exporting-indicator">画像生成中...</span>
+              )}
+            </div>
+          </div>
+        )}
+        <div className="preview-pages" ref={previewPagesRef}>
           {itineraryGuide.ok ? (
             <>
               <PaperPreviewFrame label="A4表面">
