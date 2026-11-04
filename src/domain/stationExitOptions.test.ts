@@ -25,11 +25,26 @@ describe('stationExitOptions', () => {
       )
       if (!dataset) continue
       const graph = buildIndoorGraph(dataset.gtfs)
-      const groups = getStationExitGroups(graph)
+      const groups = getStationExitGroups(graph, course.preferredExitId)
       const matching = groups.filter((g) =>
         isExitGroupMatchingPreferred(g, course.preferredExitId),
       )
       expect(matching.length).toBeGreaterThanOrEqual(1)
     }
+  })
+
+  it('filters out underground connection points like Roppongi 4a while keeping true ground exits 5, 6, 7', () => {
+    const dataset = loadedOedo2026IndoorDatasets.find((ds) => ds.station.id === '424')!
+    const graph = buildIndoorGraph(dataset.gtfs)
+    const groups = getStationExitGroups(graph)
+    const labels = groups.map((g) => g.label)
+
+    // True surface exits in Roppongi
+    expect(labels).toContain('5出口')
+    expect(labels).toContain('6出口')
+    expect(labels).toContain('7出口')
+
+    // Underground metro connection 4a should be excluded
+    expect(labels).not.toContain('4a出口')
   })
 })

@@ -8,12 +8,44 @@ export interface AvailableExitGroup {
 }
 
 /**
- * Extracts and groups all entrance-exit nodes in a station graph by their formatted exit label.
+ * Checks whether an entrance-exit node is considered a ground-level exit.
+ * Nodes at level 0 or above are true surface exits.
+ * Nodes below level 0 (e.g. level -0.5, -1) are underground connection points to
+ * other railway lines or underground shopping streets, unless they are officially
+ * designated as the primary surface exit for a preset course (such as Yoyogi A2).
+ */
+export function isGroundExitNode(
+  levelIndex: number | undefined,
+  nodeId: string,
+  preferredExitId?: string | string[],
+): boolean {
+  if (levelIndex !== undefined && levelIndex >= 0) {
+    return true
+  }
+  if (preferredExitId) {
+    const ids = Array.isArray(preferredExitId) ? preferredExitId : [preferredExitId]
+    if (ids.includes(nodeId)) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Extracts and groups all surface entrance-exit nodes in a station graph by their formatted exit label.
  * Multiple nodes sharing the same exit name (e.g. separate stairs vs elevator nodes for the same exit)
  * are consolidated into a single group.
+ * Underground connection boundaries (level < 0 without course verification) are filtered out.
  */
-export function getStationExitGroups(graph: IndoorGraph): AvailableExitGroup[] {
-  const exits = [...graph.nodes.values()].filter((node) => node.kind === 'entrance-exit')
+export function getStationExitGroups(
+  graph: IndoorGraph,
+  preferredExitId?: string | string[],
+): AvailableExitGroup[] {
+  const exits = [...graph.nodes.values()].filter(
+    (node) =>
+      node.kind === 'entrance-exit' &&
+      isGroundExitNode(node.levelIndex, node.id, preferredExitId),
+  )
   const groupMap = new Map<string, { rawName: string; nodeIds: string[] }>()
 
   for (const node of exits) {

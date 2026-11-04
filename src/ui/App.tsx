@@ -1325,8 +1325,11 @@ export default function App() {
     [arrivalDataset],
   );
   const exitGroups = useMemo(
-    () => (arrivalGraph ? getStationExitGroups(arrivalGraph) : []),
-    [arrivalGraph],
+    () =>
+      arrivalGraph
+        ? getStationExitGroups(arrivalGraph, course.preferredExitId)
+        : [],
+    [arrivalGraph, course.preferredExitId],
   );
 
   const defaultExitGroup = useMemo(() => {
