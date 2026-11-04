@@ -1547,9 +1547,8 @@ export default function App() {
       {debugEnabled && <IndoorPoc />}
       <section className="editor no-print course-picker">
         <div>
-          <p className="eyebrow">おでかけ先を選ぶ</p>
           <div className="course-selector">
-            <span>コース一覧</span>
+            <span className="course-selector-title">コース一覧</span>
             <div className="course-picker-row">
               <button
                 type="button"
