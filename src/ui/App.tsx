@@ -1744,34 +1744,118 @@ export default function App() {
                   （選んだ出口に応じてホームからの構内経路が切り替わります。※都営管轄の地上出口のみ掲載）
                 </span>
               </div>
-              <div
-                className="exit-options"
-                role="radiogroup"
-                aria-label="地上出口の選択"
-              >
-                {exitGroups.map((group) => {
-                  const isGroupDefault = isExitGroupMatchingPreferred(
-                    group,
-                    course.preferredExitId,
-                  );
-                  const isSelected = group.label === activeExitGroup?.label;
-                  return (
-                    <button
-                      key={group.label}
-                      type="button"
-                      className={
-                        isSelected ? 'exit-option is-selected' : 'exit-option'
-                      }
-                      aria-pressed={isSelected}
-                      onClick={() => setSelectedExitLabel(group.label)}
+              <div className="exit-row">
+                <div
+                  className="exit-options"
+                  role="radiogroup"
+                  aria-label="地上出口の選択"
+                >
+                  {exitGroups.map((group) => {
+                    const isGroupDefault = isExitGroupMatchingPreferred(
+                      group,
+                      course.preferredExitId,
+                    );
+                    const isSelected = group.label === activeExitGroup?.label;
+                    return (
+                      <button
+                        key={group.label}
+                        type="button"
+                        className={
+                          isSelected ? 'exit-option is-selected' : 'exit-option'
+                        }
+                        aria-pressed={isSelected}
+                        onClick={() => setSelectedExitLabel(group.label)}
+                      >
+                        <span>{group.label}</span>
+                        {isGroupDefault && (
+                          <span className="exit-badge-default">おすすめ</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {itineraryGuide.ok && (
+                  <div className="paper-actions-bar no-print">
+                    <div
+                      className="paper-actions-menu-container"
+                      ref={menuContainerRef}
                     >
-                      <span>{group.label}</span>
-                      {isGroupDefault && (
-                        <span className="exit-badge-default">おすすめ</span>
+                      <button
+                        type="button"
+                        className="paper-action-menu-trigger"
+                        onClick={() => setIsMenuOpen((prev) => !prev)}
+                        aria-expanded={isMenuOpen}
+                        disabled={isExporting}
+                      >
+                        <span>💾 画像を保存</span>
+                        <span className="dropdown-caret">
+                          {isMenuOpen ? '▴' : '▾'}
+                        </span>
+                      </button>
+                      {isMenuOpen && (
+                        <div className="paper-actions-dropdown" role="menu">
+                          <button
+                            type="button"
+                            className="paper-dropdown-item"
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              handleSaveImage('spread');
+                            }}
+                            disabled={isExporting}
+                          >
+                            🖼️ 見開き画像を保存
+                          </button>
+                          <button
+                            type="button"
+                            className="paper-dropdown-item"
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              handleSaveImage('front');
+                            }}
+                            disabled={isExporting}
+                          >
+                            📄 表面のみ保存
+                          </button>
+                          <button
+                            type="button"
+                            className="paper-dropdown-item"
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              handleSaveImage('back');
+                            }}
+                            disabled={isExporting}
+                          >
+                            📄 裏面のみ保存
+                          </button>
+                          {canShare && (
+                            <button
+                              type="button"
+                              className="paper-dropdown-item share-item"
+                              onClick={() => {
+                                setIsMenuOpen(false);
+                                handleShare();
+                              }}
+                              disabled={isExporting}
+                            >
+                              📱 LINE・SNSで送る
+                            </button>
+                          )}
+                        </div>
                       )}
+                    </div>
+                    <button
+                      type="button"
+                      className="paper-action-btn print-btn"
+                      onClick={() => window.print()}
+                    >
+                      🖨️ 印刷
                     </button>
-                  );
-                })}
+                    {isExporting && (
+                      <span className="exporting-indicator">画像生成中...</span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -1816,82 +1900,6 @@ export default function App() {
         </details>
       )}
       <section className="print-area">
-        {itineraryGuide.ok && (
-          <div className="paper-actions-bar no-print">
-            <div className="paper-actions-menu-container" ref={menuContainerRef}>
-              <button
-                type="button"
-                className="paper-action-menu-trigger"
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-                aria-expanded={isMenuOpen}
-                disabled={isExporting}
-              >
-                <span>💾 画像を保存</span>
-                <span className="dropdown-caret">{isMenuOpen ? '▴' : '▾'}</span>
-              </button>
-              {isMenuOpen && (
-                <div className="paper-actions-dropdown" role="menu">
-                  <button
-                    type="button"
-                    className="paper-dropdown-item"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleSaveImage('spread');
-                    }}
-                    disabled={isExporting}
-                  >
-                    🖼️ 見開き画像を保存
-                  </button>
-                  <button
-                    type="button"
-                    className="paper-dropdown-item"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleSaveImage('front');
-                    }}
-                    disabled={isExporting}
-                  >
-                    📄 表面のみ保存
-                  </button>
-                  <button
-                    type="button"
-                    className="paper-dropdown-item"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleSaveImage('back');
-                    }}
-                    disabled={isExporting}
-                  >
-                    📄 裏面のみ保存
-                  </button>
-                  {canShare && (
-                    <button
-                      type="button"
-                      className="paper-dropdown-item share-item"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleShare();
-                      }}
-                      disabled={isExporting}
-                    >
-                      📱 LINE・SNSで送る
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-            <button
-              type="button"
-              className="paper-action-btn print-btn"
-              onClick={() => window.print()}
-            >
-              🖨️ 印刷
-            </button>
-            {isExporting && (
-              <span className="exporting-indicator">画像生成中...</span>
-            )}
-          </div>
-        )}
         <div className="preview-pages" ref={previewPagesRef}>
           {itineraryGuide.ok ? (
             <>
