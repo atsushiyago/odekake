@@ -7,7 +7,44 @@ import { withFareGateExitDirections, withStationGuidePresentation, withWalkDista
 import type { GuideStep, StationGuide } from './types'
 import { withVerifiedVerticalMovementInstructions } from './verticalMovementPresentation'
 
-function compressConsecutiveEquipmentSteps(steps: GuideStep[]): GuideStep[] {
+function stepBearingDegrees(step: GuideStep, graph: IndoorGraph): number | undefined {
+  const fromId = step.evidence?.fromNodeId
+  const toId = step.evidence?.toNodeId
+  if (!fromId || !toId) return undefined
+  const from = graph.nodes.get(fromId)
+  const to = graph.nodes.get(toId)
+  if (!from || !to) return undefined
+  const dx = (to.longitude - from.longitude) * Math.cos((from.latitude * Math.PI) / 180)
+  const dy = to.latitude - from.latitude
+  if (Math.hypot(dx, dy) < 1e-7) return undefined
+  return (Math.atan2(dy, dx) * 180) / Math.PI
+}
+
+function isSameAxisBearing(degA: number | undefined, degB: number | undefined, maxAxisDiff = 35): boolean {
+  if (degA === undefined || degB === undefined) return true
+  const rawDiff = Math.abs(degA - degB) % 360
+  const acuteDiff = rawDiff > 180 ? 360 - rawDiff : rawDiff
+  const axisDiff = Math.min(acuteDiff, Math.abs(180 - acuteDiff))
+  return axisDiff <= maxAxisDiff
+}
+
+function formatCompressedFloorDestination(label: string | undefined): string | undefined {
+  if (!label) return undefined
+  const value = label.trim()
+  if (/^地下\d+階$/.test(value) || /^地下中\d+階$/.test(value) || /^地上\d+階$/.test(value)) {
+    return value === '地上1階' ? '地上' : value
+  }
+  if (/^地上階?$/.test(value) || /^(?:ground|g|1f)$/i.test(value)) return '地上'
+  const basement = value.match(/^B(\d+)F$/i)
+  if (basement) return `地下${basement[1]}階`
+  return undefined
+}
+
+function compressConsecutiveEquipmentSteps(
+  steps: GuideStep[],
+  graph: IndoorGraph,
+  officialFloorsByLevelIndex: Readonly<Record<number, { label: string; sourceUrl: string }>> = {},
+): GuideStep[] {
   const result: GuideStep[] = []
   let i = 0
 
@@ -20,13 +57,17 @@ function compressConsecutiveEquipmentSteps(steps: GuideStep[]): GuideStep[] {
       current.facility === 'elevator'
     ) {
       const facilityType = current.facility
+      const baseBearing = stepBearingDegrees(current, graph)
       let j = i + 1
       let lastVerticalStep = current
       let count = 1
 
       while (j < steps.length) {
         const next = steps[j]
-        if (next.facility === facilityType) {
+        if (
+          next.facility === facilityType &&
+          isSameAxisBearing(baseBearing, stepBearingDegrees(next, graph))
+        ) {
           lastVerticalStep = next
           count++
           j++
@@ -38,10 +79,14 @@ function compressConsecutiveEquipmentSteps(steps: GuideStep[]): GuideStep[] {
         ) {
           const distMatch = next.instruction.match(/約(\d+)m/)
           const dist = distMatch ? parseInt(distMatch[1], 10) : 0
-          if (dist <= 15) {
-            j += 2
-            lastVerticalStep = steps[j - 1]
+          const nextVertical = steps[j + 1]
+          if (
+            dist <= 15 &&
+            isSameAxisBearing(baseBearing, stepBearingDegrees(nextVertical, graph))
+          ) {
+            lastVerticalStep = nextVertical
             count++
+            j += 2
           } else {
             break
           }
@@ -50,17 +95,38 @@ function compressConsecutiveEquipmentSteps(steps: GuideStep[]): GuideStep[] {
         }
       }
 
-      // Only compress if there are 3 or more consecutive segments (e.g. 4 escalators in Shinjuku)
-      // to avoid altering tested 2-flight routes in other stations
-      if (count >= 3 && j > i + 1) {
-        const mergedInstruction =
-          lastVerticalStep.instruction.includes('地上へ') ||
-          current.instruction.includes('地上へ')
-            ? `${facilityType === 'escalator' ? 'エスカレーター' : facilityType === 'elevator' ? 'エレベーター' : '階段'}で地上へ上がる`
-            : lastVerticalStep.instruction.includes('上がる') ||
-              current.instruction.includes('上がる')
-            ? `${facilityType === 'escalator' ? 'エスカレーター' : facilityType === 'elevator' ? 'エレベーター' : '階段'}で上がる`
-            : lastVerticalStep.instruction
+      if (count >= 2 && j > i + 1) {
+        const toLevel = lastVerticalStep.evidence?.toLevelIndex
+        const fromLevel = current.evidence?.fromLevelIndex
+        const isUp =
+          (toLevel !== undefined && fromLevel !== undefined && toLevel > fromLevel) ||
+          current.instruction.includes('上がる') ||
+          lastVerticalStep.instruction.includes('上がる')
+        const isDown =
+          (toLevel !== undefined && fromLevel !== undefined && toLevel < fromLevel) ||
+          current.instruction.includes('下りる') ||
+          lastVerticalStep.instruction.includes('下りる')
+        const verb = isUp ? '上がる' : isDown ? '下りる' : '進む'
+
+        const rawFloorLabel =
+          toLevel !== undefined
+            ? officialFloorsByLevelIndex[toLevel]?.label ??
+              (toLevel === 0 ? '地上' : undefined)
+            : undefined
+        const destFloor = formatCompressedFloorDestination(rawFloorLabel)
+        const equipName =
+          facilityType === 'escalator'
+            ? 'エスカレーター'
+            : facilityType === 'elevator'
+            ? 'エレベーター'
+            : '階段'
+
+        const mergedInstruction = destFloor
+          ? `${equipName}で${destFloor}へ${verb}`
+          : lastVerticalStep.instruction.includes('地上へ') ||
+            current.instruction.includes('地上へ')
+          ? `${equipName}で地上へ${verb}`
+          : `${equipName}で${verb}`
 
         result.push({
           ...lastVerticalStep,
@@ -76,32 +142,31 @@ function compressConsecutiveEquipmentSteps(steps: GuideStep[]): GuideStep[] {
     i++
   }
 
-  const cleaned: GuideStep[] = []
-  for (let k = 0; k < result.length; k++) {
-    const step = result[k]
-    const nextStep = result[k + 1]
-    const isExitNear =
-      nextStep &&
-      (nextStep.facility === 'exit' || nextStep.instruction.includes('へ出る'))
+  return result.filter((step, idx) => {
+    if (step.facility !== undefined || !step.instruction.startsWith('通路')) return true
+    const distMatch = step.instruction.match(/約(\d+)m/)
+    const dist = distMatch ? parseInt(distMatch[1], 10) : 0
+    if (dist > 10) return true
+    const next = result[idx + 1]
     if (
-      step.facility === undefined &&
-      step.instruction.startsWith('通路') &&
-      isExitNear &&
-      k > 0 &&
-      (result[k - 1].facility === 'escalator' ||
-        result[k - 1].facility === 'elevator' ||
-        result[k - 1].facility === 'stairs')
+      idx === 0 &&
+      next &&
+      (next.facility === 'escalator' ||
+        next.facility === 'elevator' ||
+        next.facility === 'stairs')
     ) {
-      const distMatch = step.instruction.match(/約(\d+)m/)
-      const dist = distMatch ? parseInt(distMatch[1], 10) : 0
-      if (dist <= 10) {
-        continue
-      }
+      return false
     }
-    cleaned.push(step)
-  }
-
-  return cleaned
+    if (
+      next &&
+      (next.facility === 'gate' ||
+        next.facility === 'exit' ||
+        next.instruction.includes('へ出る'))
+    ) {
+      return false
+    }
+    return true
+  })
 }
 
 /** Domain-owned paper composition. The UI never chooses a semantic boundary,
@@ -166,8 +231,8 @@ export function buildHomeToGateGuideModel(input: {
   } : undefined
 
   // For alternate routes that pass through a different gate (safeRejoin.ok === false)
-  // but have multiple redundant pre-gate steps (e.g. Shinjuku exit 4 with 8 escalators),
-  // summarize the pre-gate vertical movement into a single clean instruction.
+  // and have multiple pre-gate vertical segments (e.g. Shinjuku exit 4),
+  // apply axis-aware and floor-aware compression across the route.
   let effectiveSteps: GuideStep[]
   if (homeStep) {
     effectiveSteps = [homeStep, ...detailSteps]
@@ -178,28 +243,11 @@ export function buildHomeToGateGuideModel(input: {
     ).length
 
     if (preGateVerticalCount >= 2) {
-      const hasPreGateElevator = preGateSteps.some(s => s.facility === 'elevator')
-      const hasPreGateEscalator = preGateSteps.some(s => s.facility === 'escalator')
-      const hasPreGateStairs = preGateSteps.some(s => s.facility === 'stairs')
-      const direction = consensus?.direction ?? 'up'
-      const verb = direction === 'up' ? '上がる' : '下りる'
-
-      const fallbackHomeInstruction = hasPreGateElevator
-        ? `エレベーターで改札階へ${verb}`
-        : hasPreGateEscalator
-        ? `エスカレーターで改札階へ${verb}`
-        : hasPreGateStairs
-        ? `階段で改札階へ${verb}`
-        : `ホームから改札階へ${verb}`
-
-      const alternateHomeStep: GuideStep = {
-        id: 'paper-alternate-home-vertical',
-        facility: hasPreGateElevator ? 'elevator' : hasPreGateEscalator ? 'escalator' : hasPreGateStairs ? 'stairs' : undefined,
-        instruction: fallbackHomeInstruction,
-      }
-
-      const postGateCompressed = compressConsecutiveEquipmentSteps(presentation.steps.slice(gateIndex))
-      effectiveSteps = [alternateHomeStep, ...postGateCompressed]
+      effectiveSteps = compressConsecutiveEquipmentSteps(
+        detailSteps,
+        graph,
+        input.compressionContext?.officialFloorsByLevelIndex,
+      )
     } else {
       effectiveSteps = detailSteps
     }

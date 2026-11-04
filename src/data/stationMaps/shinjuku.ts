@@ -18,6 +18,7 @@ export function buildShinjukuStationMapOverlay(graph: IndoorGraph): StationMapCo
     officialFloorsByLevelIndex: {
       ...overlay.officialFloorsByLevelIndex,
       [-6]: { label: '地下7階', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html' },
+      [-3]: { label: '地下4階', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/stations/shinjuku.html' },
       [-2]: { label: '地下3階', sourceUrl: 'https://www.kotsu.metro.tokyo.jp/subway/kanren/inspection/pdf/inspection202509_04.pdf' },
     },
   }
